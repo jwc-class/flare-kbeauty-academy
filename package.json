@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --hostname localhost --port 3000",
-    "build": "next build",
+    "dev": "node scripts/run-dev.js",
+    "build": "node scripts/run-build.js",
     "start": "next start",
     "lint": "eslint"
   },
