@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+/* Inter - local woff2 */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/Inter.woff2") format("woff2");
+}
+
+/* FLARE EDU Color System */
+:root {
+  --font-inter: "Inter", system-ui, sans-serif;
+  --background: #FAF9F6;
+  --foreground: #1a1a1a;
+  /* Primary Gradient (red → yellow, top to bottom) */
+  --flare-red: #ff0000;
+  --flare-yellow: #ffe100;
+  /* Supporting Colors */
+  --flare-support-1: #ff3322;
+  --flare-support-2: #ff6833;
+  --flare-support-3: #ff952c;
+  --gradient-flare: linear-gradient(180deg, var(--flare-red) 0%, var(--flare-support-1) 25%, var(--flare-support-2) 50%, var(--flare-support-3) 75%, var(--flare-yellow) 100%);
+  --gradient-flare-subtle: linear-gradient(180deg, rgba(255, 0, 0, 0.08) 0%, rgba(255, 225, 0, 0.06) 100%);
+  --muted: #525252;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-flare-red: var(--flare-red);
+  --color-flare-yellow: var(--flare-yellow);
+  --color-flare-support-1: var(--flare-support-1);
+  --color-flare-support-2: var(--flare-support-2);
+  --color-flare-support-3: var(--flare-support-3);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-inter);
+  --background-image-gradient-flare: var(--gradient-flare);
+  --background-image-gradient-flare-subtle: var(--gradient-flare-subtle);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* SaaS typography scale */
+.text-display {
+  font-size: clamp(3rem, 8vw, 6rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+.text-section-title {
+  font-size: clamp(2.25rem, 4vw, 3.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+.text-card-title {
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  line-height: 1.3;
+  font-weight: 600;
+}
+.text-body-lg {
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+.text-body {
+  font-size: 1rem;
+  line-height: 1.6;
+}
