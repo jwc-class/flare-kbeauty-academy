@@ -1,0 +1,279 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
+const PAYPAL_SCRIPT_URL = "https://www.paypal.com/sdk/js";
+const CREATE_ORDER_URL = "/api/paypal/create-order";
+const CAPTURE_ORDER_URL = "/api/paypal/capture-order";
+const SUCCESS_URL = "/purchase-complete";
+
+declare global {
+  interface Window {
+    paypal?: {
+      Buttons: (options: PayPalButtonsOptions) => { render: (el: HTMLElement) => Promise<unknown> };
+      CardFields?: (options: PayPalCardFieldsOptions) => PayPalCardFieldsInstance;
+    };
+  }
+}
+
+interface PayPalButtonsOptions {
+  createOrder: () => Promise<string>;
+  onApprove: (data: { orderID: string }) => Promise<void>;
+  onError: (err: unknown) => void;
+  onCancel?: () => void;
+  style?: { layout?: string; color?: string; shape?: string; borderRadius?: number };
+}
+
+interface PayPalCardFieldsOptions {
+  createOrder: () => Promise<string>;
+  onApprove: (data: { orderID: string }) => Promise<void>;
+  onError: (err: unknown) => void;
+  onCancel?: () => void;
+  style?: Record<string, Record<string, string>>;
+}
+
+interface PayPalCardFieldsInstance {
+  isEligible: () => boolean;
+  NumberField: (opts?: object) => { render: (el: HTMLElement) => void };
+  ExpiryField: (opts?: object) => { render: (el: HTMLElement) => void };
+  CVVField: (opts?: object) => { render: (el: HTMLElement) => void };
+  NameField: (opts?: object) => { render: (el: HTMLElement) => void };
+  getState: () => Promise<{ isFormValid: boolean }>;
+  submit: () => Promise<void>;
+}
+
+export default function PayPalAdvancedCheckout() {
+  const buttonsRef = useRef<HTMLDivElement>(null);
+  const cardNameRef = useRef<HTMLDivElement>(null);
+  const cardNumberRef = useRef<HTMLDivElement>(null);
+  const cardExpiryRef = useRef<HTMLDivElement>(null);
+  const cardCvvRef = useRef<HTMLDivElement>(null);
+
+  const [sdkReady, setSdkReady] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [cardSubmitLoading, setCardSubmitLoading] = useState(false);
+  const [cardError, setCardError] = useState<string | null>(null);
+  const [cardFieldsAvailable, setCardFieldsAvailable] = useState(false);
+  const cardFieldsRef = useRef<PayPalCardFieldsInstance | null>(null);
+
+  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+
+  const createOrder = async (): Promise<string> => {
+    const res = await fetch(CREATE_ORDER_URL, { method: "POST" });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || "Failed to create order");
+    }
+    const data = await res.json();
+    return data.orderId || data.orderID;
+  };
+
+  const onApprove = async (data: { orderID: string }) => {
+    const res = await fetch(CAPTURE_ORDER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId: data.orderID }),
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Failed to capture payment");
+    }
+    window.location.href = `${SUCCESS_URL}?orderId=${encodeURIComponent(data.orderID)}`;
+  };
+
+  const handleCardSubmit = async () => {
+    const cardFields = cardFieldsRef.current;
+    if (!cardFields) return;
+    setCardError(null);
+    try {
+      const state = await cardFields.getState();
+      if (!state.isFormValid) {
+        setCardError("Please fill in all card fields correctly.");
+        return;
+      }
+      setCardSubmitLoading(true);
+      await cardFields.submit();
+      // onApprove is called by SDK after successful card submission
+      // We need to capture and redirect there; ensure onApprove runs
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Payment failed. Please try again.";
+      setCardError(message);
+    } finally {
+      setCardSubmitLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!clientId) {
+      setError("PayPal is not configured. Missing NEXT_PUBLIC_PAYPAL_CLIENT_ID.");
+      setLoading(false);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = `${PAYPAL_SCRIPT_URL}?client-id=${clientId}&components=buttons,card-fields&currency=USD&intent=capture`;
+    script.async = true;
+    script.onload = () => setSdkReady(true);
+    script.onerror = () => {
+      setError("Failed to load PayPal.");
+      setLoading(false);
+    };
+    document.body.appendChild(script);
+    return () => {
+      if (script.parentNode) script.parentNode.removeChild(script);
+    };
+  }, [clientId]);
+
+  useEffect(() => {
+    if (!sdkReady || !window.paypal) return;
+
+    setError(null);
+
+    // PayPal Buttons
+    if (buttonsRef.current && window.paypal.Buttons) {
+      window.paypal
+        .Buttons({
+          createOrder,
+          onApprove,
+          onError: (err) => {
+            console.error("[PayPal]", err);
+            setError("Something went wrong with PayPal. Please try again.");
+          },
+          onCancel: () => setError("Payment was cancelled."),
+          style: { layout: "vertical", color: "gold", shape: "rect", borderRadius: 10 },
+        })
+        .render(buttonsRef.current)
+        .catch((err) => {
+          console.error("[PayPal Buttons]", err);
+          setError("Could not load PayPal buttons.");
+        });
+    }
+
+    // Card fields (optional; only if component exists)
+    if (window.paypal.CardFields && cardNumberRef.current && cardExpiryRef.current && cardCvvRef.current) {
+      const cardStyle = {
+        input: {
+          "font-size": "16px",
+          "font-family": "var(--font-inter), system-ui, sans-serif",
+          color: "var(--foreground)",
+        },
+        ".invalid": { color: "var(--flare-support-1)" },
+      };
+
+      const cardFields = window.paypal.CardFields({
+        createOrder,
+        onApprove: async (data) => {
+          await onApprove(data);
+          setCardSubmitLoading(false);
+        },
+        onError: (err) => {
+          console.error("[PayPal Card]", err);
+          setCardError("Card payment failed. Please check your details.");
+          setCardSubmitLoading(false);
+        },
+        onCancel: () => {
+          setCardError("Payment was cancelled.");
+          setCardSubmitLoading(false);
+        },
+        style: cardStyle,
+      });
+
+      if (cardFields.isEligible()) {
+        cardFieldsRef.current = cardFields;
+        setCardFieldsAvailable(true);
+        if (cardNameRef.current) cardFields.NameField({ placeholder: "Name on card" }).render(cardNameRef.current);
+        cardFields.NumberField().render(cardNumberRef.current);
+        cardFields.ExpiryField().render(cardExpiryRef.current);
+        cardFields.CVVField().render(cardCvvRef.current);
+      }
+    }
+
+    setLoading(false);
+  }, [sdkReady]);
+
+  if (!clientId) {
+    return (
+      <div className="rounded-[10px] border border-zinc-200 bg-white p-6 text-center">
+        <p className="text-body text-zinc-600">Checkout is not configured. Please set NEXT_PUBLIC_PAYPAL_CLIENT_ID.</p>
+      </div>
+    );
+  }
+
+  return (
+    <section className="py-[120px] px-4 sm:px-6 bg-[var(--background)]">
+      <div className="max-w-[900px] mx-auto">
+        <h2 className="text-section-title text-[var(--foreground)] text-center">
+          Complete Your Enrollment
+        </h2>
+        <p className="mt-4 text-body-lg text-zinc-600 text-center max-w-xl mx-auto">
+          Choose PayPal or pay directly with card to start the K-Beauty Glass Skin Masterclass.
+        </p>
+
+        <div className="mt-12 grid md:grid-cols-2 gap-8 items-start">
+          {/* Purchase summary */}
+          <div className="rounded-[10px] bg-white border border-zinc-100 p-6 sm:p-8">
+            <h3 className="text-card-title text-[var(--foreground)]">
+              K-Beauty Glass Skin Masterclass
+            </h3>
+            <p className="mt-2 text-body text-zinc-600">One-time payment</p>
+            <p className="mt-1 text-3xl font-bold text-[var(--foreground)]">$199</p>
+            <p className="mt-2 text-body text-zinc-500">Instant access</p>
+          </div>
+
+          {/* Payment methods */}
+          <div className="rounded-[10px] bg-white border border-zinc-100 p-6 sm:p-8 space-y-6">
+            {loading && (
+              <div className="flex items-center justify-center py-8 text-zinc-500">
+                <span className="text-body">Loading checkout…</span>
+              </div>
+            )}
+
+            {error && (
+              <div className="rounded-[10px] bg-red-50 border border-red-200 px-4 py-3 text-body text-red-700">
+                {error}
+              </div>
+            )}
+
+            {!loading && (
+              <>
+                {/* PayPal Buttons */}
+                <div>
+                  <p className="text-body font-medium text-[var(--foreground)] mb-3">Pay with PayPal</p>
+                  <div ref={buttonsRef} className="min-h-[45px]" />
+                </div>
+
+                <div className={`border-t border-zinc-200 pt-6 ${!cardFieldsAvailable ? "hidden" : ""}`}>
+                  <p className="text-body font-medium text-[var(--foreground)] mb-3">Or pay with card</p>
+                  <div className="space-y-4">
+                    <div ref={cardNameRef} className="min-h-[44px] rounded-[10px] border border-zinc-300 px-3 py-2" />
+                    <div ref={cardNumberRef} className="min-h-[44px] rounded-[10px] border border-zinc-300 px-3 py-2" />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div ref={cardExpiryRef} className="min-h-[44px] rounded-[10px] border border-zinc-300 px-3 py-2" />
+                      <div ref={cardCvvRef} className="min-h-[44px] rounded-[10px] border border-zinc-300 px-3 py-2" />
+                    </div>
+                  </div>
+                  {cardError && (
+                    <p className="mt-2 text-body text-red-600">{cardError}</p>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleCardSubmit}
+                    disabled={cardSubmitLoading}
+                    className="mt-4 w-full rounded-[10px] bg-[var(--flare-support-1)] px-6 py-4 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] disabled:opacity-60 transition-colors"
+                  >
+                    {cardSubmitLoading ? "Processing…" : "Pay $199"}
+                  </button>
+                </div>
+              </>
+            )}
+
+            <p className="text-body text-zinc-500 text-center pt-2">
+              Secure checkout powered by PayPal
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

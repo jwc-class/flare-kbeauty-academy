@@ -9,141 +9,126 @@ export default function GlassSkinPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   const ctaButtonClass =
-    "inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-7 py-3.5 font-semibold text-white transition-colors hover:bg-[var(--flare-support-2)] min-h-[48px]";
+    "inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-6 sm:px-7 py-3.5 font-semibold text-body text-white transition-colors hover:bg-[var(--flare-support-2)] min-h-[52px] w-full sm:w-auto sm:min-w-[200px] touch-manipulation";
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
       <main>
-        {/* Section 1 — Hero (메인 Hero와 동일한 스케일·구성) */}
-        <section className="relative px-4 pb-[120px] pt-[160px] sm:px-6">
+        {/* Section 1 — Hero: 강한 후킹 헤드라인 + 모바일 최적화 */}
+        <section className="relative px-4 pb-16 pt-24 sm:px-6 sm:pb-20 sm:pt-28 lg:pb-[120px] lg:pt-[160px]">
           <div className="mx-auto max-w-[900px] text-center">
-            <p
-              className="text-[var(--flare-support-1)] font-semibold uppercase tracking-wide text-body"
-              style={{ fontSize: "0.9375rem" }}
-            >
-              Free Guide
+            <p className="text-[var(--flare-support-1)] font-semibold uppercase tracking-wide text-body">
+              Free Guide · No Sign-Up Hassle
             </p>
-            <h1
-              className="mx-auto mt-4 font-bold leading-[1.05] text-[var(--foreground)]"
-              style={{ fontSize: "clamp(2.5rem, 8vw, 96px)", fontWeight: 800 }}
-            >
-              Get Korean{" "}
+            <h1 className="mx-auto mt-3 font-bold leading-[1.08] tracking-tight text-[var(--foreground)] text-display sm:mt-4">
+              Your Skincare Isn&apos;t Working.
+              <br className="hidden sm:block" />{" "}
               <span className="bg-[image:var(--gradient-flare)] bg-clip-text text-transparent">
-                Glass Skin
+                Here&apos;s the Korean Fix.
               </span>
             </h1>
-            <p
-              className="mx-auto mt-6 text-zinc-600"
-              style={{
-                fontSize: "clamp(1.125rem, 2vw, 22px)",
-                maxWidth: "650px",
-                lineHeight: 1.5,
-              }}
-            >
-              Discover the exact skincare routine used by Korean beauty influencers to achieve clear, glowing, glass-like skin.
+            <p className="mx-auto mt-5 max-w-[600px] text-body-lg font-medium text-zinc-700 sm:mt-6 sm:max-w-[650px]">
+              The exact 7-step routine Korean beauty experts use for clear, glass-like skin—in one free guide.
             </p>
-            <p className="mx-auto mt-4 max-w-xl text-zinc-500" style={{ fontSize: "1rem", lineHeight: 1.6 }}>
-              Most people use the wrong skincare order, the wrong ingredients, and too many products. This free guide shows you the Korean skincare system that actually works.
+            <p className="mx-auto mt-3 max-w-xl text-body text-zinc-500 sm:mt-4">
+              Wrong order, wrong ingredients, too many products. Most people never get that glow because they skip the system Koreans actually use.
             </p>
-            <div className="mt-8">
+            <div className="mt-6 sm:mt-8">
               <button
                 type="button"
                 onClick={() => setModalOpen(true)}
                 className={ctaButtonClass}
-                style={{ fontWeight: 600 }}
               >
-                Get the Free Guide
+                Get the Free Blueprint →
               </button>
             </div>
-            <div className="mt-8 flex justify-center">
-              <div className="flex items-center">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="h-10 w-10 shrink-0 rounded-[10px] border-2 border-white bg-zinc-200 first:ml-0 last:mr-0"
-                    style={{
-                      marginLeft: i === 1 ? 0 : -8,
-                      boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-                    }}
-                    aria-hidden
-                  />
-                ))}
-              </div>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 sm:mt-8">
+              <span className="rounded-full bg-zinc-100 px-3 py-1 text-body text-zinc-600">
+                Korean skincare order
+              </span>
+              <span className="rounded-full bg-zinc-100 px-3 py-1 text-body text-zinc-600">
+                Glass skin steps
+              </span>
+              <span className="rounded-full bg-zinc-100 px-3 py-1 text-body text-zinc-600">
+                Hydration method
+              </span>
+              <span className="rounded-full bg-zinc-100 px-3 py-1 text-body text-zinc-600">
+                Expert tips
+              </span>
             </div>
-            <p className="mx-auto mt-4 text-zinc-500" style={{ fontSize: "15px", lineHeight: 1.5 }}>
-              Free instant download. No spam.
+            <p className="mt-4 text-body text-zinc-500">
+              Free instant download. No spam. Unsubscribe anytime.
             </p>
-            <div className="mx-auto mt-12 flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
-              {["Korean skincare routine", "Glass skin steps", "Hydration method", "Expert tips"].map((label) => (
-                <span key={label} className="text-zinc-400" style={{ fontSize: "15px", fontWeight: 500 }}>
-                  {label}
-                </span>
-              ))}
-            </div>
           </div>
         </section>
 
-        {/* Section 2 — Problem (메인 ProblemSection 카드 그리드 스타일) */}
-        <section className="bg-white py-[120px] px-4 sm:px-6">
+        {/* Section 2 — Problem: 감정·공감 후킹 + 모바일 그리드 */}
+        <section className="bg-white py-14 px-4 sm:px-6 sm:py-20 lg:py-[120px]">
           <div className="mx-auto max-w-[1200px]">
-            <div className="mx-auto mb-20 max-w-3xl text-center">
+            <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-16 lg:mb-20">
               <h2 className="text-section-title text-[var(--foreground)]">
-                Why most skincare routines fail
+                Why You Still Don&apos;t Have That Glow
               </h2>
-              <p className="mt-6 text-body-lg text-zinc-600">
-                Many people try dozens of products but never achieve the glowing skin they want. That&apos;s because Korean skincare follows a completely different philosophy.
+              <p className="mt-4 text-body-lg text-zinc-600 sm:mt-6">
+                You&apos;ve tried the serums and the 10-step lists. So why does your skin still look dull or breakout? Korean skincare isn&apos;t about more products—it&apos;s about the right order and the right philosophy.
               </p>
             </div>
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-5 sm:grid-cols-2 sm:gap-8 lg:grid-cols-4">
               {[
-                "Wrong product order",
-                "Too many unnecessary products",
-                "Ingredients that damage your skin barrier",
-                "Skipping the most important hydration step",
+                { title: "Wrong product order", sub: "Layering in the wrong sequence wastes money and blocks results." },
+                { title: "Too many products", sub: "K-beauty is about fewer, smarter steps—not a cabinet full of bottles." },
+                { title: "Barrier damage", sub: "Harsh ingredients and order can weaken your skin barrier." },
+                { title: "Skipping the key step", sub: "The hydration step Koreans never skip is what creates the glow." },
               ].map((item) => (
                 <div
-                  key={item}
-                  className="rounded-[10px] border border-zinc-100 bg-[var(--background)] p-8 transition-colors hover:border-[var(--flare-support-3)]/30"
+                  key={item.title}
+                  className="rounded-[10px] border border-zinc-100 bg-[var(--background)] p-5 transition-colors hover:border-[var(--flare-support-3)]/30 sm:p-6 lg:p-8"
                 >
-                  <p className="text-body text-zinc-600">{item}</p>
+                  <p className="font-semibold text-[var(--foreground)] text-body">{item.title}</p>
+                  <p className="mt-1.5 text-body text-zinc-600">{item.sub}</p>
                 </div>
               ))}
             </div>
-            <p className="mt-12 text-center text-body font-medium text-zinc-700">
-              The Korean Glass Skin Blueprint explains the exact routine Koreans actually use.
+            <p className="mt-10 text-center text-body font-medium text-zinc-700 sm:mt-12">
+              The Korean Glass Skin Blueprint shows you the exact routine that fixes this.
             </p>
+            <div className="mt-8 flex justify-center">
+              <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
+                Get the Free Blueprint
+              </button>
+            </div>
           </div>
         </section>
 
-        {/* Section 3 — Solution (메인 섹션 타이포·간격) */}
-        <section className="py-[120px] px-4 sm:px-6 bg-[var(--background)]">
+        {/* Section 3 — Solution: 가치 명확화 + 리스트 강화 */}
+        <section className="py-14 px-4 sm:px-6 sm:py-20 lg:py-[120px] bg-[var(--background)]">
           <div className="mx-auto max-w-[1200px]">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
+            <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-16">
               <h2 className="text-section-title text-[var(--foreground)]">
-                Inside the Korean Glass Skin Blueprint
+                What You Get in the Free Guide
               </h2>
-              <p className="mt-6 text-body-lg text-zinc-600">
-                This guide breaks down the exact Korean skincare system step by step.
+              <p className="mt-4 text-body-lg text-zinc-600 sm:mt-6">
+                No fluff. The same system Korean beauty experts and influencers actually use—step by step.
               </p>
             </div>
             <div className="mx-auto max-w-2xl">
-              <ul className="space-y-5">
+              <ul className="space-y-4 sm:space-y-5">
                 {[
-                  "The Korean skincare layering method",
-                  "The exact order Korean beauty experts use",
-                  "The key ingredients behind glass skin",
-                  "The hydration technique that creates glow",
-                  "The biggest skincare mistakes foreigners make",
+                  "The Korean layering method (and why order matters more than products)",
+                  "The exact 7-step order Korean experts use",
+                  "Key ingredients that build glass skin (and what to avoid)",
+                  "The hydration technique that creates the glow",
+                  "The biggest mistakes foreigners make—and how to fix them",
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-body text-zinc-600">
-                    <span className="mt-0.5 text-[var(--flare-support-1)]">✓</span>
+                  <li key={item} className="flex items-start gap-3 text-body text-zinc-700">
+                    <span className="mt-0.5 shrink-0 text-[var(--flare-support-1)]" aria-hidden>✓</span>
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="mt-14 text-center">
+            <div className="mt-10 text-center sm:mt-14">
               <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
                 Get the Free Guide
               </button>
@@ -151,77 +136,88 @@ export default function GlassSkinPage() {
           </div>
         </section>
 
-        {/* Section 4 — Authority (메인 AboutSection 2열 레이아웃) */}
-        <section className="bg-white py-[120px] px-4 sm:px-6">
+        {/* Section 4 — Authority: 신뢰·출처 강화 */}
+        <section className="bg-white py-14 px-4 sm:px-6 sm:py-20 lg:py-[120px]">
           <div className="mx-auto max-w-[1200px]">
-            <div className="grid items-center gap-16 lg:grid-cols-2 lg:gap-24">
-              <div>
+            <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-24">
+              <div className="order-2 lg:order-1">
                 <h2 className="text-section-title text-[var(--foreground)]">
-                  Learn real Korean beauty secrets
+                  Real Korean Beauty, Not Guesswork
                 </h2>
-                <p className="mt-8 text-body-lg leading-relaxed text-zinc-600">
-                  This guide is based on real Korean beauty routines used by influencers and professionals in Korea.
+                <p className="mt-6 text-body-lg leading-relaxed text-zinc-600 sm:mt-8">
+                  This guide is based on the real routines used by Korean beauty pros and influencers—the same philosophy that made K-beauty famous worldwide.
                 </p>
-                <p className="mt-6 text-body leading-relaxed text-zinc-600">
-                  You&apos;ll learn the same skincare philosophy that helped make Korean beauty famous worldwide.
+                <p className="mt-4 text-body leading-relaxed text-zinc-600">
+                  Stop copying random TikTok steps. Get the system that actually creates glass skin.
                 </p>
+                <div className="mt-6">
+                  <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
+                    Get the Free Blueprint
+                  </button>
+                </div>
               </div>
-              <div className="relative">
+              <div className="relative order-1 lg:order-2">
                 <div
-                  className="flex aspect-[4/3] items-center justify-center rounded-[10px] border border-zinc-200/80 bg-[image:var(--gradient-flare-subtle)]"
+                  className="flex aspect-[4/3] min-h-[200px] items-center justify-center rounded-[10px] border border-zinc-200/80 bg-[image:var(--gradient-flare-subtle)] sm:min-h-0"
                   aria-hidden
                 >
-                  <span className="text-8xl">🌸</span>
+                  <span className="text-6xl sm:text-8xl" role="img" aria-label="Cherry blossom">🌸</span>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Section 5 — Future benefit (카드 3열) */}
-        <section className="py-[120px] px-4 sm:px-6 bg-[var(--background)]">
+        {/* Section 5 — Future benefit: 결과 구체화 */}
+        <section className="py-14 px-4 sm:px-6 sm:py-20 lg:py-[120px] bg-[var(--background)]">
           <div className="mx-auto max-w-[1200px]">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
+            <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-16">
               <h2 className="text-section-title text-[var(--foreground)]">
-                Imagine waking up with glowing skin
+                Imagine Your Skin in 2–4 Weeks
               </h2>
-              <p className="mt-6 text-body-lg text-zinc-600">
-                Instead of trying random products and guessing what works, you&apos;ll finally understand the Korean skincare system.
+              <p className="mt-4 text-body-lg text-zinc-600 sm:mt-6">
+                Not more products. Just the right routine. Here&apos;s what changes when you follow the Korean system.
               </p>
             </div>
-            <div className="grid gap-8 sm:grid-cols-3">
-              {["Clearer skin", "Healthier skin barrier", "Natural glass-like glow"].map((item) => (
+            <div className="grid gap-5 sm:grid-cols-3 sm:gap-8">
+              {[
+                { title: "Clearer, calmer skin", desc: "Right order and ingredients reduce irritation and breakouts." },
+                { title: "Stronger skin barrier", desc: "Hydration and layering protect and repair your barrier." },
+                { title: "Natural glass-like glow", desc: "The dewy look comes from method, not magic." },
+              ].map((item) => (
                 <div
-                  key={item}
-                  className="rounded-[10px] border border-zinc-100 bg-white p-8 text-center transition-colors hover:border-[var(--flare-support-3)]/30"
+                  key={item.title}
+                  className="rounded-[10px] border border-zinc-100 bg-white p-6 text-center transition-colors hover:border-[var(--flare-support-3)]/30 sm:p-8"
                 >
-                  <h3 className="text-card-title text-[var(--foreground)]">{item}</h3>
+                  <h3 className="text-card-title text-[var(--foreground)]">{item.title}</h3>
+                  <p className="mt-2 text-body text-zinc-600">{item.desc}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Section 6 — Final CTA (Hero CTA 블록과 동일한 톤) */}
-        <section className="bg-white py-[120px] px-4 sm:px-6">
-          <div className="mx-auto max-w-[900px] text-center">
+        {/* Section 6 — Final CTA: 강한 마무리 후킹 */}
+        <section className="bg-white py-14 px-4 sm:px-6 sm:py-20 lg:py-[120px]">
+          <div className="mx-auto max-w-[720px] text-center">
             <h2 className="text-section-title text-[var(--foreground)]">
-              Get the Korean Glass Skin Blueprint
+              One Free Guide. The Korean Glass Skin System.
             </h2>
-            <p className="mx-auto mt-6 max-w-xl text-body-lg text-zinc-600">
-              Enter your details and receive the guide instantly.
+            <p className="mx-auto mt-4 max-w-xl text-body-lg text-zinc-600 sm:mt-6">
+              Enter your email and get the blueprint instantly. No payment, no commitment—just the exact steps that work.
             </p>
-            <div className="mt-8">
+            <div className="mt-6 sm:mt-8">
               <button
                 type="button"
                 onClick={() => setModalOpen(true)}
                 className={ctaButtonClass}
-                style={{ fontWeight: 600 }}
               >
-                Get the Free Guide
+                Send Me the Free Guide
               </button>
             </div>
-            <p className="mt-4 text-body text-zinc-500">Free download. Instant access.</p>
+            <p className="mt-4 text-body text-zinc-500">
+              Free download · Instant access · Unsubscribe anytime
+            </p>
           </div>
         </section>
       </main>

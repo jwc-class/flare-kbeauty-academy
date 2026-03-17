@@ -1,7 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
-const PAYPAL_URL = "https://www.paypal.com/ncp/payment/6PLRM2S8H2MEN";
+import PayPalAdvancedCheckout from "@/components/PayPalAdvancedCheckout";
 
 export const metadata = {
   title: "Thank You | K Beauty Academy",
@@ -13,181 +12,150 @@ export default function ThankYouPage() {
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
       <main>
-        {/* SECTION 1 — CONFIRMATION HERO */}
-        <section className="pt-[140px] pb-[80px] px-4 sm:px-6">
-          <div className="max-w-[720px] mx-auto text-center">
+        {/* SECTION 1 — Hero 스타일: 큰 제목 + 그라데이션 + 메인과 동일 패딩/타이포 */}
+        <section className="relative px-4 pb-[120px] pt-[160px] sm:px-6">
+          <div className="mx-auto max-w-[900px] text-center">
             <div className="inline-flex h-16 w-16 items-center justify-center rounded-[10px] bg-[var(--flare-support-3)]/20 text-4xl mb-8">
               ✓
             </div>
-            <h1 className="text-section-title text-[var(--foreground)] font-bold">
-              Your guide is on the way!
+            <h1
+              className="mx-auto font-bold leading-[1.05] text-[var(--foreground)]"
+              style={{ fontSize: "clamp(2.5rem, 8vw, 96px)", fontWeight: 800 }}
+            >
+              Your guide is{" "}
+              <span className="bg-[image:var(--gradient-flare)] bg-clip-text text-transparent">
+                on the way
+              </span>
             </h1>
-            <p className="mt-6 text-body-lg text-zinc-600 leading-relaxed">
-              We&apos;ve sent &quot;The Korean Glass Skin Blueprint&quot; to your email.
-            </p>
-            <p className="mt-4 text-body text-zinc-600">
-              Check your inbox to download the guide.
-            </p>
-            <p className="mt-2 text-body text-zinc-500">
-              If you don&apos;t see it within a minute, check your spam folder.
-            </p>
-            <p className="mt-10 text-body text-[var(--muted)]">
-              While you&apos;re here, there&apos;s one more thing that may help you.
-            </p>
-            <a
-              href={PAYPAL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-8 py-4 font-semibold text-body-lg text-white hover:bg-[var(--flare-support-2)] transition-colors min-h-[56px]"
+            <p
+              className="mx-auto mt-6 text-zinc-600"
+              style={{
+                fontSize: "clamp(1.125rem, 2vw, 22px)",
+                maxWidth: "650px",
+                lineHeight: 1.5,
+              }}
             >
-              Get the Full Masterclass — $199
-            </a>
-          </div>
-        </section>
-
-        {/* SECTION 2 — BRIDGE (FREE GUIDE → COURSE) */}
-        <section className="py-[80px] px-4 sm:px-6 bg-white">
-          <div className="max-w-[720px] mx-auto text-center">
-            <h2 className="text-section-title text-[var(--foreground)] font-bold">
-              Want the full Korean skincare routine?
-            </h2>
-            <p className="mt-6 text-body-lg text-zinc-600 leading-relaxed">
-              The free guide gives you the blueprint.
-              <br />
-              But if you want to see exactly how Korean beauty experts apply the routine step-by-step, the full video training shows you everything.
+              We&apos;ve sent &quot;The Korean Glass Skin Blueprint&quot; to your email. Check your inbox to download it—if you don&apos;t see it in a minute, check spam.
             </p>
-            <a
-              href={PAYPAL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-8 py-4 font-semibold text-body-lg text-white hover:bg-[var(--flare-support-2)] transition-colors min-h-[56px]"
+            <p
+              className="mx-auto mt-6 max-w-xl text-zinc-500"
+              style={{ fontSize: "1rem", lineHeight: 1.6 }}
             >
-              Start the Course — $199
-            </a>
-          </div>
-        </section>
-
-        {/* SECTION 3 — COURSE INTRODUCTION */}
-        <section className="py-[80px] px-4 sm:px-6 bg-[var(--background)]">
-          <div className="max-w-[720px] mx-auto">
-            <h2 className="text-section-title text-[var(--foreground)] font-bold text-center">
-              K-Beauty Glass Skin Masterclass
-            </h2>
-            <p className="mt-6 text-body-lg text-zinc-600 leading-relaxed text-center">
-              Learn the complete Korean skincare routine used to create clear, glowing, glass-like skin.
-              You&apos;ll see exactly how Korean beauty experts structure their routines and why it works.
+              While you&apos;re here: if you want the full step-by-step video training (not just the guide), we have one offer for you.
             </p>
-            <ul className="mt-10 space-y-4 max-w-[560px] mx-auto">
-              {[
-                "The exact Korean skincare order",
-                "How to layer products properly",
-                "The hydration technique behind glass skin",
-                "The biggest skincare mistakes foreigners make",
-                "The real philosophy behind Korean beauty",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-body text-zinc-700">
-                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[var(--flare-support-1)]" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-10 text-center">
+            <div className="mt-8">
               <a
-                href={PAYPAL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-8 py-4 font-semibold text-body-lg text-white hover:bg-[var(--flare-support-2)] transition-colors min-h-[56px]"
+                href="#checkout"
+                className="inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-7 py-3.5 font-semibold text-white transition-colors hover:bg-[var(--flare-support-2)]"
+                style={{ fontWeight: 600 }}
+              >
+                See the Full Masterclass Offer
+              </a>
+            </div>
+            <p
+              className="mx-auto mt-4 text-zinc-500"
+              style={{ fontSize: "15px", lineHeight: 1.5 }}
+            >
+              Free guide in your inbox · One-time offer below
+            </p>
+          </div>
+        </section>
+
+        {/* SECTION 2 — 메인과 동일: text-section-title, max-w-3xl, py-[120px] */}
+        <section className="py-[120px] px-4 sm:px-6 bg-white">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="text-section-title text-[var(--foreground)]">
+              Want the full{" "}
+              <span className="bg-[image:var(--gradient-flare)] bg-clip-text text-transparent">
+                Korean skincare
+              </span>{" "}
+              routine?
+            </h2>
+            <p className="mt-6 text-body-lg text-zinc-600">
+              The free guide gives you the blueprint. The full masterclass shows you exactly how Korean beauty experts apply the routine step by step—on video.
+            </p>
+          </div>
+        </section>
+
+        {/* SECTION 3 — CoursesSection 스타일: 리스트 체크마크 text-[var(--flare-support-1)] */}
+        <section className="py-[120px] px-4 sm:px-6 bg-[var(--background)]">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="text-center max-w-3xl mx-auto mb-20">
+              <h2 className="text-section-title text-[var(--foreground)]">
+                K-Beauty{" "}
+                <span className="bg-[image:var(--gradient-flare)] bg-clip-text text-transparent">
+                  Glass Skin
+                </span>{" "}
+                Masterclass
+              </h2>
+              <p className="mt-6 text-body-lg text-zinc-600">
+                Learn the complete Korean skincare routine for clear, glowing, glass-like skin—and why Korean experts structure their routines the way they do.
+              </p>
+            </div>
+            <div className="mx-auto max-w-2xl">
+              <ul className="space-y-5">
+                {[
+                  "The exact Korean skincare order",
+                  "How to layer products properly",
+                  "The hydration technique behind glass skin",
+                  "The biggest skincare mistakes foreigners make",
+                  "The real philosophy behind Korean beauty",
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-2 text-body text-zinc-600">
+                    <span className="text-[var(--flare-support-1)]">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 4 — AboutSection 스타일: text-section-title, mt-8 */}
+        <section className="py-[120px] px-4 sm:px-6 bg-white">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="text-section-title text-[var(--foreground)]">
+              Learn from real Korean beauty experts
+            </h2>
+            <p className="mt-8 text-body-lg text-zinc-600 leading-relaxed">
+              The course features real Korean beauty professionals sharing the routines and techniques used in Korea. You&apos;ll understand the system behind K-beauty instead of guessing which products to try.
+            </p>
+          </div>
+        </section>
+
+        {/* CHECKOUT */}
+        <section id="checkout" className="scroll-mt-24">
+          <PayPalAdvancedCheckout />
+        </section>
+
+        {/* SECTION 5 — 리스크 감소 */}
+        <section className="py-[120px] px-4 sm:px-6 bg-white">
+          <div className="max-w-[640px] mx-auto text-center">
+            <p className="text-body-lg text-zinc-600 leading-relaxed">
+              No complicated routines. No guessing which products to use. Just the exact Korean skincare method explained step by step.
+            </p>
+          </div>
+        </section>
+
+        {/* SECTION 6 — ApplySection 스타일: max-w-[560px], 동일 버튼 */}
+        <section className="py-[120px] px-4 sm:px-6 bg-[var(--background)]">
+          <div className="max-w-[560px] mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-section-title text-[var(--foreground)]">
+                Start your Korean skincare journey
+              </h2>
+              <p className="mt-6 text-body-lg text-zinc-600">
+                If you want to truly understand how Korean skincare works, the full masterclass is the next step.
+              </p>
+            </div>
+            <div className="text-center">
+              <a
+                href="#checkout"
+                className="inline-flex items-center justify-center w-full sm:w-auto py-4 px-8 rounded-[10px] bg-[var(--flare-support-1)] text-white font-semibold text-body-lg hover:bg-[var(--flare-support-2)] transition-colors min-h-[56px]"
               >
                 Enroll with PayPal — $199
               </a>
             </div>
-          </div>
-        </section>
-
-        {/* SECTION 4 — AUTHORITY */}
-        <section className="py-[80px] px-4 sm:px-6 bg-white">
-          <div className="max-w-[720px] mx-auto text-center">
-            <h2 className="text-section-title text-[var(--foreground)] font-bold">
-              Learn from real Korean beauty experts
-            </h2>
-            <p className="mt-6 text-body-lg text-zinc-600 leading-relaxed">
-              This course features real Korean beauty professionals sharing the routines and techniques used in Korea.
-              Instead of guessing which products to try, you&apos;ll understand the actual system behind K-beauty.
-            </p>
-            <a
-              href={PAYPAL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-8 py-4 font-semibold text-body-lg text-white hover:bg-[var(--flare-support-2)] transition-colors min-h-[56px]"
-            >
-              Get Instant Access — $199
-            </a>
-          </div>
-        </section>
-
-        {/* SECTION 5 — COURSE OFFER CARD */}
-        <section className="py-[80px] px-4 sm:px-6 bg-[var(--background)]">
-          <div className="max-w-[480px] mx-auto">
-            <div className="rounded-[10px] bg-white p-8 sm:p-10 border-2 border-[var(--flare-support-1)]/30 shadow-lg text-center">
-              <h2 className="text-card-title text-[var(--foreground)] font-bold">
-                K-Beauty Glass Skin Masterclass
-              </h2>
-              <p className="mt-6 text-4xl font-bold text-[var(--foreground)]">
-                $199
-              </p>
-              <p className="mt-2 text-body text-zinc-600">
-                One-time payment. Instant access.
-              </p>
-              <a
-                href={PAYPAL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-8 inline-flex w-full sm:w-auto items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-8 py-4 font-semibold text-body-lg text-white hover:bg-[var(--flare-support-2)] transition-colors min-h-[56px]"
-              >
-                Start the Course
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 6 — RISK REDUCTION */}
-        <section className="py-[80px] px-4 sm:px-6 bg-white">
-          <div className="max-w-[640px] mx-auto text-center">
-            <p className="text-body-lg text-zinc-700 leading-relaxed">
-              No complicated routines.
-              <br />
-              No guessing which products to use.
-              <br />
-              Just the exact Korean skincare method explained step by step.
-            </p>
-            <a
-              href={PAYPAL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-8 py-4 font-semibold text-body-lg text-white hover:bg-[var(--flare-support-2)] transition-colors min-h-[56px]"
-            >
-              Start the Masterclass
-            </a>
-          </div>
-        </section>
-
-        {/* SECTION 7 — FINAL CTA */}
-        <section className="py-[100px] px-4 sm:px-6 bg-[var(--background)]">
-          <div className="max-w-[640px] mx-auto text-center">
-            <h2 className="text-section-title text-[var(--foreground)] font-bold">
-              Start Your Korean Skincare Journey
-            </h2>
-            <p className="mt-6 text-body-lg text-zinc-600 leading-relaxed">
-              If you want to truly understand how Korean skincare works, start with the full masterclass.
-            </p>
-            <a
-              href={PAYPAL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-10 inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-8 py-4 font-semibold text-body-lg text-white hover:bg-[var(--flare-support-2)] transition-colors min-h-[56px]"
-            >
-              Enroll with PayPal
-            </a>
           </div>
         </section>
       </main>
