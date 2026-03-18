@@ -1,18 +1,30 @@
+import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import PayPalAdvancedCheckout from "@/components/PayPalAdvancedCheckout";
+import { getPublishedCourseForThankYou } from "@/lib/public-content";
 
 export const metadata = {
   title: "Thank You | K Beauty Academy",
   description: "Your free guide is on the way. Discover the full K-Beauty Glass Skin Masterclass.",
 };
 
-export default function ThankYouPage() {
+function formatPrice(currency: string, price: number): string {
+  const n = Number(price);
+  if (Number.isNaN(n)) return "$199";
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: currency || "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+}
+
+export default async function ThankYouPage() {
+  const course = await getPublishedCourseForThankYou();
+  const courseHref = course?.slug ? `/courses/${course.slug}` : "/glass-skin-masterclass";
+  const courseLabel = course?.title ? `See ${course.title}` : "See the Full Masterclass Offer";
+  const coursePrice = course ? formatPrice(course.currency, course.price) : "$199";
+
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
       <main>
-        {/* SECTION 1 — Hero 스타일: 큰 제목 + 그라데이션 + 메인과 동일 패딩/타이포 */}
+        {/* SECTION 1 — Hero: 가이드 확인 + 상단 CTA → Course 페이지 */}
         <section className="relative px-4 pb-[120px] pt-[160px] sm:px-6">
           <div className="mx-auto max-w-[900px] text-center">
             <div className="inline-flex h-16 w-16 items-center justify-center rounded-[10px] bg-[var(--flare-support-3)]/20 text-4xl mb-8">
@@ -44,24 +56,24 @@ export default function ThankYouPage() {
               While you&apos;re here: if you want the full step-by-step video training (not just the guide), we have one offer for you.
             </p>
             <div className="mt-8">
-              <a
-                href="#checkout"
+              <Link
+                href={courseHref}
                 className="inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-7 py-3.5 font-semibold text-white transition-colors hover:bg-[var(--flare-support-2)]"
                 style={{ fontWeight: 600 }}
               >
-                See the Full Masterclass Offer
-              </a>
+                {courseLabel}
+              </Link>
             </div>
             <p
               className="mx-auto mt-4 text-zinc-500"
               style={{ fontSize: "15px", lineHeight: 1.5 }}
             >
-              Free guide in your inbox · One-time offer below
+              Free guide in your inbox · Full course on the next page
             </p>
           </div>
         </section>
 
-        {/* SECTION 2 — 메인과 동일: text-section-title, max-w-3xl, py-[120px] */}
+        {/* SECTION 2 */}
         <section className="py-[120px] px-4 sm:px-6 bg-white">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-section-title text-[var(--foreground)]">
@@ -74,19 +86,36 @@ export default function ThankYouPage() {
             <p className="mt-6 text-body-lg text-zinc-600">
               The free guide gives you the blueprint. The full masterclass shows you exactly how Korean beauty experts apply the routine step by step—on video.
             </p>
+            <div className="mt-8">
+              <Link
+                href={courseHref}
+                className="inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-7 py-3.5 font-semibold text-white transition-colors hover:bg-[var(--flare-support-2)]"
+                style={{ fontWeight: 600 }}
+              >
+                Go to {course?.title || "Glass Skin Masterclass"}
+              </Link>
+            </div>
           </div>
         </section>
 
-        {/* SECTION 3 — CoursesSection 스타일: 리스트 체크마크 text-[var(--flare-support-1)] */}
+        {/* SECTION 3 */}
         <section className="py-[120px] px-4 sm:px-6 bg-[var(--background)]">
           <div className="max-w-[1200px] mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-20">
               <h2 className="text-section-title text-[var(--foreground)]">
-                K-Beauty{" "}
-                <span className="bg-[image:var(--gradient-flare)] bg-clip-text text-transparent">
-                  Glass Skin
-                </span>{" "}
-                Masterclass
+                {course?.title ? (
+                  <>
+                    <span className="bg-[image:var(--gradient-flare)] bg-clip-text text-transparent">{course.title}</span>
+                  </>
+                ) : (
+                  <>
+                    K-Beauty{" "}
+                    <span className="bg-[image:var(--gradient-flare)] bg-clip-text text-transparent">
+                      Glass Skin
+                    </span>{" "}
+                    Masterclass
+                  </>
+                )}
               </h2>
               <p className="mt-6 text-body-lg text-zinc-600">
                 Learn the complete Korean skincare routine for clear, glowing, glass-like skin—and why Korean experts structure their routines the way they do.
@@ -108,10 +137,18 @@ export default function ThankYouPage() {
                 ))}
               </ul>
             </div>
+            <div className="mt-12 text-center">
+              <Link
+                href={courseHref}
+                className="inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-8 py-4 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] transition-colors"
+              >
+                Enroll Now — {coursePrice}
+              </Link>
+            </div>
           </div>
         </section>
 
-        {/* SECTION 4 — AboutSection 스타일: text-section-title, mt-8 */}
+        {/* SECTION 4 */}
         <section className="py-[120px] px-4 sm:px-6 bg-white">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-section-title text-[var(--foreground)]">
@@ -120,16 +157,19 @@ export default function ThankYouPage() {
             <p className="mt-8 text-body-lg text-zinc-600 leading-relaxed">
               The course features real Korean beauty professionals sharing the routines and techniques used in Korea. You&apos;ll understand the system behind K-beauty instead of guessing which products to try.
             </p>
+            <div className="mt-8">
+              <Link
+                href={courseHref}
+                className="inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-8 py-4 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] transition-colors"
+              >
+                Get the Full {course?.title ? "Course" : "Masterclass"}
+              </Link>
+            </div>
           </div>
         </section>
 
-        {/* CHECKOUT */}
-        <section id="checkout" className="scroll-mt-24">
-          <PayPalAdvancedCheckout />
-        </section>
-
         {/* SECTION 5 — 리스크 감소 */}
-        <section className="py-[120px] px-4 sm:px-6 bg-white">
+        <section className="py-[120px] px-4 sm:px-6 bg-[var(--background)]">
           <div className="max-w-[640px] mx-auto text-center">
             <p className="text-body-lg text-zinc-600 leading-relaxed">
               No complicated routines. No guessing which products to use. Just the exact Korean skincare method explained step by step.
@@ -137,8 +177,8 @@ export default function ThankYouPage() {
           </div>
         </section>
 
-        {/* SECTION 6 — ApplySection 스타일: max-w-[560px], 동일 버튼 */}
-        <section className="py-[120px] px-4 sm:px-6 bg-[var(--background)]">
+        {/* SECTION 6 — 마무리 + 하단 CTA */}
+        <section className="py-[120px] px-4 sm:px-6 bg-white">
           <div className="max-w-[560px] mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-section-title text-[var(--foreground)]">
@@ -149,12 +189,12 @@ export default function ThankYouPage() {
               </p>
             </div>
             <div className="text-center">
-              <a
-                href="#checkout"
+              <Link
+                href={courseHref}
                 className="inline-flex items-center justify-center w-full sm:w-auto py-4 px-8 rounded-[10px] bg-[var(--flare-support-1)] text-white font-semibold text-body-lg hover:bg-[var(--flare-support-2)] transition-colors min-h-[56px]"
               >
-                Enroll with PayPal — $199
-              </a>
+                Enroll with PayPal — {coursePrice}
+              </Link>
             </div>
           </div>
         </section>

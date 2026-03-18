@@ -10,6 +10,10 @@ type LeadCaptureModalProps = {
   source?: string;
   /** 제출 성공 시 이동할 URL (예: /thank-you). 없으면 모달만 닫습니다. */
   successRedirect?: string;
+  /** landing_pages.id — 리드 제출 시 lead_submissions에 저장 */
+  landing_page_id?: string | null;
+  /** lead_magnets.id — 리드 제출 시 lead_submissions에 저장 */
+  lead_magnet_id?: string | null;
 };
 
 const COUNTRY_OPTIONS = [
@@ -19,7 +23,7 @@ const COUNTRY_OPTIONS = [
   { code: "GB", label: "United Kingdom (+44)", dial: "+44" },
 ];
 
-export function LeadCaptureModal({ open, onClose, source = "main", successRedirect }: LeadCaptureModalProps) {
+export function LeadCaptureModal({ open, onClose, source = "main", successRedirect, landing_page_id, lead_magnet_id }: LeadCaptureModalProps) {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [email, setEmail] = useState("");
@@ -114,6 +118,8 @@ export function LeadCaptureModal({ open, onClose, source = "main", successRedire
         country_code: countryCode.trim() || null,
         marketing_consent: marketingConsent,
         source,
+        ...(landing_page_id && { landing_page_id }),
+        ...(lead_magnet_id && { lead_magnet_id }),
       };
 
       const res = await fetch("/api/leads", {

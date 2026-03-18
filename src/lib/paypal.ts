@@ -24,8 +24,8 @@ export interface CreateOrderPayload {
  * Get PayPal OAuth2 access token using client credentials.
  */
 export async function getPayPalAccessToken(): Promise<string> {
-  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-  const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID?.trim();
+  const clientSecret = process.env.PAYPAL_CLIENT_SECRET?.trim();
 
   if (!clientId || !clientSecret) {
     throw new Error(
@@ -120,4 +120,49 @@ export async function capturePayPalOrder(orderId: string): Promise<{
 
   const data = (await res.json()) as { id: string; status: string };
   return data;
+}
+
+/**
+ * Get order details from PayPal (after capture) for payer email and amount.
+ * Used server-side for purchase recording.
+ */
+export async function getPayPalOrderDetails(orderId: string): Promise<{
+  payerEmail: string | null;
+  amount: string;
+  currency: string;
+}> {
+  if (!orderId) {
+    throw new Error("Order ID is required");
+  }
+
+  const token = await getPayPalAccessToken();
+
+  const res = await fetch(
+    `${PAYPAL_API_BASE}/v2/checkout/orders/${orderId}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`PayPal get order failed: ${res.status} ${text}`);
+  }
+
+  const order = (await res.json()) as {
+    payer?: { email_address?: string };
+    purchase_units?: Array<{
+      amount?: { currency_code?: string; value?: string };
+    }>;
+  };
+
+  const email = order.payer?.email_address?.trim() || null;
+  const unit = order.purchase_units?.[0];
+  const amount = unit?.amount?.value ?? "0";
+  const currency = unit?.amount?.currency_code ?? "USD";
+
+  return { payerEmail: email, amount, currency };
 }

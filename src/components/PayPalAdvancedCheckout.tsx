@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 const PAYPAL_SCRIPT_URL = "https://www.paypal.com/sdk/js";
 const CREATE_ORDER_URL = "/api/paypal/create-order";
 const CAPTURE_ORDER_URL = "/api/paypal/capture-order";
+const PURCHASE_RECORD_URL = "/api/purchase";
 const SUCCESS_URL = "/purchase-complete";
 
 declare global {
@@ -42,7 +43,12 @@ interface PayPalCardFieldsInstance {
   submit: () => Promise<void>;
 }
 
-export default function PayPalAdvancedCheckout() {
+type PayPalAdvancedCheckoutProps = {
+  /** Course slug for purchase tracking (e.g. "glass-skin-masterclass"). Default used if omitted. */
+  courseSlug?: string;
+};
+
+export default function PayPalAdvancedCheckout({ courseSlug }: PayPalAdvancedCheckoutProps = {}) {
   const buttonsRef = useRef<HTMLDivElement>(null);
   const cardNameRef = useRef<HTMLDivElement>(null);
   const cardNumberRef = useRef<HTMLDivElement>(null);
@@ -61,11 +67,11 @@ export default function PayPalAdvancedCheckout() {
 
   const createOrder = async (): Promise<string> => {
     const res = await fetch(CREATE_ORDER_URL, { method: "POST" });
+    const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      throw new Error(data.error || "Failed to create order");
+      const msg = data.error || `Failed to create order (${res.status})`;
+      throw new Error(msg);
     }
-    const data = await res.json();
     return data.orderId || data.orderID;
   };
 
@@ -79,6 +85,21 @@ export default function PayPalAdvancedCheckout() {
       const errData = await res.json().catch(() => ({}));
       throw new Error(errData.error || "Failed to capture payment");
     }
+
+    // Record purchase in DB (server fetches payer email from PayPal)
+    try {
+      await fetch(PURCHASE_RECORD_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          external_order_id: data.orderID,
+          ...(courseSlug && { course_slug: courseSlug }),
+        }),
+      });
+    } catch (e) {
+      console.error("[PayPal] Purchase record failed", e);
+    }
+
     window.location.href = `${SUCCESS_URL}?orderId=${encodeURIComponent(data.orderID)}`;
   };
 
@@ -111,6 +132,23 @@ export default function PayPalAdvancedCheckout() {
       return;
     }
 
+    // 이미 다른 페이지에서 스크립트가 로드된 경우 (SPA 이동) 바로 준비 완료 처리
+    if (typeof window !== "undefined" && window.paypal) {
+      setSdkReady(true);
+      return;
+    }
+
+    // 이미 같은 src의 스크립트가 있으면 onload 대신 타이머로 확인
+    const existing = document.querySelector(`script[src^="${PAYPAL_SCRIPT_URL}"]`);
+    if (existing) {
+      const check = () => {
+        if (window.paypal) setSdkReady(true);
+        else requestAnimationFrame(check);
+      };
+      requestAnimationFrame(check);
+      return;
+    }
+
     const script = document.createElement("script");
     script.src = `${PAYPAL_SCRIPT_URL}?client-id=${clientId}&components=buttons,card-fields&currency=USD&intent=capture`;
     script.async = true;
@@ -130,25 +168,50 @@ export default function PayPalAdvancedCheckout() {
 
     setError(null);
 
-    // PayPal Buttons
-    if (buttonsRef.current && window.paypal.Buttons) {
+    // ref 컨테이너가 DOM에 붙은 뒤 한 프레임 대기 후 버튼 렌더 (다른 페이지에서 진입 시 대비)
+    const runRender = () => {
+      const el = buttonsRef.current;
+      if (!el || !window.paypal?.Buttons) {
+        setLoading(false);
+        return;
+      }
+      el.innerHTML = ""; // 이전 인스턴스가 남아 있으면 비움
       window.paypal
         .Buttons({
           createOrder,
           onApprove,
-          onError: (err) => {
-            console.error("[PayPal]", err);
-            setError("Something went wrong with PayPal. Please try again.");
+          onError: (err: unknown) => {
+            console.error("[PayPal onError]", err);
+            const msg =
+              err instanceof Error
+                ? err.message
+                : typeof err === "string"
+                  ? err
+                  : "Something went wrong with PayPal. Please try again.";
+            setError(msg);
           },
           onCancel: () => setError("Payment was cancelled."),
           style: { layout: "vertical", color: "gold", shape: "rect", borderRadius: 10 },
         })
-        .render(buttonsRef.current)
+        .render(el)
         .catch((err) => {
           console.error("[PayPal Buttons]", err);
           setError("Could not load PayPal buttons.");
         });
-    }
+    };
+
+    const scheduleRender = () => {
+      if (buttonsRef.current) {
+        runRender();
+      } else {
+        requestAnimationFrame(() => {
+          if (buttonsRef.current) runRender();
+          else setTimeout(runRender, 50);
+        });
+      }
+    };
+
+    scheduleRender();
 
     // Card fields (optional; only if component exists)
     if (window.paypal.CardFields && cardNumberRef.current && cardExpiryRef.current && cardCvvRef.current) {
@@ -194,9 +257,19 @@ export default function PayPalAdvancedCheckout() {
 
   if (!clientId) {
     return (
-      <div className="rounded-[10px] border border-zinc-200 bg-white p-6 text-center">
-        <p className="text-body text-zinc-600">Checkout is not configured. Please set NEXT_PUBLIC_PAYPAL_CLIENT_ID.</p>
-      </div>
+      <section className="py-[120px] px-4 sm:px-6 bg-[var(--background)]">
+        <div className="max-w-[720px] mx-auto text-center">
+          <h2 className="text-section-title text-[var(--foreground)]">
+            Complete Your Enrollment
+          </h2>
+          <p className="mt-4 text-body-lg text-zinc-600">
+            Payment options will be available here soon. Thank you for your interest in the K-Beauty Glass Skin Masterclass.
+          </p>
+          <p className="mt-6 text-body text-zinc-500">
+            In the meantime, check your email for the free guide. We&apos;ll be in touch with next steps.
+          </p>
+        </div>
+      </section>
     );
   }
 
@@ -221,7 +294,7 @@ export default function PayPalAdvancedCheckout() {
             <p className="mt-2 text-body text-zinc-500">Instant access</p>
           </div>
 
-          {/* Payment methods */}
+          {/* Payment methods — ref용 div는 항상 DOM에 두어 SDK가 버튼을 붙일 수 있게 함 */}
           <div className="rounded-[10px] bg-white border border-zinc-100 p-6 sm:p-8 space-y-6">
             {loading && (
               <div className="flex items-center justify-center py-8 text-zinc-500">
@@ -235,38 +308,34 @@ export default function PayPalAdvancedCheckout() {
               </div>
             )}
 
-            {!loading && (
-              <>
-                {/* PayPal Buttons */}
-                <div>
-                  <p className="text-body font-medium text-[var(--foreground)] mb-3">Pay with PayPal</p>
-                  <div ref={buttonsRef} className="min-h-[45px]" />
-                </div>
+            {/* PayPal 버튼이 렌더되는 컨테이너 — 항상 마운트되어 있어야 SDK가 정상 동작함 */}
+            <div>
+              <p className="text-body font-medium text-[var(--foreground)] mb-3">Pay with PayPal</p>
+              <div ref={buttonsRef} className="min-h-[45px]" />
+            </div>
 
-                <div className={`border-t border-zinc-200 pt-6 ${!cardFieldsAvailable ? "hidden" : ""}`}>
-                  <p className="text-body font-medium text-[var(--foreground)] mb-3">Or pay with card</p>
-                  <div className="space-y-4">
-                    <div ref={cardNameRef} className="min-h-[44px] rounded-[10px] border border-zinc-300 px-3 py-2" />
-                    <div ref={cardNumberRef} className="min-h-[44px] rounded-[10px] border border-zinc-300 px-3 py-2" />
-                    <div className="grid grid-cols-2 gap-4">
-                      <div ref={cardExpiryRef} className="min-h-[44px] rounded-[10px] border border-zinc-300 px-3 py-2" />
-                      <div ref={cardCvvRef} className="min-h-[44px] rounded-[10px] border border-zinc-300 px-3 py-2" />
-                    </div>
-                  </div>
-                  {cardError && (
-                    <p className="mt-2 text-body text-red-600">{cardError}</p>
-                  )}
-                  <button
-                    type="button"
-                    onClick={handleCardSubmit}
-                    disabled={cardSubmitLoading}
-                    className="mt-4 w-full rounded-[10px] bg-[var(--flare-support-1)] px-6 py-4 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] disabled:opacity-60 transition-colors"
-                  >
-                    {cardSubmitLoading ? "Processing…" : "Pay $199"}
-                  </button>
+            <div className={`border-t border-zinc-200 pt-6 ${!cardFieldsAvailable ? "hidden" : ""}`}>
+              <p className="text-body font-medium text-[var(--foreground)] mb-3">Or pay with card</p>
+              <div className="space-y-4">
+                <div ref={cardNameRef} className="min-h-[44px] rounded-[10px] border border-zinc-300 px-3 py-2" />
+                <div ref={cardNumberRef} className="min-h-[44px] rounded-[10px] border border-zinc-300 px-3 py-2" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div ref={cardExpiryRef} className="min-h-[44px] rounded-[10px] border border-zinc-300 px-3 py-2" />
+                  <div ref={cardCvvRef} className="min-h-[44px] rounded-[10px] border border-zinc-300 px-3 py-2" />
                 </div>
-              </>
-            )}
+              </div>
+              {cardError && (
+                <p className="mt-2 text-body text-red-600">{cardError}</p>
+              )}
+              <button
+                type="button"
+                onClick={handleCardSubmit}
+                disabled={cardSubmitLoading}
+                className="mt-4 w-full rounded-[10px] bg-[var(--flare-support-1)] px-6 py-4 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] disabled:opacity-60 transition-colors"
+              >
+                {cardSubmitLoading ? "Processing…" : "Pay $199"}
+              </button>
+            </div>
 
             <p className="text-body text-zinc-500 text-center pt-2">
               Secure checkout powered by PayPal
