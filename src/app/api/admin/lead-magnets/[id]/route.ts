@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { requireAdmin } from "../../guard";
 
 type Params = { params: Promise<{ id: string }> };
@@ -7,6 +7,7 @@ type Params = { params: Promise<{ id: string }> };
 export async function GET(_req: Request, { params }: Params) {
   const err = requireAdmin(_req);
   if (err) return err;
+  const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {
     return NextResponse.json({ error: "Admin not configured" }, { status: 503 });
   }
@@ -38,6 +39,7 @@ export async function GET(_req: Request, { params }: Params) {
 export async function PATCH(req: Request, { params }: Params) {
   const err = requireAdmin(req);
   if (err) return err;
+  const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {
     return NextResponse.json({ error: "Admin not configured" }, { status: 503 });
   }
@@ -86,6 +88,7 @@ export async function PATCH(req: Request, { params }: Params) {
 export async function DELETE(req: Request, { params }: Params) {
   const err = requireAdmin(req);
   if (err) return err;
+  const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {
     return NextResponse.json({ error: "Admin not configured" }, { status: 503 });
   }

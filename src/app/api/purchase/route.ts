@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { getPayPalOrderDetails } from "@/lib/paypal";
 
 const DEFAULT_COURSE_SLUG = "glass-skin-masterclass";
@@ -15,6 +15,7 @@ const DEFAULT_COURSE_SLUG = "glass-skin-masterclass";
  * TODO: Future upgrade — verify capture via PayPal webhook before recording (stronger guarantee).
  */
 export async function POST(req: Request) {
+  const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {
     return NextResponse.json(
       { error: "Server not configured (SUPABASE_SERVICE_ROLE_KEY)" },

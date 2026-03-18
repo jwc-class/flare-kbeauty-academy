@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { requireAdmin } from "../guard";
 
 export async function GET(req: Request) {
   const err = requireAdmin(req);
   if (err) return err;
 
+  const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {
     return NextResponse.json(
       { error: "Server not configured for admin (SUPABASE_SERVICE_ROLE_KEY)" },

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 /**
  * Normalize incoming lead form payload to a single shape.
@@ -53,6 +53,7 @@ function normalizeLeadPayload(body: Record<string, unknown>) {
 }
 
 export async function POST(req: Request) {
+  const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {
     return NextResponse.json(
       { error: "Server configuration error" },
