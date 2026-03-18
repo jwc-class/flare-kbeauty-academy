@@ -46,9 +46,11 @@ interface PayPalCardFieldsInstance {
 type PayPalAdvancedCheckoutProps = {
   /** Course slug for purchase tracking (e.g. "glass-skin-masterclass"). Default used if omitted. */
   courseSlug?: string;
+  /** PayPal Client ID. 서버에서 전달하면 Vercel 등 빌드 시 env가 없어도 런타임에 버튼 표시 가능. */
+  paypalClientId?: string | null;
 };
 
-export default function PayPalAdvancedCheckout({ courseSlug }: PayPalAdvancedCheckoutProps = {}) {
+export default function PayPalAdvancedCheckout({ courseSlug, paypalClientId: paypalClientIdProp }: PayPalAdvancedCheckoutProps = {}) {
   const buttonsRef = useRef<HTMLDivElement>(null);
   const cardNameRef = useRef<HTMLDivElement>(null);
   const cardNumberRef = useRef<HTMLDivElement>(null);
@@ -63,7 +65,7 @@ export default function PayPalAdvancedCheckout({ courseSlug }: PayPalAdvancedChe
   const [cardFieldsAvailable, setCardFieldsAvailable] = useState(false);
   const cardFieldsRef = useRef<PayPalCardFieldsInstance | null>(null);
 
-  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+  const clientId = (paypalClientIdProp ?? process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID)?.trim() || undefined;
 
   const createOrder = async (): Promise<string> => {
     const res = await fetch(CREATE_ORDER_URL, {

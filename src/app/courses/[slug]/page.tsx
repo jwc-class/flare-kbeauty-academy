@@ -79,7 +79,10 @@ export default async function PublicCourseBySlug({ params }: Props) {
                 </div>
               </div>
               <div className="lg:sticky lg:top-24">
-                <PayPalAdvancedCheckout courseSlug={course.slug} />
+                <PayPalAdvancedCheckout
+                  courseSlug={course.slug}
+                  paypalClientId={process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}
+                />
               </div>
             </div>
           </div>
