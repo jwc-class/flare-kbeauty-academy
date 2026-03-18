@@ -48,9 +48,13 @@ type PayPalAdvancedCheckoutProps = {
   courseSlug?: string;
   /** PayPal Client ID. 서버에서 전달하면 Vercel 등 빌드 시 env가 없어도 런타임에 버튼 표시 가능. */
   paypalClientId?: string | null;
+  /** 강의 제목. 결제 요약 카드에 표시. */
+  courseTitle?: string | null;
+  /** 포맷된 가격 문자열 (예: "$100"). 어드민에서 설정한 가격과 동일하게 표시. */
+  priceFormatted?: string | null;
 };
 
-export default function PayPalAdvancedCheckout({ courseSlug, paypalClientId: paypalClientIdProp }: PayPalAdvancedCheckoutProps = {}) {
+export default function PayPalAdvancedCheckout({ courseSlug, paypalClientId: paypalClientIdProp, courseTitle, priceFormatted }: PayPalAdvancedCheckoutProps = {}) {
   const buttonsRef = useRef<HTMLDivElement>(null);
   const cardNameRef = useRef<HTMLDivElement>(null);
   const cardNumberRef = useRef<HTMLDivElement>(null);
@@ -286,17 +290,17 @@ export default function PayPalAdvancedCheckout({ courseSlug, paypalClientId: pay
           Complete Your Enrollment
         </h2>
         <p className="mt-4 text-body-lg text-zinc-600 text-center max-w-xl mx-auto">
-          Choose PayPal or pay directly with card to start the K-Beauty Glass Skin Masterclass.
+          Choose PayPal or pay directly with card to start the {courseTitle || "K-Beauty Glass Skin Masterclass"}.
         </p>
 
         <div className="mt-12 grid md:grid-cols-2 gap-8 items-start">
           {/* Purchase summary */}
           <div className="rounded-[10px] bg-white border border-zinc-100 p-6 sm:p-8">
             <h3 className="text-card-title text-[var(--foreground)]">
-              K-Beauty Glass Skin Masterclass
+              {courseTitle || "K-Beauty Glass Skin Masterclass"}
             </h3>
             <p className="mt-2 text-body text-zinc-600">One-time payment</p>
-            <p className="mt-1 text-3xl font-bold text-[var(--foreground)]">$199</p>
+            <p className="mt-1 text-3xl font-bold text-[var(--foreground)]">{priceFormatted ?? "$199"}</p>
             <p className="mt-2 text-body text-zinc-500">Instant access</p>
           </div>
 
@@ -339,7 +343,7 @@ export default function PayPalAdvancedCheckout({ courseSlug, paypalClientId: pay
                 disabled={cardSubmitLoading}
                 className="mt-4 w-full rounded-[10px] bg-[var(--flare-support-1)] px-6 py-4 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] disabled:opacity-60 transition-colors"
               >
-                {cardSubmitLoading ? "Processing…" : "Pay $199"}
+                {cardSubmitLoading ? "Processing…" : `Pay ${priceFormatted ?? "$199"}`}
               </button>
             </div>
 

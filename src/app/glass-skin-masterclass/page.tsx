@@ -85,6 +85,8 @@ export default async function GlassSkinMasterclassPage() {
                 <PayPalAdvancedCheckout
                   courseSlug="glass-skin-masterclass"
                   paypalClientId={process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}
+                  courseTitle={title}
+                  priceFormatted={priceFormatted}
                 />
               </div>
             </div>
