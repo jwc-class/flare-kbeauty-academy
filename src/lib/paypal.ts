@@ -9,8 +9,9 @@ const PAYPAL_API_BASE =
     ? "https://api-m.paypal.com"
     : "https://api-m.sandbox.paypal.com");
 
-const COURSE_AMOUNT = "199.00";
-const CURRENCY = "USD";
+const DEFAULT_AMOUNT = "97.00";
+const DEFAULT_CURRENCY = "USD";
+const DEFAULT_DESCRIPTION = "K-Beauty Course";
 
 export interface CreateOrderPayload {
   intent: "CAPTURE";
@@ -45,26 +46,40 @@ export async function getPayPalAccessToken(): Promise<string> {
 
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`PayPal auth failed: ${res.status} ${text}`);
+    const is401 = res.status === 401;
+    const hint = is401
+      ? " — Live 자격증명이면 PAYPAL_ENVIRONMENT=live, Sandbox 자격증명이면 sandbox 로 맞추세요. developer.paypal.com 에서 앱 탭(Sandbox/Live) 확인."
+      : "";
+    throw new Error(`PayPal auth failed: ${res.status} ${text}${hint}`);
   }
 
   const data = (await res.json()) as { access_token: string };
   return data.access_token;
 }
 
+export type CreateOrderOptions = {
+  amount: string;
+  currency: string;
+  description: string;
+};
+
 /**
  * Create a PayPal order (intent CAPTURE).
  * Returns the order ID for the client to use in the SDK.
+ * Uses options when provided, otherwise defaults.
  */
-export async function createPayPalOrder(): Promise<string> {
+export async function createPayPalOrder(options?: CreateOrderOptions | null): Promise<string> {
   const token = await getPayPalAccessToken();
+  const amount = options?.amount ?? DEFAULT_AMOUNT;
+  const currency = (options?.currency ?? DEFAULT_CURRENCY).toUpperCase();
+  const description = options?.description ?? DEFAULT_DESCRIPTION;
 
   const payload: CreateOrderPayload = {
     intent: "CAPTURE",
     purchase_units: [
       {
-        amount: { currency_code: CURRENCY, value: COURSE_AMOUNT },
-        description: "K-Beauty Glass Skin Masterclass",
+        amount: { currency_code: currency, value: String(amount) },
+        description: description.slice(0, 127),
       },
     ],
   };

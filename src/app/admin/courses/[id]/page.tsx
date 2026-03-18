@@ -209,8 +209,11 @@ export default function AdminCourseEditPage() {
               </select>
             </div>
             <div>
-              <label className="block text-body font-medium text-[var(--foreground)] mb-1">PayPal 링크</label>
-              <input className={inputCls} value={form.paypal_link} onChange={(e) => setForm((f) => ({ ...f, paypal_link: e.target.value }))} />
+              <label className="block text-body font-medium text-[var(--foreground)] mb-1">PayPal 링크 (선택)</label>
+              <input className={inputCls} value={form.paypal_link} onChange={(e) => setForm((f) => ({ ...f, paypal_link: e.target.value }))} placeholder="https://paypal.me/yourname" />
+              <p className="mt-1 text-sm text-[var(--muted)]">
+                참고용입니다. 실제 결제는 강의 페이지의 PayPal 버튼으로 진행되며, 위에서 설정한 <strong>가격(price)</strong>이 결제 금액으로 사용됩니다.
+              </p>
             </div>
           </div>
           {error && <p className="mt-2 text-sm text-red-500">{error}</p>}

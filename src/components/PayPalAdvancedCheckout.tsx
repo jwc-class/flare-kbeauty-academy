@@ -66,7 +66,11 @@ export default function PayPalAdvancedCheckout({ courseSlug }: PayPalAdvancedChe
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 
   const createOrder = async (): Promise<string> => {
-    const res = await fetch(CREATE_ORDER_URL, { method: "POST" });
+    const res = await fetch(CREATE_ORDER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: courseSlug ? JSON.stringify({ course_slug: courseSlug }) : "{}",
+    });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       const msg = data.error || `Failed to create order (${res.status})`;
