@@ -5,7 +5,7 @@ import { requireAdmin } from "../guard";
 /** Completed payment statuses we count as revenue */
 const COMPLETED_STATUSES = ["completed", "COMPLETED"];
 
-function isCompleted(status: string | null): boolean {
+function isCompleted(status: string | null | undefined): boolean {
   return status != null && COMPLETED_STATUSES.includes(status.trim());
 }
 

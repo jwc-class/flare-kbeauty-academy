@@ -31,7 +31,7 @@ export default function GlassSkinContent({ landingPage }: Props) {
   const heroTitle = lp?.hero_title?.trim() || FALLBACK.headline.split("\n")[0];
   const heroTitleHighlight = lp?.hero_title?.trim() ? null : FALLBACK.headline.split("\n")[1]?.trim() || "Here's the Korean Fix.";
   const heroSubtitle = lp?.hero_subtitle?.trim() || FALLBACK.subline;
-  const heroSubline2 = lp?.hero_subtitle ? (lp.description?.slice(0, 200) || FALLBACK.subline2) : FALLBACK.subline2;
+  const heroSubline2 = lp?.hero_subtitle ? (lp?.lead_magnet?.description?.slice(0, 200) || FALLBACK.subline2) : FALLBACK.subline2;
   const ctaText = lp?.cta_text?.trim() || FALLBACK.cta;
   const badge = FALLBACK.badge;
   const tags = FALLBACK.tags;
