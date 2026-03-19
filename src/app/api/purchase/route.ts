@@ -1,18 +1,37 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { getPayPalOrderDetails } from "@/lib/paypal";
 
 const DEFAULT_COURSE_SLUG = "glass-skin-masterclass";
 
 /**
+ * Resolve logged-in user email from Bearer token when present.
+ * Purchase is then linked to this identity (contact by email) instead of only PayPal payer.
+ */
+async function getAuthenticatedEmail(req: Request): Promise<string | null> {
+  const authHeader = req.headers.get("authorization");
+  const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7).trim() : null;
+  if (!token) return null;
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY;
+  if (!url || !anonKey) return null;
+
+  const supabase = createClient(url, anonKey, {
+    global: { headers: { Authorization: `Bearer ${token}` } },
+  });
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user?.email) return null;
+  return user.email;
+}
+
+/**
  * POST /api/purchase
  * Records a completed purchase after PayPal capture.
  * Body: { external_order_id (required), course_id?, course_slug? }
- * If course_id/course_slug omitted, uses default course by slug.
- * Fetches payer email and amount from PayPal; finds or creates contact; inserts purchase.
- * Idempotent: if purchase with same external_order_id exists, returns success.
- *
- * TODO: Future upgrade — verify capture via PayPal webhook before recording (stronger guarantee).
+ * If Authorization: Bearer <token> is present, the purchase is linked to that user (contact by their email).
+ * Otherwise uses PayPal payer email for contact. Idempotent by external_order_id.
  */
 export async function POST(req: Request) {
   const supabaseAdmin = getSupabaseAdmin();
@@ -77,8 +96,8 @@ export async function POST(req: Request) {
 
     // Get payer email and amount from PayPal
     const orderDetails = await getPayPalOrderDetails(external_order_id);
-    const email = orderDetails.payerEmail;
-    if (!email) {
+    const payerEmail = orderDetails.payerEmail;
+    if (!payerEmail) {
       return NextResponse.json(
         { error: "Could not determine payer email from order" },
         { status: 400 }
@@ -94,11 +113,15 @@ export async function POST(req: Request) {
     }
     const currency = orderDetails.currency || "USD";
 
+    // Prefer logged-in member email so purchase is linked to their account
+    const authenticatedEmail = await getAuthenticatedEmail(req);
+    const contactEmail = (authenticatedEmail?.trim() || payerEmail).toLowerCase();
+
     // Find or create contact by email
     const { data: existingContact } = await supabaseAdmin
       .from("contacts")
       .select("id")
-      .eq("email", email)
+      .eq("email", contactEmail)
       .limit(1)
       .maybeSingle();
 
@@ -109,7 +132,7 @@ export async function POST(req: Request) {
       const { data: newContact, error: insertErr } = await supabaseAdmin
         .from("contacts")
         .insert({
-          email,
+          email: contactEmail,
           first_name: null,
           last_name: null,
           phone_country_code: null,

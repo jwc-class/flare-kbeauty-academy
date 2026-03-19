@@ -52,9 +52,11 @@ type PayPalAdvancedCheckoutProps = {
   courseTitle?: string | null;
   /** 포맷된 가격 문자열 (예: "$100"). 어드민에서 설정한 가격과 동일하게 표시. */
   priceFormatted?: string | null;
+  /** Optional Supabase access token so purchase is linked to the logged-in member. */
+  accessToken?: string | null;
 };
 
-export default function PayPalAdvancedCheckout({ courseSlug, paypalClientId: paypalClientIdProp, courseTitle, priceFormatted }: PayPalAdvancedCheckoutProps = {}) {
+export default function PayPalAdvancedCheckout({ courseSlug, paypalClientId: paypalClientIdProp, courseTitle, priceFormatted, accessToken }: PayPalAdvancedCheckoutProps = {}) {
   const buttonsRef = useRef<HTMLDivElement>(null);
   const cardNameRef = useRef<HTMLDivElement>(null);
   const cardNumberRef = useRef<HTMLDivElement>(null);
@@ -96,11 +98,13 @@ export default function PayPalAdvancedCheckout({ courseSlug, paypalClientId: pay
       throw new Error(errData.error || "Failed to capture payment");
     }
 
-    // Record purchase in DB (server fetches payer email from PayPal)
+    // Record purchase in DB; server uses session when accessToken present to link to logged-in member
+    const purchaseHeaders: Record<string, string> = { "Content-Type": "application/json" };
+    if (accessToken?.trim()) purchaseHeaders["Authorization"] = `Bearer ${accessToken.trim()}`;
     try {
       await fetch(PURCHASE_RECORD_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: purchaseHeaders,
         body: JSON.stringify({
           external_order_id: data.orderID,
           ...(courseSlug && { course_slug: courseSlug }),

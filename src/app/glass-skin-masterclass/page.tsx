@@ -1,7 +1,8 @@
+import { Suspense } from "react";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import PayPalAdvancedCheckout from "@/components/PayPalAdvancedCheckout";
+import CheckoutGate from "@/components/CheckoutGate";
 import { getPublishedCourseBySlug } from "@/lib/public-content";
 
 const DEFAULT_TITLE = "K-Beauty Glass Skin Masterclass";
@@ -82,12 +83,15 @@ export default async function GlassSkinMasterclassPage() {
                 </div>
               </div>
               <div className="lg:sticky lg:top-24">
-                <PayPalAdvancedCheckout
-                  courseSlug="glass-skin-masterclass"
-                  paypalClientId={process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}
-                  courseTitle={title}
-                  priceFormatted={priceFormatted}
-                />
+                <Suspense fallback={<div className="rounded-[10px] bg-zinc-100 border border-zinc-200 p-8 text-center text-zinc-500">Loading checkout…</div>}>
+                  <CheckoutGate
+                    courseSlug="glass-skin-masterclass"
+                    paypalClientId={process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}
+                    courseTitle={title}
+                    priceFormatted={priceFormatted}
+                    returnTo="/glass-skin-masterclass"
+                  />
+                </Suspense>
               </div>
             </div>
           </div>

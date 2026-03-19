@@ -1,7 +1,8 @@
+import { Suspense } from "react";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import PayPalAdvancedCheckout from "@/components/PayPalAdvancedCheckout";
+import CheckoutGate from "@/components/CheckoutGate";
 import { getPublishedCourseBySlug } from "@/lib/public-content";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -79,12 +80,15 @@ export default async function PublicCourseBySlug({ params }: Props) {
                 </div>
               </div>
               <div className="lg:sticky lg:top-24">
-                <PayPalAdvancedCheckout
-                  courseSlug={course.slug}
-                  paypalClientId={process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}
-                  courseTitle={title}
-                  priceFormatted={priceFormatted}
-                />
+                <Suspense fallback={<div className="rounded-[10px] bg-zinc-100 border border-zinc-200 p-8 text-center text-zinc-500">Loading checkout…</div>}>
+                  <CheckoutGate
+                    courseSlug={course.slug}
+                    paypalClientId={process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}
+                    courseTitle={title}
+                    priceFormatted={priceFormatted}
+                    returnTo={`/courses/${slug}`}
+                  />
+                </Suspense>
               </div>
             </div>
           </div>
