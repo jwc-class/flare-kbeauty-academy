@@ -35,7 +35,8 @@ export default function AdminPurchasesPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/purchases", { headers: getAdminHeaders() });
+      const headers = await getAdminHeaders();
+      const res = await fetch("/api/admin/purchases", { headers });
       if (res.status === 401) return;
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {

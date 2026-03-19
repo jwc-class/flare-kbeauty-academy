@@ -17,7 +17,7 @@ export type MemberListItem = {
 };
 
 export async function GET(req: Request) {
-  const err = requireAdmin(req);
+  const err = await requireAdmin(req);
   if (err) return err;
   const supabase = getSupabaseAdmin();
   if (!supabase) {

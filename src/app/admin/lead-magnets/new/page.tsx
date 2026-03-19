@@ -46,7 +46,7 @@ export default function AdminLeadMagnetNewPage() {
     try {
       const res = await fetch("/api/admin/lead-magnets", {
         method: "POST",
-        headers: getAdminHeaders(),
+        headers: await getAdminHeaders(),
         body: JSON.stringify(form),
       });
       const data = await res.json().catch(() => ({}));

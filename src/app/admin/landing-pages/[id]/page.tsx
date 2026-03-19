@@ -37,8 +37,8 @@ export default function AdminLandingPageEditPage() {
     setLoading(true);
     setError(null);
     setNotFound(false);
-    const headers = getAdminHeaders();
     try {
+      const headers = await getAdminHeaders();
       const [resPage, resLM, resC] = await Promise.all([
         fetch(`/api/admin/landing-pages/${id}`, { headers }),
         fetch("/api/admin/lead-magnets", { headers }),
@@ -85,9 +85,10 @@ export default function AdminLandingPageEditPage() {
     setSaving(true);
     setError(null);
     try {
+      const headers = await getAdminHeaders();
       const res = await fetch(`/api/admin/landing-pages/${id}`, {
         method: "PATCH",
-        headers: getAdminHeaders(),
+        headers,
         body: JSON.stringify({
           ...form,
           lead_magnet_id: form.lead_magnet_id || null,
@@ -112,9 +113,10 @@ export default function AdminLandingPageEditPage() {
     setSaving(true);
     setError(null);
     try {
+      const headers = await getAdminHeaders();
       const res = await fetch(`/api/admin/landing-pages/${id}`, {
         method: "DELETE",
-        headers: getAdminHeaders(),
+        headers,
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));

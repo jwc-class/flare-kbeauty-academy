@@ -60,7 +60,8 @@ export default function AdminDashboardPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/admin/dashboard", { headers: getAdminHeaders() })
+    getAdminHeaders().then((headers) =>
+      fetch("/api/admin/dashboard", { headers })
       .then(async (res) => {
         const json = await res.json().catch(() => ({}));
         if (!res.ok) {
@@ -71,7 +72,7 @@ export default function AdminDashboardPage() {
       })
       .then(setData)
       .catch((err) => setError(err instanceof Error ? err.message : "대시보드를 불러오지 못했습니다."))
-      .finally(() => setLoading(false));
+      .finally(() => setLoading(false)));
   }, []);
 
   if (loading) {

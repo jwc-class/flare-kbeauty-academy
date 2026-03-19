@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AdminFooterLink from "@/components/AdminFooterLink";
 
 export default function Footer() {
   return (
@@ -31,14 +32,7 @@ export default function Footer() {
         </div>
         <div className="mt-16 pt-8 border-t border-zinc-700 text-center text-body text-zinc-500">
           <p>© 2025 K Beauty Academy. All rights reserved.</p>
-          <p className="mt-3">
-            <Link
-              href="/admin"
-              className="text-zinc-600 hover:text-zinc-400 transition-colors"
-            >
-              Admin
-            </Link>
-          </p>
+          <AdminFooterLink />
         </div>
       </div>
     </footer>

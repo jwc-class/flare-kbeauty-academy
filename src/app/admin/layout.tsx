@@ -4,62 +4,69 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { AdminSidebar } from "@/components/admin";
-import { ADMIN_SESSION_KEY } from "@/lib/admin-auth";
+import { getSession, signInWithGoogle, signOut } from "@/lib/auth";
+import { getAdminHeaders } from "@/lib/admin-auth";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
 
-  const validate = useCallback(async (pwd: string) => {
-    const res = await fetch("/api/admin/stats", {
-      headers: { "x-admin-password": pwd },
-    });
-    return res.status !== 401;
+  const validateAdmin = useCallback(async (): Promise<{ ok: boolean; hasSession: boolean }> => {
+    const session = await getSession();
+    if (!session?.access_token) return { ok: false, hasSession: false };
+    const headers = await getAdminHeaders();
+    const res = await fetch("/api/admin/stats", { headers });
+    return { ok: res.ok, hasSession: true };
   }, []);
 
   useEffect(() => {
-    const stored = typeof window !== "undefined" ? sessionStorage.getItem(ADMIN_SESSION_KEY) : null;
-    if (!stored || stored.length === 0) {
-      setLoading(false);
-      return;
-    }
-    validate(stored).then((ok) => {
-      setLoading(false);
-      if (ok) {
-        setAuthenticated(true);
-        setPassword(stored);
-      } else {
-        sessionStorage.removeItem(ADMIN_SESSION_KEY);
-      }
-    });
-  }, [validate]);
+    let cancelled = false;
+    validateAdmin()
+      .then(({ ok, hasSession }) => {
+        if (!cancelled) {
+          setAuthenticated(ok);
+          setError(ok ? null : hasSession ? "Access denied. You are not an admin." : null);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setAuthenticated(false);
+          setError(null);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [validateAdmin]);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSignIn = useCallback(async () => {
     setError(null);
-    const ok = await validate(password);
-    if (ok) {
-      sessionStorage.setItem(ADMIN_SESSION_KEY, password);
-      setAuthenticated(true);
-    } else {
-      setError("비밀번호가 올바르지 않습니다.");
+    try {
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("auth_return_path", "/admin");
+      }
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+      const callbackUrl = `${origin}/auth/callback?next=${encodeURIComponent("/admin")}`;
+      const { error: err } = await signInWithGoogle(callbackUrl);
+      if (err) setError(err.message);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Sign-in failed");
     }
-  };
+  }, []);
 
-  const handleLogout = () => {
-    sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  const handleLogout = useCallback(async () => {
+    await signOut();
     setAuthenticated(false);
-    setPassword("");
     router.push("/admin");
-  };
+  }, [router]);
 
   if (loading) {
     return (
@@ -74,28 +81,19 @@ export default function AdminLayout({
       <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4">
         <div className="w-full max-w-sm">
           <h1 className="text-section-title text-[var(--foreground)] mb-6 text-center">Admin</h1>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-body font-medium text-[var(--foreground)] mb-2">
-                비밀번호
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="비밀번호 입력"
-                className="w-full rounded-[10px] border border-zinc-300 px-4 py-3 text-body focus:outline-none focus:ring-2 focus:ring-[var(--flare-support-2)]"
-                autoFocus
-              />
-            </div>
-            {error && <p className="text-sm text-red-500">{error}</p>}
-            <button
-              type="submit"
-              className="w-full rounded-[10px] bg-[var(--flare-support-1)] py-3 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] disabled:opacity-50"
-            >
-              로그인
-            </button>
-          </form>
+          <p className="text-body text-zinc-600 text-center mb-6">
+            Sign in with Google to access the admin. Only authorized admins can enter.
+          </p>
+          <button
+            type="button"
+            onClick={handleSignIn}
+            className="w-full rounded-[10px] bg-[var(--flare-support-1)] py-3 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] disabled:opacity-50"
+          >
+            Continue with Google
+          </button>
+          {error && (
+            <p className="mt-4 text-sm text-red-500 text-center">{error}</p>
+          )}
           <p className="mt-6 text-center">
             <Link href="/" className="text-body text-zinc-500 hover:text-zinc-700">
               ← 메인으로

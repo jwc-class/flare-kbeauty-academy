@@ -36,7 +36,8 @@ export default function AdminMembersPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/members", { headers: getAdminHeaders() });
+      const headers = await getAdminHeaders();
+      const res = await fetch("/api/admin/members", { headers });
       if (res.status === 401) return;
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {

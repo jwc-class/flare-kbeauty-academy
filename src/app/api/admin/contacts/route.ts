@@ -18,7 +18,7 @@ type ContactListItem = {
 };
 
 export async function GET(req: Request) {
-  const err = requireAdmin(req);
+  const err = await requireAdmin(req);
   if (err) return err;
   const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {
@@ -82,7 +82,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const err = requireAdmin(req);
+  const err = await requireAdmin(req);
   if (err) return err;
   const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {

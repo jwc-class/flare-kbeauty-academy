@@ -36,7 +36,8 @@ export default function AdminContactsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/contacts", { headers: getAdminHeaders() });
+      const headers = await getAdminHeaders();
+      const res = await fetch("/api/admin/contacts", { headers });
       if (res.status === 401) return;
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -60,9 +61,10 @@ export default function AdminContactsPage() {
     setSaving(true);
     setError(null);
     try {
+      const headers = await getAdminHeaders();
       const res = await fetch("/api/admin/contacts", {
         method: "POST",
-        headers: getAdminHeaders(),
+        headers,
         body: JSON.stringify(form),
       });
       if (!res.ok) {

@@ -38,18 +38,18 @@ export default function AdminLandingPageNewPage() {
   });
 
   useEffect(() => {
-    const headers = getAdminHeaders();
-    Promise.all([
-      fetch("/api/admin/lead-magnets", { headers }),
-      fetch("/api/admin/courses", { headers }),
-    ])
+    getAdminHeaders().then((headers) =>
+      Promise.all([
+        fetch("/api/admin/lead-magnets", { headers }),
+        fetch("/api/admin/courses", { headers }),
+      ])
       .then(async ([rLM, rC]) => {
         const lm = await rLM.json().catch(() => []);
         const c = await rC.json().catch(() => []);
         setLeadMagnets(Array.isArray(lm) ? lm : []);
         setCourses(Array.isArray(c) ? c : []);
       })
-      .finally(() => setLoadingOptions(false));
+      .finally(() => setLoadingOptions(false)));
   }, []);
 
   const handleTitleChange = (title: string) => {
@@ -65,9 +65,10 @@ export default function AdminLandingPageNewPage() {
     setSaving(true);
     setError(null);
     try {
+      const headers = await getAdminHeaders();
       const res = await fetch("/api/admin/landing-pages", {
         method: "POST",
-        headers: getAdminHeaders(),
+        headers,
         body: JSON.stringify({
           ...form,
           lead_magnet_id: form.lead_magnet_id || null,

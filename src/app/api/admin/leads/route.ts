@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "3317";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { requireAdmin } from "../guard";
 
 export async function GET(req: Request) {
-  const password = req.headers.get("x-admin-password");
+  const err = await requireAdmin(req);
+  if (err) return err;
 
-  if (password !== ADMIN_PASSWORD) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const supabaseAdmin = getSupabaseAdmin();
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: "Server not configured" }, { status: 503 });
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("leads")
       .select("id, email, first_name, country_code, phone_number, marketing_consent, source, created_at")
       .order("created_at", { ascending: false });

@@ -4,8 +4,8 @@ import { requireAdmin } from "../../guard";
 
 type Params = { params: Promise<{ id: string }> };
 
-export async function GET(_req: Request, { params }: Params) {
-  const err = requireAdmin(_req);
+export async function GET(req: Request, { params }: Params) {
+  const err = await requireAdmin(req);
   if (err) return err;
   const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {
@@ -37,7 +37,7 @@ export async function GET(_req: Request, { params }: Params) {
 }
 
 export async function PATCH(req: Request, { params }: Params) {
-  const err = requireAdmin(req);
+  const err = await requireAdmin(req);
   if (err) return err;
   const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {
@@ -88,7 +88,7 @@ export async function PATCH(req: Request, { params }: Params) {
 
 /** Soft-delete: set status to archived. */
 export async function DELETE(req: Request, { params }: Params) {
-  const err = requireAdmin(req);
+  const err = await requireAdmin(req);
   if (err) return err;
   const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {

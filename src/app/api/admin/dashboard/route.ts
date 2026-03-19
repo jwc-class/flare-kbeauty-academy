@@ -10,7 +10,7 @@ function isCompleted(status: string | null | undefined): boolean {
 }
 
 export async function GET(req: Request) {
-  const err = requireAdmin(req);
+  const err = await requireAdmin(req);
   if (err) return err;
 
   const supabaseAdmin = getSupabaseAdmin();

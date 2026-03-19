@@ -46,9 +46,10 @@ export default function AdminCourseNewPage() {
     setSaving(true);
     setError(null);
     try {
+      const headers = await getAdminHeaders();
       const res = await fetch("/api/admin/courses", {
         method: "POST",
-        headers: getAdminHeaders(),
+        headers,
         body: JSON.stringify({ ...form, price: Number(form.price) || 0 }),
       });
       const data = await res.json().catch(() => ({}));

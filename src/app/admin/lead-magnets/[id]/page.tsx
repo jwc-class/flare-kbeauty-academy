@@ -33,7 +33,8 @@ export default function AdminLeadMagnetEditPage() {
     setError(null);
     setNotFound(false);
     try {
-      const res = await fetch(`/api/admin/lead-magnets/${id}`, { headers: getAdminHeaders() });
+      const headers = await getAdminHeaders();
+      const res = await fetch(`/api/admin/lead-magnets/${id}`, { headers });
       const data = await res.json().catch(() => ({}));
       if (res.status === 404) {
         setNotFound(true);
@@ -72,7 +73,7 @@ export default function AdminLeadMagnetEditPage() {
     try {
       const res = await fetch(`/api/admin/lead-magnets/${id}`, {
         method: "PATCH",
-        headers: getAdminHeaders(),
+        headers: await getAdminHeaders(),
         body: JSON.stringify(form),
       });
       const data = await res.json().catch(() => ({}));
@@ -95,7 +96,7 @@ export default function AdminLeadMagnetEditPage() {
     try {
       const res = await fetch(`/api/admin/lead-magnets/${id}`, {
         method: "DELETE",
-        headers: getAdminHeaders(),
+        headers: await getAdminHeaders(),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));

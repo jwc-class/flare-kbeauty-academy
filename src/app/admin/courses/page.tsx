@@ -23,7 +23,8 @@ export default function AdminCoursesPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/courses", { headers: getAdminHeaders() });
+      const headers = await getAdminHeaders();
+      const res = await fetch("/api/admin/courses", { headers });
       if (res.status === 401) return;
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {

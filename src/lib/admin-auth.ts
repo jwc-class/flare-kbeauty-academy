@@ -1,18 +1,20 @@
 /**
- * Admin auth – session key and header name. All /admin/* routes and API use this.
- * Prompt 2: replace with proper auth (e.g. Supabase Auth, JWT) if needed.
+ * Admin auth – client-side. Use Supabase session to build headers for /api/admin/*.
+ * All admin API routes expect Authorization: Bearer <access_token>.
  */
 
-export const ADMIN_SESSION_KEY = "admin_authenticated";
+import { supabase } from "@/lib/supabase";
 
-export function getAdminPassword(): string | null {
-  if (typeof window === "undefined") return null;
-  return sessionStorage.getItem(ADMIN_SESSION_KEY);
-}
-
-export function getAdminHeaders(): Record<string, string> {
-  const pwd = typeof window !== "undefined" ? sessionStorage.getItem(ADMIN_SESSION_KEY) : null;
+/**
+ * Returns headers for admin API requests. Call from client (admin pages) after ensuring user is logged in.
+ * Resolves session from Supabase and adds Bearer token. Returns empty/minimal headers if no session.
+ */
+export async function getAdminHeaders(): Promise<Record<string, string>> {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (pwd) headers["x-admin-password"] = pwd;
+  if (typeof window === "undefined") return headers;
+
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
+  if (token) headers["Authorization"] = `Bearer ${token}`;
   return headers;
 }

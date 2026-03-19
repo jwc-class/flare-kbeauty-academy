@@ -35,7 +35,8 @@ export default function AdminCourseEditPage() {
     setError(null);
     setNotFound(false);
     try {
-      const res = await fetch(`/api/admin/courses/${id}`, { headers: getAdminHeaders() });
+      const headers = await getAdminHeaders();
+      const res = await fetch(`/api/admin/courses/${id}`, { headers });
       const data = await res.json().catch(() => ({}));
       if (res.status === 404) {
         setNotFound(true);
@@ -74,9 +75,10 @@ export default function AdminCourseEditPage() {
     setSaving(true);
     setError(null);
     try {
+      const headers = await getAdminHeaders();
       const res = await fetch(`/api/admin/courses/${id}`, {
         method: "PATCH",
-        headers: getAdminHeaders(),
+        headers,
         body: JSON.stringify({ ...form, price: Number(form.price) || 0 }),
       });
       const data = await res.json().catch(() => ({}));
@@ -97,9 +99,10 @@ export default function AdminCourseEditPage() {
     setSaving(true);
     setError(null);
     try {
+      const headers = await getAdminHeaders();
       const res = await fetch(`/api/admin/courses/${id}`, {
         method: "DELETE",
-        headers: getAdminHeaders(),
+        headers,
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));

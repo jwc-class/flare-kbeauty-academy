@@ -3,7 +3,7 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { requireAdmin } from "../guard";
 
 export async function GET(req: Request) {
-  const err = requireAdmin(req);
+  const err = await requireAdmin(req);
   if (err) return err;
   const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {
@@ -30,7 +30,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const err = requireAdmin(req);
+  const err = await requireAdmin(req);
   if (err) return err;
   const supabaseAdmin = getSupabaseAdmin();
   if (!supabaseAdmin) {

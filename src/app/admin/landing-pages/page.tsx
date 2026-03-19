@@ -47,12 +47,11 @@ export default function AdminLandingPagesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const headers = getAdminHeaders();
-
   const fetchList = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
+      const headers = await getAdminHeaders();
       const [resLP, resLM, resC] = await Promise.all([
         fetch("/api/admin/landing-pages", { headers }),
         fetch("/api/admin/lead-magnets", { headers }),

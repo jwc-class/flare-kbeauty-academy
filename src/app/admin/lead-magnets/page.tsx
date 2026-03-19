@@ -23,7 +23,8 @@ export default function AdminLeadMagnetsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/lead-magnets", { headers: getAdminHeaders() });
+      const headers = await getAdminHeaders();
+      const res = await fetch("/api/admin/lead-magnets", { headers });
       if (res.status === 401) return;
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
