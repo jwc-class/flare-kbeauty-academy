@@ -12,28 +12,53 @@ const ctaButtonClass =
 
 const FALLBACK = {
   badge: "Free Guide · No Sign-Up Hassle",
-  headline: "Your Skincare Isn't Working.\nHere's the Korean Fix.",
-  subline: "The exact 7-step routine Korean beauty experts use for clear, glass-like skin—in one free guide.",
-  subline2: "Wrong order, wrong ingredients, too many products. Most people never get that glow because they skip the system Koreans actually use.",
+  headline: "High-Definition K-beauty Makeup\nthat Lasts for 12 Hours",
+  subline:
+    "For your health, seek good eating habits, and approach daily makeup in a way that considers your skin, just as you choose clothes with good materials.",
+  subline2: "Start with makeup that revitalizes your skin, not covers it up.",
   cta: "Get the Free Blueprint →",
-  tags: ["Korean skincare order", "Glass skin steps", "Hydration method", "Expert tips"],
+  tags: ["Natural Beauty", "Expert Know-how", "K-beauty makeup", "Long-lasting Adhesion"],
   disclaimer: "Free instant download. No spam. Unsubscribe anytime.",
 };
 
 type Props = {
   /** When set, hero and CTA text use DB content; otherwise fallback. */
   landingPage?: PublicLandingPage | null;
+  /**
+   * true면 히어로/서브카피/CTA는 항상 이 파일의 FALLBACK 사용 (DB hero 필드 무시).
+   * 리드 모달의 landing_page_id 등은 그대로 `landingPage` 사용.
+   */
+  useCodeHeroCopy?: boolean;
 };
 
-export default function GlassSkinContent({ landingPage }: Props) {
+export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
 
   const lp = landingPage;
-  const heroTitle = lp?.hero_title?.trim() || FALLBACK.headline.split("\n")[0];
-  const heroTitleHighlight = lp?.hero_title?.trim() ? null : FALLBACK.headline.split("\n")[1]?.trim() || "Here's the Korean Fix.";
-  const heroSubtitle = lp?.hero_subtitle?.trim() || FALLBACK.subline;
-  const heroSubline2 = lp?.hero_subtitle ? (lp?.lead_magnet?.description?.slice(0, 200) || FALLBACK.subline2) : FALLBACK.subline2;
-  const ctaText = lp?.cta_text?.trim() || FALLBACK.cta;
+
+  let heroTitle: string;
+  let heroTitleHighlight: string | null;
+  let heroSubtitle: string;
+  let heroSubline2: string;
+  let ctaText: string;
+
+  if (useCodeHeroCopy) {
+    heroTitle = FALLBACK.headline.split("\n")[0];
+    heroTitleHighlight = FALLBACK.headline.split("\n")[1]?.trim() || null;
+    heroSubtitle = FALLBACK.subline;
+    heroSubline2 = FALLBACK.subline2;
+    ctaText = FALLBACK.cta;
+  } else {
+    heroTitle = lp?.hero_title?.trim() || FALLBACK.headline.split("\n")[0];
+    heroTitleHighlight = lp?.hero_title?.trim()
+      ? null
+      : FALLBACK.headline.split("\n")[1]?.trim() || null;
+    heroSubtitle = lp?.hero_subtitle?.trim() || FALLBACK.subline;
+    heroSubline2 = lp?.hero_subtitle
+      ? (lp?.lead_magnet?.description?.slice(0, 200) || FALLBACK.subline2)
+      : FALLBACK.subline2;
+    ctaText = lp?.cta_text?.trim() || FALLBACK.cta;
+  }
   const badge = FALLBACK.badge;
   const tags = FALLBACK.tags;
   const disclaimer = FALLBACK.disclaimer;
@@ -100,40 +125,61 @@ export default function GlassSkinContent({ landingPage }: Props) {
           </div>
         </section>
 
-        {/* Section 2 — Problem */}
-        <section className="bg-[#fefcfb] py-28 px-4 md:py-36 sm:px-8">
+        {/* Section 2 — Why something still feels missing (two-column + facial mapping visual) */}
+        <section
+          className="bg-[#fefcfb] py-28 px-4 md:py-36 sm:px-8"
+          aria-labelledby="glass-skin-why-missing-heading"
+        >
           <div className="mx-auto max-w-[1200px]">
-            <div className="mx-auto mb-24 max-w-3xl text-center">
-              <h2 className="text-section-title text-[var(--foreground)]">
-                Why You Still Don&apos;t Have That Glow
-              </h2>
-              <p className="mt-8 text-body-lg text-[var(--muted)]">
-                You&apos;ve tried the serums and the 10-step lists. So why does your skin still look dull or breakout? Korean skincare isn&apos;t about more products—it&apos;s about the right order and the right philosophy.
-              </p>
-            </div>
-            <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                { title: "Wrong product order", sub: "Layering in the wrong sequence wastes money and blocks results." },
-                { title: "Too many products", sub: "K-beauty is about fewer, smarter steps—not a cabinet full of bottles." },
-                { title: "Barrier damage", sub: "Harsh ingredients and order can weaken your skin barrier." },
-                { title: "Skipping the key step", sub: "The hydration step Koreans never skip is what creates the glow." },
-              ].map((item) => (
-                <div
-                  key={item.title}
-                  className="rounded-2xl border border-[#f2e8e4] bg-[var(--background-pastel-pink)]/40 p-8 transition-all duration-300 ease-in-out shadow-soft-sm hover:border-[#e8d4dc]/60 hover:shadow-soft"
+            <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-14 xl:gap-20">
+              <div>
+                <h2
+                  id="glass-skin-why-missing-heading"
+                  className="font-serif-heading font-semibold leading-[1.15] tracking-[0.02em] text-[var(--foreground)]"
+                  style={{ fontSize: "clamp(1.65rem, 3.8vw, 2.65rem)" }}
                 >
-                  <p className="font-semibold text-[var(--foreground)] text-body">{item.title}</p>
-                  <p className="mt-2 text-body leading-relaxed text-[var(--foreground-soft)]">{item.sub}</p>
+                  Why is something missing, even after using K-beauty products and following tutorials?
+                </h2>
+                <p className="mt-8 text-body-lg leading-relaxed text-[var(--foreground-soft)]">
+                  The best makeup isn&apos;t about using famous or expensive cosmetics.
+                </p>
+                <ul className="mt-6 space-y-3.5 text-body-lg leading-relaxed text-[var(--foreground-soft)]">
+                  {[
+                    "Not even makeup with high-end brushes.",
+                    "Not a vanity full of cosmetics, either.",
+                    "It starts with knowing your own face.",
+                  ].map((line) => (
+                    <li key={line} className="flex gap-3">
+                      <span
+                        className="mt-2.5 h-2 w-2 shrink-0 rounded-full bg-[#0d9488]"
+                        aria-hidden
+                      />
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-8 text-body-lg leading-relaxed text-[var(--foreground-soft)]">
+                  Knowing your facial structure and skin type allows you to apply makeup that maximizes your
+                  strengths and compensates for weaknesses.
+                </p>
+                <div className="mt-10">
+                  <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
+                    Get the Free Diagnosis
+                  </button>
                 </div>
-              ))}
-            </div>
-            <p className="mt-12 text-center text-body font-medium text-[var(--foreground-soft)] sm:mt-14">
-              The Korean Glass Skin Blueprint shows you the exact routine that fixes this.
-            </p>
-            <div className="mt-10 flex justify-center">
-              <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
-                Get the Free Blueprint
-              </button>
+              </div>
+              <div className="relative mx-auto w-full max-w-lg lg:max-w-none">
+                <div className="overflow-hidden rounded-2xl border border-[#ebe6e1] bg-[#faf8f6] shadow-lg shadow-zinc-900/10 ring-1 ring-black/5">
+                  <Image
+                    src="/images/glass-skin-facial-mapping.png"
+                    alt="Close-up portrait with white-line facial mapping overlay: frontal process, orbit, nasion, zygomatic arch, maxilla, and mandible angle"
+                    width={960}
+                    height={960}
+                    className="h-auto w-full object-cover"
+                    sizes="(max-width: 1024px) min(100vw, 32rem), 50vw"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>

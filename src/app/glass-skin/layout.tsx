@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import {
+  GLASS_SKIN_DOCUMENT_TITLE,
+  GLASS_SKIN_META_DESCRIPTION,
+} from "@/lib/glass-skin-copy";
 
 export const metadata: Metadata = {
-  title: "The Korean Glass Skin Blueprint | K Beauty Academy",
-  description:
-    "Get the exact skincare routine used by Korean beauty influencers. Free guide—the Korean skincare system that actually works.",
+  title: GLASS_SKIN_DOCUMENT_TITLE,
+  description: GLASS_SKIN_META_DESCRIPTION,
 };
 
 export default function GlassSkinLayout({
