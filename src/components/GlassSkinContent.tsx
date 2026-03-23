@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { LeadCaptureModal } from "@/components/LeadCaptureModal";
@@ -43,6 +44,17 @@ export default function GlassSkinContent({ landingPage }: Props) {
       <main>
         <section className="relative bg-[image:var(--gradient-flare-subtle)] px-4 pb-32 pt-40 sm:px-8 sm:pb-36 sm:pt-44">
           <div className="mx-auto max-w-[900px] text-center">
+            <div className="relative mb-10 w-full overflow-hidden rounded-2xl border border-[#f0ebe8] shadow-soft sm:mb-12">
+              <Image
+                src="/images/glass-skin-before-after.png"
+                alt="Before and after: natural skin compared to a dewy glass-skin makeup look"
+                width={1600}
+                height={900}
+                className="h-auto w-full object-cover"
+                priority
+                sizes="(max-width: 900px) 100vw, 900px"
+              />
+            </div>
             <p className="text-[var(--muted)] font-semibold uppercase tracking-[0.06em] text-[15px]">
               {badge}
             </p>
