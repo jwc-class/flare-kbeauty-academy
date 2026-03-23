@@ -84,17 +84,17 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
               {badge}
             </p>
             <h1
-              className="font-serif-heading mx-auto mt-4 font-semibold leading-[1.08] text-[var(--foreground)] sm:mt-5"
-              style={{ fontSize: "clamp(2.5rem, 8vw, 5.5rem)", letterSpacing: "0.02em" }}
+              className="font-serif-heading mx-auto mt-4 flex w-full max-w-[900px] flex-col items-center text-center font-semibold leading-[1.12] text-[var(--foreground)] sm:mt-5 lg:gap-1 lg:leading-[1.06]"
+              style={{
+                fontSize: "clamp(1.625rem, 2.75vw + 0.65rem, 3.35rem)",
+                letterSpacing: "0.02em",
+              }}
             >
-              {heroTitle}
+              <span className="max-w-full px-1 lg:whitespace-nowrap">{heroTitle}</span>
               {heroTitleHighlight && (
-                <>
-                  <br className="hidden sm:block" />{" "}
-                  <span className="bg-[image:var(--gradient-flare)] bg-clip-text text-transparent">
-                    {heroTitleHighlight}
-                  </span>
-                </>
+                <span className="max-w-full bg-[image:var(--gradient-flare)] bg-clip-text px-1 text-transparent lg:whitespace-nowrap">
+                  {heroTitleHighlight}
+                </span>
               )}
             </h1>
             <p
