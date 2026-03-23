@@ -199,7 +199,7 @@ export default function AdminAdminUsersPage() {
           <button
             type="submit"
             disabled={granting}
-            className="rounded-[10px] bg-[var(--flare-support-1)] px-4 py-2 text-body font-medium text-white hover:bg-[var(--flare-support-2)] disabled:opacity-50"
+            className="btn-cta disabled:opacity-50"
           >
             {granting ? "Granting…" : "Grant access"}
           </button>

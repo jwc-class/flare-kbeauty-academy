@@ -27,7 +27,7 @@ export default function PurchaseCompletePage() {
           </p>
           <Link
             href="/"
-            className="mt-10 inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-8 py-4 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] transition-colors"
+            className="btn-cta mt-10 py-4"
           >
             Back to K Beauty Academy
           </Link>

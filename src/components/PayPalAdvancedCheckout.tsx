@@ -345,7 +345,7 @@ export default function PayPalAdvancedCheckout({ courseSlug, paypalClientId: pay
                 type="button"
                 onClick={handleCardSubmit}
                 disabled={cardSubmitLoading}
-                className="mt-4 w-full rounded-[10px] bg-[var(--flare-support-1)] px-6 py-4 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] disabled:opacity-60 transition-colors"
+                className="btn-cta mt-4 w-full py-4 disabled:opacity-60"
               >
                 {cardSubmitLoading ? "Processing…" : `Pay ${priceFormatted ?? "$199"}`}
               </button>

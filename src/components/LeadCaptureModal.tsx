@@ -173,7 +173,7 @@ export function LeadCaptureModal({ open, onClose, source = "main", successRedire
             {error && <p className="text-sm text-red-500">{error}</p>}
             <button
               type="submit"
-              className="w-full rounded-[10px] bg-[var(--flare-support-1)] py-3 font-semibold text-body text-white transition-colors hover:bg-[var(--flare-support-2)]"
+              className="btn-cta w-full"
               disabled={submitting}
             >
               Next
@@ -210,7 +210,7 @@ export function LeadCaptureModal({ open, onClose, source = "main", successRedire
             {error && <p className="text-sm text-red-500">{error}</p>}
             <button
               type="submit"
-              className="w-full rounded-[10px] bg-[var(--flare-support-1)] py-3 font-semibold text-body text-white transition-colors hover:bg-[var(--flare-support-2)]"
+              className="btn-cta w-full"
               disabled={submitting}
             >
               Next
@@ -268,7 +268,7 @@ export function LeadCaptureModal({ open, onClose, source = "main", successRedire
           {error && <p className="text-sm text-red-500">{error}</p>}
           <button
             type="submit"
-            className="w-full rounded-[10px] bg-[var(--flare-support-1)] py-3 font-semibold text-body text-white transition-colors hover:bg-[var(--flare-support-2)] disabled:opacity-60"
+            className="btn-cta w-full disabled:opacity-60"
             disabled={submitting}
           >
             {submitting ? "Submitting..." : "Get the Guide"}

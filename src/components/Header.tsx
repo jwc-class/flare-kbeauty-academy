@@ -47,12 +47,11 @@ export default function Header() {
   return (
     <div className="fixed left-1/2 top-5 z-[9999] w-[calc(100%-40px)] max-w-[1200px] -translate-x-1/2 px-4 sm:px-0">
       <header
-        className="flex min-h-[56px] items-center justify-between gap-4 rounded-[10px] px-6 py-3.5"
+        className="flex min-h-[56px] items-center justify-between gap-4 rounded-2xl px-6 py-3.5 shadow-soft-sm border border-[#f0ebe8]/90"
         style={{
-          background: "rgba(255, 255, 255, 0.75)",
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)",
-          boxShadow: "0 8px 30px rgba(0, 0, 0, 0.08)",
+          background: "rgba(252, 251, 250, 0.88)",
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
         }}
       >
         <div className="flex items-center gap-6 lg:gap-8">
@@ -71,7 +70,7 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="uppercase text-[var(--foreground)] text-body hover:text-[var(--flare-support-1)] transition-colors"
+                  className="uppercase tracking-wide text-[var(--foreground)] text-body hover:text-[var(--cta-rose-deep)] transition-all duration-300 ease-in-out"
                 >
                   {link.label}
                 </Link>
@@ -88,7 +87,7 @@ export default function Header() {
                   <button
                     type="button"
                     onClick={() => setAccountOpen((o) => !o)}
-                    className="flex items-center gap-2 rounded-[10px] border border-zinc-200 px-4 py-2.5 text-body text-[var(--foreground)] hover:bg-zinc-50"
+                    className="flex items-center gap-2 rounded-2xl border border-[#ebe4e0] bg-white/60 px-4 py-2.5 text-body text-[var(--foreground)] hover:bg-[#fef8fa] transition-all duration-300 ease-in-out"
                     aria-expanded={accountOpen}
                     aria-haspopup="true"
                   >
@@ -103,15 +102,15 @@ export default function Header() {
                     <>
                       <div className="fixed inset-0 z-10" aria-hidden onClick={() => setAccountOpen(false)} />
                       <div
-                        className="absolute right-0 top-full z-20 mt-1 min-w-[180px] rounded-[10px] border border-zinc-200 bg-white py-2 shadow-lg"
+                        className="absolute right-0 top-full z-20 mt-1 min-w-[180px] rounded-2xl border border-[#ebe4e0] bg-[#fcfbfa] py-2 shadow-soft"
                         role="menu"
                       >
-                        <div className="border-b border-zinc-100 px-4 py-2">
-                          <p className="truncate text-sm text-zinc-600">{user.email}</p>
+                        <div className="border-b border-[#f0ebe8] px-4 py-2">
+                          <p className="truncate text-sm text-[var(--muted)]">{user.email}</p>
                         </div>
                         <Link
                           href="/account"
-                          className="block px-4 py-2 text-body text-[var(--foreground)] hover:bg-zinc-50"
+                          className="block px-4 py-2 text-body text-[var(--foreground)] hover:bg-[#fef8fa] transition-colors duration-300"
                           role="menuitem"
                           onClick={() => setAccountOpen(false)}
                         >
@@ -120,7 +119,7 @@ export default function Header() {
                         <button
                           type="button"
                           onClick={handleSignOut}
-                          className="w-full px-4 py-2 text-left text-body text-[var(--foreground)] hover:bg-zinc-50"
+                          className="w-full px-4 py-2 text-left text-body text-[var(--foreground)] hover:bg-[#fef8fa] transition-colors duration-300"
                           role="menuitem"
                         >
                           Sign out
@@ -133,7 +132,7 @@ export default function Header() {
                 <button
                   type="button"
                   onClick={handleGoogleSignIn}
-                  className="flex items-center gap-2 rounded-[10px] border border-zinc-300 bg-white px-4 py-2.5 font-medium text-body text-[var(--foreground)] transition-colors hover:bg-zinc-50"
+                  className="flex items-center gap-2 rounded-2xl border border-[#e8e0dc] bg-white/90 px-4 py-2.5 font-medium text-body text-[var(--foreground)] transition-all duration-300 ease-in-out hover:bg-[#fef8fa] hover:border-[#e0d5cf]"
                 >
                   <svg className="h-5 w-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -148,7 +147,7 @@ export default function Header() {
           )}
           <Link
             href="/glass-skin"
-            className="rounded-[10px] bg-[var(--flare-support-1)] px-6 py-3 font-semibold text-body text-white transition-colors hover:bg-[var(--flare-support-2)]"
+            className="btn-cta"
           >
             Get the Free Guide
           </Link>
@@ -171,12 +170,11 @@ export default function Header() {
 
       {mobileMenuOpen && (
         <div
-          className="mt-2 rounded-[10px] px-6 py-4 md:hidden"
+          className="mt-2 rounded-2xl border border-[#f0ebe8]/90 px-6 py-4 shadow-soft-sm md:hidden"
           style={{
-            background: "rgba(255, 255, 255, 0.75)",
-            backdropFilter: "blur(10px)",
-            WebkitBackdropFilter: "blur(10px)",
-            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.08)",
+            background: "rgba(252, 251, 250, 0.92)",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
           }}
         >
           <div className="flex flex-col gap-4">
@@ -184,7 +182,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="uppercase text-[var(--foreground)] hover:text-[var(--flare-support-1)]"
+                className="uppercase tracking-wide text-[var(--foreground)] hover:text-[var(--cta-rose-deep)] transition-colors duration-300"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link.label}
@@ -194,11 +192,11 @@ export default function Header() {
               <>
                 {user ? (
                   <>
-                    <p className="truncate text-body text-zinc-600">{user.email}</p>
-                    <Link href="/account" className="text-body text-[var(--foreground)] hover:text-[var(--flare-support-1)]" onClick={() => setMobileMenuOpen(false)}>
+                    <p className="truncate text-body text-[var(--muted)]">{user.email}</p>
+                    <Link href="/account" className="text-body text-[var(--foreground)] hover:text-[var(--cta-rose-deep)] transition-colors duration-300" onClick={() => setMobileMenuOpen(false)}>
                       Account
                     </Link>
-                    <button type="button" onClick={handleSignOut} className="text-left text-body text-[var(--foreground)] hover:text-[var(--flare-support-1)]">
+                    <button type="button" onClick={handleSignOut} className="text-left text-body text-[var(--foreground)] hover:text-[var(--cta-rose-deep)] transition-colors duration-300">
                       Sign out
                     </button>
                   </>
@@ -206,7 +204,7 @@ export default function Header() {
                   <button
                     type="button"
                     onClick={() => { setMobileMenuOpen(false); handleGoogleSignIn(); }}
-                    className="flex items-center justify-center gap-2 rounded-[10px] border border-zinc-300 bg-white px-6 py-3 font-medium text-body text-[var(--foreground)]"
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#e8e0dc] bg-white px-6 py-3 font-medium text-body text-[var(--foreground)] transition-all duration-300 hover:bg-[#fef8fa]"
                   >
                     <svg className="h-5 w-5" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -221,7 +219,7 @@ export default function Header() {
             )}
             <Link
               href="/glass-skin"
-              className="rounded-[10px] bg-[var(--flare-support-1)] px-6 py-3 text-center font-semibold text-white hover:bg-[var(--flare-support-2)]"
+              className="btn-cta w-full text-center"
               onClick={() => setMobileMenuOpen(false)}
             >
               Get the Free Guide

@@ -58,8 +58,7 @@ export default async function ThankYouPage() {
             <div className="mt-8">
               <Link
                 href={courseHref}
-                className="inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-7 py-3.5 font-semibold text-white transition-colors hover:bg-[var(--flare-support-2)]"
-                style={{ fontWeight: 600 }}
+                className="btn-cta"
               >
                 {courseLabel}
               </Link>
@@ -89,8 +88,7 @@ export default async function ThankYouPage() {
             <div className="mt-8">
               <Link
                 href={courseHref}
-                className="inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-7 py-3.5 font-semibold text-white transition-colors hover:bg-[var(--flare-support-2)]"
-                style={{ fontWeight: 600 }}
+                className="btn-cta"
               >
                 Go to {course?.title || "Glass Skin Masterclass"}
               </Link>
@@ -140,7 +138,7 @@ export default async function ThankYouPage() {
             <div className="mt-12 text-center">
               <Link
                 href={courseHref}
-                className="inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-8 py-4 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] transition-colors"
+                className="btn-cta py-4"
               >
                 Enroll Now — {coursePrice}
               </Link>
@@ -160,7 +158,7 @@ export default async function ThankYouPage() {
             <div className="mt-8">
               <Link
                 href={courseHref}
-                className="inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-8 py-4 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] transition-colors"
+                className="btn-cta py-4"
               >
                 Get the Full {course?.title ? "Course" : "Masterclass"}
               </Link>
@@ -191,7 +189,7 @@ export default async function ThankYouPage() {
             <div className="text-center">
               <Link
                 href={courseHref}
-                className="inline-flex items-center justify-center w-full sm:w-auto py-4 px-8 rounded-[10px] bg-[var(--flare-support-1)] text-white font-semibold text-body-lg hover:bg-[var(--flare-support-2)] transition-colors min-h-[56px]"
+                className="btn-cta w-full min-h-[56px] sm:w-auto text-body-lg"
               >
                 Enroll with PayPal — {coursePrice}
               </Link>

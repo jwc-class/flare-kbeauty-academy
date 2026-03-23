@@ -9,25 +9,25 @@ export default function ProblemSection() {
   ];
 
   return (
-    <section id="problem" className="py-[120px] px-4 sm:px-6 bg-white">
+    <section id="problem" className="py-28 md:py-36 px-4 sm:px-8 bg-[#fefcfb]">
       <div className="max-w-[1200px] mx-auto">
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <div className="text-center max-w-3xl mx-auto mb-24">
           <h2 className="text-section-title text-[var(--foreground)]">
             Too many products, not sure how to use them?
           </h2>
-          <p className="mt-6 text-body-lg text-zinc-600">
+          <p className="mt-8 text-body-lg text-[var(--muted)]">
             K Beauty Academy is a structured learning system for your perfect beauty routine.
           </p>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="p-8 rounded-[10px] bg-[var(--background)] border border-zinc-100 hover:border-[var(--flare-support-3)]/30 transition-colors"
+              className="p-10 rounded-2xl bg-[var(--background-pastel-pink)]/40 border border-[#f2e8e4] hover:border-[#e8d4dc]/60 transition-all duration-300 ease-in-out shadow-soft-sm hover:shadow-soft"
             >
-              <div className="text-3xl mb-4">{feature.icon}</div>
+              <div className="text-3xl mb-5">{feature.icon}</div>
               <h3 className="text-card-title text-[var(--foreground)]">{feature.title}</h3>
-              <p className="mt-3 text-body text-zinc-600">{feature.description}</p>
+              <p className="mt-4 text-body text-[var(--foreground-soft)] leading-relaxed">{feature.description}</p>
             </div>
           ))}
         </div>

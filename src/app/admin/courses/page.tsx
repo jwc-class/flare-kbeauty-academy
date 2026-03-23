@@ -66,7 +66,7 @@ export default function AdminCoursesPage() {
         action={
           <Link
             href="/admin/courses/new"
-            className="rounded-[10px] bg-[var(--flare-support-1)] px-4 py-2 text-body font-medium text-white hover:bg-[var(--flare-support-2)]"
+            className="btn-cta"
           >
             New
           </Link>

@@ -59,7 +59,7 @@ export default function AdminLeadMagnetsPage() {
         action={
           <Link
             href="/admin/lead-magnets/new"
-            className="rounded-[10px] bg-[var(--flare-support-1)] px-4 py-2 text-body font-medium text-white hover:bg-[var(--flare-support-2)]"
+            className="btn-cta"
           >
             New
           </Link>

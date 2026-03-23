@@ -199,7 +199,7 @@ export default function AdminLeadMagnetEditPage() {
           </div>
           {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
           <AdminFormActions>
-            <button type="submit" disabled={saving} className="rounded-[10px] bg-[var(--flare-support-1)] px-4 py-2 text-body font-medium text-white hover:bg-[var(--flare-support-2)] disabled:opacity-50">
+            <button type="submit" disabled={saving} className="btn-cta disabled:opacity-50">
               저장
             </button>
             <Link href="/admin/lead-magnets" className="rounded-[10px] border border-zinc-300 px-4 py-2 text-body text-[var(--foreground)] hover:bg-zinc-50">

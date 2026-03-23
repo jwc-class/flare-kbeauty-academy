@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Inter - local woff2 */
+/* Inter - local woff2 (body / UI) */
 @font-face {
   font-family: "Inter";
   font-style: normal;
@@ -9,21 +9,32 @@
   src: url("/fonts/Inter.woff2") format("woff2");
 }
 
-/* FLARE EDU Color System */
+/* K-Beauty: soft ivory, pastels, rose-gold CTAs — editorial serif + clean sans */
 :root {
   --font-inter: "Inter", system-ui, sans-serif;
-  --background: #FAF9F6;
-  --foreground: #1a1a1a;
-  /* Primary Gradient (red → yellow, top to bottom) */
-  --flare-red: #ff0000;
-  --flare-yellow: #ffe100;
-  /* Supporting Colors */
-  --flare-support-1: #ff3322;
-  --flare-support-2: #ff6833;
-  --flare-support-3: #ff952c;
-  --gradient-flare: linear-gradient(180deg, var(--flare-red) 0%, var(--flare-support-1) 25%, var(--flare-support-2) 50%, var(--flare-support-3) 75%, var(--flare-yellow) 100%);
-  --gradient-flare-subtle: linear-gradient(180deg, rgba(255, 0, 0, 0.08) 0%, rgba(255, 225, 0, 0.06) 100%);
-  --muted: #525252;
+  --font-serif-heading: var(--font-playfair), "Georgia", "Times New Roman", serif;
+  --background: #fcfbfa;
+  --background-alt: #f9f7f4;
+  --background-pastel-pink: #fef8fa;
+  --background-pastel-lavender: #faf7fc;
+  --background-pastel-peach: #fffbf7;
+  --foreground: #3d3d3d;
+  --foreground-soft: #4a4a4a;
+  /* Rose gold / soft coral CTA */
+  --cta-rose: #c9a088;
+  --cta-rose-deep: #b89078;
+  --cta-rose-light: #d4b5a5;
+  --gradient-cta: linear-gradient(135deg, #d4a5a5 0%, #c9a088 45%, #c4a4c4 100%);
+  --gradient-cta-subtle: linear-gradient(180deg, rgba(212, 165, 165, 0.12) 0%, rgba(196, 164, 196, 0.08) 100%);
+  /* Legacy names — map to soft palette so existing components inherit */
+  --flare-red: #c9a088;
+  --flare-yellow: #f5e6dc;
+  --flare-support-1: #c9a088;
+  --flare-support-2: #d4a5a5;
+  --flare-support-3: #d4c4d8;
+  --gradient-flare: var(--gradient-cta);
+  --gradient-flare-subtle: var(--gradient-cta-subtle);
+  --muted: #767676;
 }
 
 @theme inline {
@@ -44,31 +55,84 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.65;
+  letter-spacing: 0.01em;
 }
 
-/* SaaS typography scale */
+.font-serif-heading {
+  font-family: var(--font-serif-heading);
+}
+
+/* Headings: editorial serif */
 .text-display {
+  font-family: var(--font-serif-heading);
   font-size: clamp(3rem, 8vw, 6rem);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: 0.02em;
+  font-weight: 600;
 }
 .text-section-title {
+  font-family: var(--font-serif-heading);
   font-size: clamp(2.25rem, 4vw, 3.5rem);
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: 0.02em;
+  font-weight: 600;
 }
 .text-card-title {
+  font-family: var(--font-serif-heading);
   font-size: clamp(1.5rem, 2vw, 2rem);
-  line-height: 1.3;
+  line-height: 1.35;
   font-weight: 600;
+  letter-spacing: 0.015em;
 }
 .text-body-lg {
   font-size: 1.125rem;
-  line-height: 1.6;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
 }
 .text-body {
   font-size: 1rem;
-  line-height: 1.6;
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+}
+
+/* Soft floating shadow */
+.shadow-soft {
+  box-shadow: 0 16px 48px rgba(61, 61, 61, 0.06);
+}
+.shadow-soft-sm {
+  box-shadow: 0 8px 32px rgba(61, 61, 61, 0.05);
+}
+
+/**
+ * Primary CTA — matches footer “Get the Free Guide” (gradient, soft shadow, hover).
+ * Use with optional Tailwind: w-full, min-h-[56px], etc.
+ */
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background-image: var(--gradient-cta);
+  padding: 0.875rem 1.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(61, 61, 61, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+}
+.btn-cta:hover {
+  transform: scale(1.02);
+  opacity: 0.95;
+}
+.btn-cta:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn-cta:disabled:hover {
+  opacity: 0.6;
+  transform: none;
 }

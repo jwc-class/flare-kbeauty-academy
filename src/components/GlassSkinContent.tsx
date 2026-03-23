@@ -7,7 +7,7 @@ import { LeadCaptureModal } from "@/components/LeadCaptureModal";
 import type { PublicLandingPage } from "@/lib/public-content";
 
 const ctaButtonClass =
-  "inline-flex items-center justify-center rounded-[10px] bg-[var(--flare-support-1)] px-6 sm:px-7 py-3.5 font-semibold text-body text-white transition-colors hover:bg-[var(--flare-support-2)] min-h-[52px] w-full sm:w-auto sm:min-w-[200px] touch-manipulation";
+  "btn-cta min-h-[56px] w-full sm:w-auto sm:min-w-[200px] touch-manipulation text-body";
 
 const FALLBACK = {
   badge: "Free Guide · No Sign-Up Hassle",
@@ -38,15 +38,18 @@ export default function GlassSkinContent({ landingPage }: Props) {
   const disclaimer = FALLBACK.disclaimer;
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       <Header />
       <main>
-        <section className="relative px-4 pb-16 pt-24 sm:px-6 sm:pb-20 sm:pt-28 lg:pb-[120px] lg:pt-[160px]">
+        <section className="relative bg-[image:var(--gradient-flare-subtle)] px-4 pb-32 pt-40 sm:px-8 sm:pb-36 sm:pt-44">
           <div className="mx-auto max-w-[900px] text-center">
-            <p className="text-[var(--flare-support-1)] font-semibold uppercase tracking-wide text-body">
+            <p className="text-[var(--muted)] font-semibold uppercase tracking-[0.06em] text-[15px]">
               {badge}
             </p>
-            <h1 className="mx-auto mt-3 font-bold leading-[1.08] tracking-tight text-[var(--foreground)] text-display sm:mt-4">
+            <h1
+              className="font-serif-heading mx-auto mt-4 font-semibold leading-[1.08] text-[var(--foreground)] sm:mt-5"
+              style={{ fontSize: "clamp(2.5rem, 8vw, 5.5rem)", letterSpacing: "0.02em" }}
+            >
               {heroTitle}
               {heroTitleHighlight && (
                 <>
@@ -57,40 +60,46 @@ export default function GlassSkinContent({ landingPage }: Props) {
                 </>
               )}
             </h1>
-            <p className="mx-auto mt-5 max-w-[600px] text-body-lg font-medium text-zinc-700 sm:mt-6 sm:max-w-[650px]">
+            <p
+              className="mx-auto mt-8 max-w-[650px] text-[var(--muted)] sm:mt-10"
+              style={{ fontSize: "clamp(1.125rem, 2vw, 22px)", lineHeight: 1.7, letterSpacing: "0.02em" }}
+            >
               {heroSubtitle}
             </p>
-            <p className="mx-auto mt-3 max-w-xl text-body text-zinc-500 sm:mt-4">
+            <p className="mx-auto mt-4 max-w-xl text-body text-[var(--foreground-soft)] sm:mt-5">
               {heroSubline2}
             </p>
-            <div className="mt-6 sm:mt-8">
+            <div className="mt-10">
               <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
                 {ctaText}
               </button>
             </div>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 sm:mt-8">
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-x-2 gap-y-2">
               {tags.map((t) => (
-                <span key={t} className="rounded-full bg-zinc-100 px-3 py-1 text-body text-zinc-600">
+                <span
+                  key={t}
+                  className="rounded-full border border-[#f0ebe8]/90 bg-[var(--background-pastel-pink)]/50 px-3 py-1.5 text-body text-[var(--foreground-soft)] shadow-soft-sm"
+                >
                   {t}
                 </span>
               ))}
             </div>
-            <p className="mt-4 text-body text-zinc-500">{disclaimer}</p>
+            <p className="mt-5 text-body text-[var(--muted)]">{disclaimer}</p>
           </div>
         </section>
 
         {/* Section 2 — Problem */}
-        <section className="bg-white py-14 px-4 sm:px-6 sm:py-20 lg:py-[120px]">
+        <section className="bg-[#fefcfb] py-28 px-4 md:py-36 sm:px-8">
           <div className="mx-auto max-w-[1200px]">
-            <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-16 lg:mb-20">
+            <div className="mx-auto mb-24 max-w-3xl text-center">
               <h2 className="text-section-title text-[var(--foreground)]">
                 Why You Still Don&apos;t Have That Glow
               </h2>
-              <p className="mt-4 text-body-lg text-zinc-600 sm:mt-6">
+              <p className="mt-8 text-body-lg text-[var(--muted)]">
                 You&apos;ve tried the serums and the 10-step lists. So why does your skin still look dull or breakout? Korean skincare isn&apos;t about more products—it&apos;s about the right order and the right philosophy.
               </p>
             </div>
-            <div className="grid gap-5 sm:grid-cols-2 sm:gap-8 lg:grid-cols-4">
+            <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 { title: "Wrong product order", sub: "Layering in the wrong sequence wastes money and blocks results." },
                 { title: "Too many products", sub: "K-beauty is about fewer, smarter steps—not a cabinet full of bottles." },
@@ -99,17 +108,17 @@ export default function GlassSkinContent({ landingPage }: Props) {
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-[10px] border border-zinc-100 bg-[var(--background)] p-5 transition-colors hover:border-[var(--flare-support-3)]/30 sm:p-6 lg:p-8"
+                  className="rounded-2xl border border-[#f2e8e4] bg-[var(--background-pastel-pink)]/40 p-8 transition-all duration-300 ease-in-out shadow-soft-sm hover:border-[#e8d4dc]/60 hover:shadow-soft"
                 >
                   <p className="font-semibold text-[var(--foreground)] text-body">{item.title}</p>
-                  <p className="mt-1.5 text-body text-zinc-600">{item.sub}</p>
+                  <p className="mt-2 text-body leading-relaxed text-[var(--foreground-soft)]">{item.sub}</p>
                 </div>
               ))}
             </div>
-            <p className="mt-10 text-center text-body font-medium text-zinc-700 sm:mt-12">
+            <p className="mt-12 text-center text-body font-medium text-[var(--foreground-soft)] sm:mt-14">
               The Korean Glass Skin Blueprint shows you the exact routine that fixes this.
             </p>
-            <div className="mt-8 flex justify-center">
+            <div className="mt-10 flex justify-center">
               <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
                 Get the Free Blueprint
               </button>
@@ -118,18 +127,18 @@ export default function GlassSkinContent({ landingPage }: Props) {
         </section>
 
         {/* Section 3 — Solution */}
-        <section className="py-14 px-4 sm:px-6 sm:py-20 lg:py-[120px] bg-[var(--background)]">
+        <section className="bg-[var(--background-pastel-lavender)] py-28 px-4 md:py-36 sm:px-8">
           <div className="mx-auto max-w-[1200px]">
-            <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-16">
+            <div className="mx-auto mb-24 max-w-3xl text-center">
               <h2 className="text-section-title text-[var(--foreground)]">
                 What You Get in the Free Guide
               </h2>
-              <p className="mt-4 text-body-lg text-zinc-600 sm:mt-6">
+              <p className="mt-8 text-body-lg text-[var(--muted)]">
                 No fluff. The same system Korean beauty experts and influencers actually use—step by step.
               </p>
             </div>
             <div className="mx-auto max-w-2xl">
-              <ul className="space-y-4 sm:space-y-5">
+              <ul className="space-y-5 sm:space-y-6">
                 {[
                   "The Korean layering method (and why order matters more than products)",
                   "The exact 7-step order Korean experts use",
@@ -137,14 +146,14 @@ export default function GlassSkinContent({ landingPage }: Props) {
                   "The hydration technique that creates the glow",
                   "The biggest mistakes foreigners make—and how to fix them",
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-body text-zinc-700">
-                    <span className="mt-0.5 shrink-0 text-[var(--flare-support-1)]" aria-hidden>✓</span>
+                  <li key={item} className="flex items-start gap-3 text-body text-[var(--foreground-soft)]">
+                    <span className="mt-0.5 shrink-0 text-[var(--cta-rose-deep)]" aria-hidden>✓</span>
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="mt-10 text-center sm:mt-14">
+            <div className="mt-14 text-center sm:mt-16">
               <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
                 Get the Free Guide
               </button>
@@ -153,20 +162,20 @@ export default function GlassSkinContent({ landingPage }: Props) {
         </section>
 
         {/* Section 4 — Authority */}
-        <section className="bg-white py-14 px-4 sm:px-6 sm:py-20 lg:py-[120px]">
+        <section className="bg-[#fffbf7] py-28 px-4 md:py-36 sm:px-8">
           <div className="mx-auto max-w-[1200px]">
-            <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-24">
+            <div className="grid items-center gap-16 lg:grid-cols-2 lg:gap-28">
               <div className="order-2 lg:order-1">
                 <h2 className="text-section-title text-[var(--foreground)]">
                   Real Korean Beauty, Not Guesswork
                 </h2>
-                <p className="mt-6 text-body-lg leading-relaxed text-zinc-600 sm:mt-8">
+                <p className="mt-8 text-body-lg leading-relaxed text-[var(--foreground-soft)] sm:mt-10">
                   This guide is based on the real routines used by Korean beauty pros and influencers—the same philosophy that made K-beauty famous worldwide.
                 </p>
-                <p className="mt-4 text-body leading-relaxed text-zinc-600">
+                <p className="mt-6 text-body leading-relaxed text-[var(--foreground-soft)]">
                   Stop copying random TikTok steps. Get the system that actually creates glass skin.
                 </p>
-                <div className="mt-6">
+                <div className="mt-10">
                   <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
                     Get the Free Blueprint
                   </button>
@@ -174,7 +183,7 @@ export default function GlassSkinContent({ landingPage }: Props) {
               </div>
               <div className="relative order-1 lg:order-2">
                 <div
-                  className="flex aspect-[4/3] min-h-[200px] items-center justify-center rounded-[10px] border border-zinc-200/80 bg-[image:var(--gradient-flare-subtle)] sm:min-h-0"
+                  className="flex aspect-[4/3] min-h-[200px] items-center justify-center rounded-2xl border border-[#f0ebe8] bg-[image:var(--gradient-flare-subtle)] shadow-soft sm:min-h-0"
                   aria-hidden
                 >
                   <span className="text-6xl sm:text-8xl" role="img" aria-label="Cherry blossom">🌸</span>
@@ -185,17 +194,17 @@ export default function GlassSkinContent({ landingPage }: Props) {
         </section>
 
         {/* Section 5 */}
-        <section className="py-14 px-4 sm:px-6 sm:py-20 lg:py-[120px] bg-[var(--background)]">
+        <section className="bg-[var(--background-pastel-lavender)]/50 py-28 px-4 md:py-36 sm:px-8">
           <div className="mx-auto max-w-[1200px]">
-            <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-16 lg:mb-20">
+            <div className="mx-auto mb-24 max-w-3xl text-center">
               <h2 className="text-section-title text-[var(--foreground)]">
                 Imagine Your Skin in 2–4 Weeks
               </h2>
-              <p className="mt-4 text-body-lg text-zinc-600 sm:mt-6">
+              <p className="mt-8 text-body-lg text-[var(--muted)]">
                 Not more products. Just the right routine. Here&apos;s what changes when you follow the Korean system.
               </p>
             </div>
-            <div className="grid gap-5 sm:grid-cols-3 sm:gap-8">
+            <div className="grid gap-10 sm:grid-cols-3">
               {[
                 { title: "Clearer, calmer skin", desc: "Right order and ingredients reduce irritation and breakouts." },
                 { title: "Stronger skin barrier", desc: "Hydration and layering protect and repair your barrier." },
@@ -203,10 +212,10 @@ export default function GlassSkinContent({ landingPage }: Props) {
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-[10px] border border-zinc-100 bg-white p-6 text-center transition-colors hover:border-[var(--flare-support-3)]/30 sm:p-8"
+                  className="rounded-2xl border border-[#f2e8e4] bg-[#fcfbfa] p-8 text-center transition-all duration-300 ease-in-out shadow-soft-sm hover:border-[#e8d4dc]/60 hover:shadow-soft"
                 >
                   <h3 className="text-card-title text-[var(--foreground)]">{item.title}</h3>
-                  <p className="mt-2 text-body text-zinc-600">{item.desc}</p>
+                  <p className="mt-4 text-body text-[var(--foreground-soft)]">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -214,26 +223,26 @@ export default function GlassSkinContent({ landingPage }: Props) {
         </section>
 
         {/* Section 6 — Final CTA */}
-        <section className="bg-white py-14 px-4 sm:px-6 sm:py-20 lg:py-[120px]">
+        <section className="bg-[image:var(--gradient-flare-subtle)] py-28 px-4 md:py-36 sm:px-8">
           <div className="mx-auto max-w-[720px] text-center">
             <h2 className="text-section-title text-[var(--foreground)]">
               One Free Guide. The Korean Glass Skin System.
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-body-lg text-zinc-600 sm:mt-6">
+            <p className="mx-auto mt-8 max-w-xl text-body-lg text-[var(--muted)] sm:mt-10">
               Enter your email and get the blueprint instantly. No payment, no commitment—just the exact steps that work.
             </p>
-            <div className="mt-6 sm:mt-8">
+            <div className="mt-14">
               <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
                 Send Me the Free Guide
               </button>
             </div>
-            <p className="mt-4 text-body text-zinc-500">
+            <p className="mt-5 text-body text-[var(--muted)]">
               Free download · Instant access · Unsubscribe anytime
             </p>
           </div>
         </section>
+        <Footer />
       </main>
-      <Footer />
       <LeadCaptureModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}

@@ -38,7 +38,7 @@ export default function AdminFooterLink() {
     <p className="mt-3">
       <Link
         href="/admin"
-        className="text-zinc-600 hover:text-zinc-400 transition-colors"
+        className="text-[#a89f9a] hover:text-[#f5e6e0] transition-all duration-300"
       >
         Admin
       </Link>

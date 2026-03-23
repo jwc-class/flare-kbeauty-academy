@@ -115,7 +115,7 @@ export default function CheckoutGate({
             <button
               type="button"
               onClick={handleContinueWithGoogle}
-              className="rounded-[10px] bg-[var(--flare-support-1)] px-6 py-3.5 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] transition-colors"
+              className="btn-cta w-full"
             >
               Continue with Google to purchase
             </button>

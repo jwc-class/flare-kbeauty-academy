@@ -87,7 +87,7 @@ export default function AdminLayout({
           <button
             type="button"
             onClick={handleSignIn}
-            className="w-full rounded-[10px] bg-[var(--flare-support-1)] py-3 font-semibold text-body text-white hover:bg-[var(--flare-support-2)] disabled:opacity-50"
+            className="btn-cta w-full disabled:opacity-50"
           >
             Continue with Google
           </button>

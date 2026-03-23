@@ -24,32 +24,32 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section id="testimonials" className="py-[120px] px-4 sm:px-6 bg-white">
+    <section id="testimonials" className="py-28 md:py-36 px-4 sm:px-8 bg-[#fefcfb]">
       <div className="max-w-[1200px] mx-auto">
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <div className="text-center max-w-3xl mx-auto mb-24">
           <h2 className="text-section-title text-[var(--foreground)]">
             What our students say about K Beauty Academy
           </h2>
-          <p className="mt-6 text-body-lg text-zinc-600">
+          <p className="mt-8 text-body-lg text-[var(--muted)]">
             Read authentic reviews from our students.
           </p>
         </div>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-10">
           {testimonials.map((t) => (
             <div
               key={t.name}
-              className="p-8 rounded-[10px] bg-[var(--background)] border border-zinc-100"
+              className="p-10 rounded-2xl bg-[#fcfbfa] border border-[#f0ebe8] shadow-soft-sm transition-all duration-300 hover:shadow-soft"
             >
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-[10px] bg-white border border-zinc-200 flex items-center justify-center text-2xl">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-14 h-14 rounded-2xl bg-[#fef8fa] border border-[#f0ebe8] flex items-center justify-center text-2xl">
                   {t.avatar}
                 </div>
                 <div>
                   <p className="font-semibold text-[var(--foreground)] text-body">{t.name}</p>
-                  <p className="text-body text-zinc-500">{t.role}</p>
+                  <p className="text-body text-[var(--muted)]">{t.role}</p>
                 </div>
               </div>
-              <p className="text-body text-zinc-600 leading-relaxed">&ldquo;{t.content}&rdquo;</p>
+              <p className="text-body text-[var(--foreground-soft)] leading-relaxed">&ldquo;{t.content}&rdquo;</p>
             </div>
           ))}
         </div>

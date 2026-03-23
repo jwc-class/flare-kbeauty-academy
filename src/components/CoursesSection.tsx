@@ -54,55 +54,51 @@ const courses = [
 
 export default function CoursesSection() {
   return (
-    <section id="courses" className="py-[120px] px-4 sm:px-6 bg-[var(--background)]">
+    <section id="courses" className="py-28 md:py-36 px-4 sm:px-8 bg-[var(--background-pastel-lavender)]">
       <div className="max-w-[1200px] mx-auto">
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <div className="text-center max-w-3xl mx-auto mb-24">
           <h2 className="text-section-title text-[var(--foreground)]">
             Real courses. Real results.
           </h2>
-          <p className="mt-6 text-body-lg text-zinc-600">
+          <p className="mt-8 text-body-lg text-[var(--muted)]">
             Skincare and makeup courses taught directly by K-Beauty experts.
           </p>
         </div>
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-10">
           {courses.map((course) => (
             <div
               key={course.id}
-              className={`relative rounded-[10px] bg-white p-8 border transition-shadow hover:shadow-lg ${
-                course.featured ? "ring-2 ring-[var(--flare-support-1)] lg:-translate-y-1" : "border-zinc-100"
+              className={`relative rounded-2xl bg-[#fcfbfa] p-10 border transition-all duration-300 ease-in-out shadow-soft hover:shadow-soft-sm hover:-translate-y-0.5 ${
+                course.featured ? "ring-2 ring-[#d4b5a5]/80 lg:-translate-y-1" : "border-[#f0ebe8]"
               }`}
             >
               {course.featured && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[var(--flare-support-1)] text-white text-sm font-semibold px-4 py-1.5 rounded-[10px]">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[image:var(--gradient-cta)] text-white text-sm font-semibold px-5 py-2 rounded-2xl shadow-soft-sm">
                   Popular
                 </span>
               )}
-              <div className="mb-6">
+              <div className="mb-8">
                 <h3 className="text-card-title text-[var(--foreground)]">{course.title}</h3>
-                <p className="mt-1 text-body text-zinc-500">{course.subtitle}</p>
+                <p className="mt-2 text-body text-[var(--muted)]">{course.subtitle}</p>
               </div>
-              <p className="text-body text-zinc-600 mb-6">{course.description}</p>
-              <ul className="space-y-3 mb-8">
+              <p className="text-body text-[var(--foreground-soft)] mb-8 leading-relaxed">{course.description}</p>
+              <ul className="space-y-3 mb-10">
                 {course.features.map((f) => (
-                  <li key={f} className="flex items-center gap-2 text-body">
-                    <span className="text-[var(--flare-support-1)]">✓</span>
+                  <li key={f} className="flex items-center gap-2 text-body text-[var(--foreground-soft)]">
+                    <span className="text-[var(--cta-rose-deep)]">✓</span>
                     {f}
                   </li>
                 ))}
               </ul>
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-2xl font-bold text-[var(--foreground)]">{course.price}</span>
+              <div className="flex items-baseline gap-2 mb-8">
+                <span className="text-2xl font-semibold text-[var(--foreground)]">{course.price}</span>
                 {course.originalPrice && (
-                  <span className="text-body text-zinc-400 line-through">{course.originalPrice}</span>
+                  <span className="text-body text-[#b0b0b0] line-through">{course.originalPrice}</span>
                 )}
               </div>
               <Link
                 href="/glass-skin"
-                className={`block w-full text-center py-4 rounded-[10px] font-semibold text-body transition-colors ${
-                  course.featured
-                    ? "bg-[image:var(--gradient-flare)] text-white hover:opacity-95"
-                    : "bg-[var(--flare-support-1)] text-white hover:bg-[var(--flare-support-2)]"
-                }`}
+                className="btn-cta block w-full py-4"
               >
                 {course.cta}
               </Link>
