@@ -184,37 +184,56 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
           </div>
         </section>
 
-        {/* Section 3 — Solution */}
-        <section className="bg-[var(--background-pastel-lavender)] py-28 px-4 md:py-36 sm:px-8">
-          <div className="mx-auto max-w-[1200px]">
-            <div className="mx-auto mb-24 max-w-3xl text-center">
-              <h2 className="text-section-title text-[var(--foreground)]">
-                What You Get in the Free Guide
-              </h2>
-              <p className="mt-8 text-body-lg text-[var(--muted)]">
-                No fluff. The same system Korean beauty experts and influencers actually use—step by step.
-              </p>
-            </div>
-            <div className="mx-auto max-w-2xl">
-              <ul className="space-y-5 sm:space-y-6">
-                {[
-                  "The Korean layering method (and why order matters more than products)",
-                  "The exact 7-step order Korean experts use",
-                  "Key ingredients that build glass skin (and what to avoid)",
-                  "The hydration technique that creates the glow",
-                  "The biggest mistakes foreigners make—and how to fix them",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-body text-[var(--foreground-soft)]">
-                    <span className="mt-0.5 shrink-0 text-[var(--cta-rose-deep)]" aria-hidden>✓</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="mt-14 text-center sm:mt-16">
-              <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
-                Get the Free Guide
-              </button>
+        {/* Section 3 — Contents of the Free Guide (book mockup + list) */}
+        <section className="overflow-hidden bg-gradient-to-br from-white via-[#fff9fb] to-[#fce8f0]/45 py-20 px-4 md:py-24 sm:px-8">
+          <div className="mx-auto max-w-[1100px]">
+            <h2 className="text-center font-sans text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tight text-[var(--foreground)]">
+              Contents of the Free Guide
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-center text-body-lg leading-relaxed text-[var(--muted)]">
+              No fluff. The same system Korean beauty experts and influencers actually use—step by step.
+            </p>
+
+            <div className="mt-10 grid items-center gap-8 lg:mt-12 lg:grid-cols-2 lg:gap-10">
+              {/* Book cover — left on desktop, top on mobile */}
+              <div className="flex justify-center lg:justify-end lg:pr-4">
+                <div
+                  className="relative w-full max-w-[min(100%,420px)] [perspective:1200px]"
+                  style={{ transformStyle: "preserve-3d" }}
+                >
+                  <div className="rotate-[2deg] drop-shadow-[0_28px_60px_rgba(60,40,50,0.18)] transition-transform duration-300 hover:rotate-[1deg]">
+                    <Image
+                      src="/images/glass-skin-guide-book-cover.png"
+                      alt="The Ultimate K-Beauty Makeup Guide — Free Starter Pack, 3D book mockup"
+                      width={640}
+                      height={800}
+                      className="h-auto w-full rounded-lg object-contain"
+                      sizes="(max-width: 1024px) 85vw, 420px"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mx-auto w-full max-w-xl lg:mx-0 lg:max-w-none">
+                <ul className="list-outside list-disc space-y-4 pl-5 text-left text-body leading-[1.75] text-[var(--foreground-soft)] marker:text-[var(--foreground)] sm:space-y-5 sm:pl-6 sm:text-[1.05rem]">
+                  {[
+                    "The Korean layering method (and why order matters more than products)",
+                    "The exact 7-step order Korean experts use",
+                    "Key ingredients that build glass skin (and what to avoid)",
+                    "The hydration technique that creates the glow",
+                    "The biggest mistakes foreigners make—and how to fix them",
+                  ].map((item) => (
+                    <li key={item} className="pl-1">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-8 sm:mt-10">
+                  <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
+                    Download Your Free Guide
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </section>
