@@ -16,7 +16,7 @@ function formatPrice(currency: string, price: number): string {
 
 export default async function ThankYouPage() {
   const course = await getPublishedCourseForThankYou();
-  const courseHref = course?.slug ? `/courses/${course.slug}` : "/glass-skin-masterclass";
+  const courseHref = "/courses/k-beauty-makeup-masterclass";
   const courseLabel = course?.title ? `See ${course.title}` : "See the Full Masterclass Offer";
   const coursePrice = course ? formatPrice(course.currency, course.price) : "$199";
 
