@@ -67,6 +67,25 @@ export default function AdminOfferPagesPage() {
     }
   };
 
+  const handleDuplicate = async (id: string) => {
+    if (!confirm("이 오퍼 페이지를 복제하시겠습니까?")) return;
+    try {
+      const headers = await getAdminHeaders();
+      const res = await fetch(`/api/admin/offer-pages/${id}/duplicate`, {
+        method: "POST",
+        headers,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(typeof data?.error === "string" ? data.error : "복제 실패");
+        return;
+      }
+      fetchList();
+    } catch {
+      setError("복제 실패");
+    }
+  };
+
   return (
     <>
       <AdminPageHeader
@@ -87,7 +106,7 @@ export default function AdminOfferPagesPage() {
           <AdminTh>연결 강의</AdminTh>
           <AdminTh>상태</AdminTh>
           <AdminTh>등록일</AdminTh>
-          <AdminTh>바로가기</AdminTh>
+          <AdminTh>액션</AdminTh>
         </AdminTableHead>
         <AdminTableBody>
           {!loading && list.length === 0 && (
@@ -109,14 +128,23 @@ export default function AdminOfferPagesPage() {
               <AdminTd>{row.status}</AdminTd>
               <AdminTd>{formatDate(row.created_at)}</AdminTd>
               <AdminTd>
-                <Link
-                  href={`/offers/${row.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-[8px] border border-zinc-300 px-3 py-1.5 text-body text-[var(--foreground)] hover:bg-zinc-50"
-                >
-                  Open ↗
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/offers/${row.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-[8px] border border-zinc-300 px-2.5 py-1 text-sm text-[var(--foreground)] hover:bg-zinc-50"
+                  >
+                    OPEN ↗
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => handleDuplicate(row.id)}
+                    className="rounded-[8px] border border-zinc-300 px-2.5 py-1 text-sm text-[var(--foreground)] hover:bg-zinc-50"
+                  >
+                    복제
+                  </button>
+                </div>
               </AdminTd>
             </AdminTr>
           ))}

@@ -36,6 +36,32 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
 
   const lp = landingPage;
 
+  const splitHeroHeadline = (raw: string): { title: string; highlight: string | null } => {
+    const normalized = raw.replace(/\r\n/g, "\n").trim();
+    if (!normalized) return { title: "", highlight: null };
+
+    // 1) Explicit line break from admin text has highest priority.
+    if (normalized.includes("\n")) {
+      const lines = normalized.split("\n").map((x) => x.trim()).filter(Boolean);
+      return {
+        title: lines[0] ?? normalized,
+        highlight: lines.length > 1 ? lines.slice(1).join(" ") : null,
+      };
+    }
+
+    // 2) Smart split for the key LP headline so wide screens render exactly two lines.
+    const lowered = normalized.toLowerCase();
+    const pivot = " that lasts for 12 hours";
+    if (lowered.endsWith(pivot)) {
+      const idx = lowered.lastIndexOf(pivot);
+      const first = normalized.slice(0, idx).trim();
+      const second = normalized.slice(idx + 1).trim(); // remove leading space before "that"
+      if (first && second) return { title: first, highlight: second };
+    }
+
+    return { title: normalized, highlight: null };
+  };
+
   let heroTitle: string;
   let heroTitleHighlight: string | null;
   let heroSubtitle: string;
@@ -43,16 +69,16 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
   let ctaText: string;
 
   if (useCodeHeroCopy) {
-    heroTitle = FALLBACK.headline.split("\n")[0];
-    heroTitleHighlight = FALLBACK.headline.split("\n")[1]?.trim() || null;
+    const split = splitHeroHeadline(FALLBACK.headline);
+    heroTitle = split.title;
+    heroTitleHighlight = split.highlight;
     heroSubtitle = FALLBACK.subline;
     heroSubline2 = FALLBACK.subline2;
     ctaText = FALLBACK.cta;
   } else {
-    heroTitle = lp?.hero_title?.trim() || FALLBACK.headline.split("\n")[0];
-    heroTitleHighlight = lp?.hero_title?.trim()
-      ? null
-      : FALLBACK.headline.split("\n")[1]?.trim() || null;
+    const split = splitHeroHeadline(lp?.hero_title?.trim() || FALLBACK.headline);
+    heroTitle = split.title;
+    heroTitleHighlight = split.highlight;
     heroSubtitle = lp?.hero_subtitle?.trim() || FALLBACK.subline;
     heroSubline2 = lp?.hero_subtitle
       ? (lp?.lead_magnet?.description?.slice(0, 200) || FALLBACK.subline2)
