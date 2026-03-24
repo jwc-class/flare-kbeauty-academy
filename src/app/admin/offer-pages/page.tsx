@@ -1,10 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getAdminHeaders } from "@/lib/admin-auth";
-import type { Course } from "@/types/admin";
-import type { LeadMagnet } from "@/types/admin";
 import Link from "next/link";
+import { getAdminHeaders } from "@/lib/admin-auth";
 import {
   AdminPageHeader,
   AdminTable,
@@ -17,23 +15,13 @@ import {
 
 type RelationRow = { id: string; title: string; slug: string };
 
-type LandingPageRow = {
+type OfferPageRow = {
   id: string;
   title: string;
   slug: string;
-  hero_title: string | null;
-  hero_subtitle: string | null;
-  cta_text: string | null;
-  lead_magnet_id: string | null;
-  primary_course_id: string | null;
-  offer_page_id: string | null;
-  channel: string | null;
   status: string;
   created_at: string;
-  updated_at: string;
-  lead_magnets?: RelationRow | RelationRow[] | null;
   courses?: RelationRow | RelationRow[] | null;
-  offer_pages?: RelationRow | RelationRow[] | null;
 };
 
 function getRelationTitle(rel: RelationRow | RelationRow[] | null | undefined): string {
@@ -42,10 +30,8 @@ function getRelationTitle(rel: RelationRow | RelationRow[] | null | undefined): 
   return one?.title ?? "—";
 }
 
-export default function AdminLandingPagesPage() {
-  const [list, setList] = useState<LandingPageRow[]>([]);
-  const [leadMagnets, setLeadMagnets] = useState<LeadMagnet[]>([]);
-  const [courses, setCourses] = useState<Course[]>([]);
+export default function AdminOfferPagesPage() {
+  const [list, setList] = useState<OfferPageRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,22 +40,14 @@ export default function AdminLandingPagesPage() {
     setError(null);
     try {
       const headers = await getAdminHeaders();
-      const [resLP, resLM, resC] = await Promise.all([
-        fetch("/api/admin/landing-pages", { headers }),
-        fetch("/api/admin/lead-magnets", { headers }),
-        fetch("/api/admin/courses", { headers }),
-      ]);
-      if (resLP.status === 401) return;
-      const data = await resLP.json().catch(() => ({}));
-      if (!resLP.ok) {
+      const res = await fetch("/api/admin/offer-pages", { headers });
+      if (res.status === 401) return;
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
         setError(typeof data?.error === "string" ? data.error : "목록을 불러오지 못했습니다.");
         return;
       }
       setList(Array.isArray(data) ? data : []);
-      const lm = await resLM.json().catch(() => []);
-      setLeadMagnets(Array.isArray(lm) ? lm : []);
-      const c = await resC.json().catch(() => []);
-      setCourses(Array.isArray(c) ? c : []);
     } catch {
       setError("목록을 불러오지 못했습니다.");
     } finally {
@@ -92,50 +70,54 @@ export default function AdminLandingPagesPage() {
   return (
     <>
       <AdminPageHeader
-        title="Landing Pages"
-        description="랜딩 페이지 목록. 새로 만들기 또는 행 클릭하여 수정."
+        title="Offer Pages"
+        description="옵트인 이후 브릿지 오퍼 페이지 목록입니다."
         action={
-          <Link
-            href="/admin/landing-pages/new"
-            className="btn-cta"
-          >
+          <Link href="/admin/offer-pages/new" className="btn-cta">
             New
           </Link>
         }
       />
 
       {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
-      <AdminTable aria-label="Landing Pages">
+      <AdminTable aria-label="Offer Pages">
         <AdminTableHead>
           <AdminTh>제목</AdminTh>
           <AdminTh>슬러그</AdminTh>
-          <AdminTh>채널</AdminTh>
-          <AdminTh>리드 매그넷</AdminTh>
-          <AdminTh>주요 강의</AdminTh>
-          <AdminTh>오퍼 페이지</AdminTh>
+          <AdminTh>연결 강의</AdminTh>
           <AdminTh>상태</AdminTh>
           <AdminTh>등록일</AdminTh>
+          <AdminTh>바로가기</AdminTh>
         </AdminTableHead>
         <AdminTableBody>
           {!loading && list.length === 0 && (
             <AdminTr>
-              <AdminTd colSpan={8} className="p-8 text-center text-[var(--muted)]">No landing pages yet. Use &quot;추가&quot; to create one.</AdminTd>
+              <AdminTd colSpan={6} className="p-8 text-center text-[var(--muted)]">
+                No offer pages yet. Use "New" to create one.
+              </AdminTd>
             </AdminTr>
           )}
           {list.map((row) => (
             <AdminTr key={row.id}>
               <AdminTd>
-                <Link href={`/admin/landing-pages/${row.id}`} className="text-[var(--flare-support-1)] hover:underline font-medium">
+                <Link href={`/admin/offer-pages/${row.id}`} className="text-[var(--flare-support-1)] hover:underline font-medium">
                   {row.title}
                 </Link>
               </AdminTd>
               <AdminTd>{row.slug}</AdminTd>
-              <AdminTd>{row.channel ?? "—"}</AdminTd>
-              <AdminTd>{getRelationTitle(row.lead_magnets)}</AdminTd>
               <AdminTd>{getRelationTitle(row.courses)}</AdminTd>
-              <AdminTd>{getRelationTitle(row.offer_pages)}</AdminTd>
               <AdminTd>{row.status}</AdminTd>
               <AdminTd>{formatDate(row.created_at)}</AdminTd>
+              <AdminTd>
+                <Link
+                  href={`/offers/${row.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-[8px] border border-zinc-300 px-3 py-1.5 text-body text-[var(--foreground)] hover:bg-zinc-50"
+                >
+                  Open ↗
+                </Link>
+              </AdminTd>
             </AdminTr>
           ))}
         </AdminTableBody>

@@ -55,7 +55,22 @@ export type LandingPage = {
   cta_text: string | null;
   lead_magnet_id: string | null;
   primary_course_id: string | null;
+  offer_page_id: string | null;
   channel: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type OfferPage = {
+  id: string;
+  title: string;
+  slug: string;
+  headline: string | null;
+  subheadline: string | null;
+  body: string | null;
+  cta_text: string | null;
+  course_id: string | null;
   status: string;
   created_at: string;
   updated_at: string;
@@ -89,6 +104,7 @@ export type Purchase = {
 export type LandingPageWithRelations = LandingPage & {
   lead_magnet?: LeadMagnet | null;
   primary_course?: Course | null;
+  offer_page?: OfferPage | null;
 };
 
 export type PurchaseWithRelations = Purchase & {

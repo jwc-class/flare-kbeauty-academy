@@ -143,8 +143,22 @@ export async function POST(req: Request) {
       );
     }
 
-    // STEP 5: Same success response as before – frontend unchanged
-    return NextResponse.json({ success: true });
+    // STEP 5: Redirect hint for post-submit flow.
+    // Landing page -> linked offer page (/offers/[slug]) -> fallback /thank-you.
+    let redirect_to = "/thank-you";
+    if (payload.landing_page_id) {
+      const { data: lp } = await supabaseAdmin
+        .from("landing_pages")
+        .select("offer_page_id, offer_pages(slug, status)")
+        .eq("id", payload.landing_page_id)
+        .maybeSingle();
+      const rel = (lp as { offer_pages?: { slug?: string | null; status?: string | null } | null } | null)?.offer_pages;
+      if (rel?.slug && rel.status === "published") {
+        redirect_to = `/offers/${rel.slug}`;
+      }
+    }
+
+    return NextResponse.json({ success: true, redirect_to });
   } catch {
     return NextResponse.json(
       { error: "Invalid request" },

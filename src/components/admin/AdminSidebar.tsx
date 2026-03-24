@@ -11,6 +11,7 @@ const nav = [
   { label: "Contacts", href: "/admin/contacts" },
   { label: "Lead Magnets", href: "/admin/lead-magnets" },
   { label: "Landing Pages", href: "/admin/landing-pages" },
+  { label: "Offer Pages", href: "/admin/offer-pages" },
   { label: "Courses", href: "/admin/courses" },
   { label: "Purchases", href: "/admin/purchases" },
 ];

@@ -15,10 +15,12 @@ export type PublicLandingPage = {
   cta_text: string | null;
   lead_magnet_id: string | null;
   primary_course_id: string | null;
+  offer_page_id: string | null;
   channel: string | null;
   status: string;
   lead_magnet?: PublicLeadMagnet | null;
   primary_course?: PublicCourse | null;
+  offer_page?: PublicOfferPage | null;
 };
 
 export type PublicLeadMagnet = {
@@ -47,6 +49,19 @@ export type PublicCourse = {
   paypal_link: string | null;
 };
 
+export type PublicOfferPage = {
+  id: string;
+  title: string;
+  slug: string;
+  headline: string | null;
+  subheadline: string | null;
+  body: string | null;
+  cta_text: string | null;
+  course_id: string | null;
+  status: string;
+  course?: PublicCourse | null;
+};
+
 /**
  * Fetch a published landing page by slug with related lead_magnet and course.
  * Returns null if not found or not published.
@@ -59,9 +74,10 @@ export async function getPublishedLandingPageBySlug(
     .select(
       `
       id, title, slug, hero_title, hero_subtitle, cta_text,
-      lead_magnet_id, primary_course_id, channel, status,
+      lead_magnet_id, primary_course_id, offer_page_id, channel, status,
       lead_magnets(id, title, slug, subtitle, description, thumbnail_url, file_url, delivery_type, status),
-      courses(id, title, slug, thumbnail_url, price, currency, short_description, sales_page_content, instructor_name, status, paypal_link)
+      courses(id, title, slug, thumbnail_url, price, currency, short_description, sales_page_content, instructor_name, status, paypal_link),
+      offer_pages(id, title, slug, headline, subheadline, body, cta_text, course_id, status)
     `
     )
     .eq("slug", slug)
@@ -72,10 +88,12 @@ export async function getPublishedLandingPageBySlug(
   const row = data as Record<string, unknown>;
   const lead_magnet = (Array.isArray(row.lead_magnets) ? row.lead_magnets[0] : row.lead_magnets) as PublicLeadMagnet | undefined;
   const primary_course = (Array.isArray(row.courses) ? row.courses[0] : row.courses) as PublicCourse | undefined;
+  const offer_page = (Array.isArray(row.offer_pages) ? row.offer_pages[0] : row.offer_pages) as PublicOfferPage | undefined;
   return {
     ...row,
     lead_magnet: lead_magnet ?? null,
     primary_course: primary_course ?? null,
+    offer_page: offer_page ?? null,
   } as PublicLandingPage;
 }
 
@@ -125,4 +143,32 @@ export async function getPublishedCourseForThankYou(
   slug: string = "glass-skin-masterclass"
 ): Promise<PublicCourse | null> {
   return getPublishedCourseBySlug(slug);
+}
+
+/**
+ * Fetch a published offer page by slug with linked course.
+ * Returns null if not found or not published.
+ */
+export async function getPublishedOfferPageBySlug(
+  slug: string
+): Promise<PublicOfferPage | null> {
+  const { data, error } = await supabase
+    .from("offer_pages")
+    .select(
+      `
+      id, title, slug, headline, subheadline, body, cta_text, course_id, status,
+      courses(id, title, slug, thumbnail_url, price, currency, short_description, sales_page_content, instructor_name, status, paypal_link)
+    `
+    )
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
+
+  if (error || !data) return null;
+  const row = data as Record<string, unknown>;
+  const course = (Array.isArray(row.courses) ? row.courses[0] : row.courses) as PublicCourse | undefined;
+  return {
+    ...row,
+    course: course ?? null,
+  } as PublicOfferPage;
 }

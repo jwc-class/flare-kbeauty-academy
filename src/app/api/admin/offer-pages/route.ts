@@ -11,12 +11,10 @@ export async function GET(req: Request) {
   }
   try {
     const { data, error } = await supabaseAdmin
-      .from("landing_pages")
+      .from("offer_pages")
       .select(`
         *,
-        lead_magnets(id, title, slug),
-        courses(id, title, slug),
-        offer_pages(id, title, slug)
+        courses(id, title, slug)
       `)
       .order("created_at", { ascending: false })
       .limit(500);
@@ -39,18 +37,20 @@ export async function POST(req: Request) {
   }
   try {
     const body = await req.json();
-    const { data, error } = await supabaseAdmin.from("landing_pages").insert({
-      title: body.title ?? "",
-      slug: body.slug ?? "",
-      hero_title: body.hero_title ?? null,
-      hero_subtitle: body.hero_subtitle ?? null,
-      cta_text: body.cta_text ?? null,
-      lead_magnet_id: body.lead_magnet_id || null,
-      primary_course_id: body.primary_course_id || null,
-      offer_page_id: body.offer_page_id || null,
-      channel: body.channel ?? null,
-      status: body.status ?? "draft",
-    }).select().single();
+    const { data, error } = await supabaseAdmin
+      .from("offer_pages")
+      .insert({
+        title: body.title ?? "",
+        slug: body.slug ?? "",
+        headline: body.headline ?? null,
+        subheadline: body.subheadline ?? null,
+        body: body.body ?? null,
+        cta_text: body.cta_text ?? null,
+        course_id: body.course_id || null,
+        status: body.status ?? "draft",
+      })
+      .select()
+      .single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json(data);
   } catch (e) {

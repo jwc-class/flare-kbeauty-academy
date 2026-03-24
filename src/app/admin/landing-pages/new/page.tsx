@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { getAdminHeaders } from "@/lib/admin-auth";
 import type { LeadMagnet } from "@/types/admin";
 import type { Course } from "@/types/admin";
+import type { OfferPage } from "@/types/admin";
 import { AdminPageHeader, AdminFormSection, AdminFormActions } from "@/components/admin";
 
 const inputCls = "w-full rounded-[8px] border border-zinc-300 px-3 py-2 text-body focus:outline-none focus:ring-2 focus:ring-[var(--flare-support-2)]";
@@ -22,6 +23,7 @@ export default function AdminLandingPageNewPage() {
   const router = useRouter();
   const [leadMagnets, setLeadMagnets] = useState<LeadMagnet[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
+  const [offerPages, setOfferPages] = useState<OfferPage[]>([]);
   const [loadingOptions, setLoadingOptions] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +35,7 @@ export default function AdminLandingPageNewPage() {
     cta_text: "",
     lead_magnet_id: "",
     primary_course_id: "",
+    offer_page_id: "",
     channel: "",
     status: "draft",
   });
@@ -42,12 +45,15 @@ export default function AdminLandingPageNewPage() {
       Promise.all([
         fetch("/api/admin/lead-magnets", { headers }),
         fetch("/api/admin/courses", { headers }),
+        fetch("/api/admin/offer-pages", { headers }),
       ])
-      .then(async ([rLM, rC]) => {
+      .then(async ([rLM, rC, rO]) => {
         const lm = await rLM.json().catch(() => []);
         const c = await rC.json().catch(() => []);
+        const o = await rO.json().catch(() => []);
         setLeadMagnets(Array.isArray(lm) ? lm : []);
         setCourses(Array.isArray(c) ? c : []);
+        setOfferPages(Array.isArray(o) ? o : []);
       })
       .finally(() => setLoadingOptions(false)));
   }, []);
@@ -73,6 +79,7 @@ export default function AdminLandingPageNewPage() {
           ...form,
           lead_magnet_id: form.lead_magnet_id || null,
           primary_course_id: form.primary_course_id || null,
+          offer_page_id: form.offer_page_id || null,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -140,6 +147,15 @@ export default function AdminLandingPageNewPage() {
                 <option value="">— 선택 안 함 —</option>
                 {courses.map((c) => (
                   <option key={c.id} value={c.id}>{c.title} ({c.slug})</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-body font-medium text-[var(--foreground)] mb-1">연결 오퍼 페이지</label>
+              <select className={inputCls} value={form.offer_page_id} onChange={(e) => setForm((f) => ({ ...f, offer_page_id: e.target.value }))}>
+                <option value="">— 선택 안 함 —</option>
+                {offerPages.map((o) => (
+                  <option key={o.id} value={o.id}>{o.title} ({o.slug})</option>
                 ))}
               </select>
             </div>

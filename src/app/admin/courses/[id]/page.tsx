@@ -28,6 +28,7 @@ export default function AdminCourseEditPage() {
     status: "draft",
     paypal_link: "",
   });
+  const publicHref = form.slug.trim() ? `/courses/${encodeURIComponent(form.slug.trim())}` : null;
 
   const fetchOne = useCallback(async () => {
     if (!id) return;
@@ -146,6 +147,25 @@ export default function AdminCourseEditPage() {
         description={form.title || "강의 수정"}
         action={
           <div className="flex items-center gap-2">
+            {publicHref ? (
+              <Link
+                href={publicHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-[10px] border border-zinc-300 px-4 py-2 text-body text-[var(--foreground)] hover:bg-zinc-50"
+              >
+                페이지 바로가기 ↗
+              </Link>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="rounded-[10px] border border-zinc-200 px-4 py-2 text-body text-zinc-400"
+                title="슬러그를 입력하면 활성화됩니다."
+              >
+                페이지 바로가기 ↗
+              </button>
+            )}
             <Link
               href="/admin/courses"
               className="rounded-[10px] border border-zinc-300 px-4 py-2 text-body text-[var(--foreground)] hover:bg-zinc-50"

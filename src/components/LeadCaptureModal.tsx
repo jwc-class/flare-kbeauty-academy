@@ -136,9 +136,11 @@ export function LeadCaptureModal({ open, onClose, source = "main", successRedire
       }
 
       onClose();
-      if (successRedirect) {
-        router.push(successRedirect);
-      }
+      const redirectTo =
+        typeof data?.redirect_to === "string" && data.redirect_to.trim()
+          ? data.redirect_to.trim()
+          : successRedirect;
+      if (redirectTo) router.push(redirectTo);
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
