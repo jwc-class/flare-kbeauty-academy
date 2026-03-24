@@ -58,6 +58,20 @@ export default function AdminCoursesPage() {
     return `${currency} ${formatted}`;
   };
 
+  const formatRevenue = (currency: string, revenue?: number, purchasesCount?: number) => {
+    const amount = Number(revenue ?? 0);
+    const formatted = Number.isNaN(amount)
+      ? "—"
+      : new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: currency || "USD",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(amount);
+    const count = Number(purchasesCount ?? 0);
+    return `${formatted} (${count})`;
+  };
+
   const handleDuplicate = async (id: string) => {
     if (!confirm("이 강의를 복제하시겠습니까?")) return;
     try {
@@ -99,6 +113,7 @@ export default function AdminCoursesPage() {
           <AdminTh>슬러그</AdminTh>
           <AdminTh>가격</AdminTh>
           <AdminTh>강사</AdminTh>
+          <AdminTh>매출</AdminTh>
           <AdminTh>상태</AdminTh>
           <AdminTh>등록일</AdminTh>
           <AdminTh>액션</AdminTh>
@@ -106,7 +121,7 @@ export default function AdminCoursesPage() {
         <AdminTableBody>
           {!loading && list.length === 0 && (
             <AdminTr>
-              <AdminTd colSpan={7} className="p-8 text-center text-[var(--muted)]">No courses yet. Use &quot;추가&quot; to create one.</AdminTd>
+              <AdminTd colSpan={8} className="p-8 text-center text-[var(--muted)]">No courses yet. Use &quot;추가&quot; to create one.</AdminTd>
             </AdminTr>
           )}
           {list.map((row) => (
@@ -119,6 +134,7 @@ export default function AdminCoursesPage() {
               <AdminTd>{row.slug}</AdminTd>
               <AdminTd>{formatPrice(row.currency, row.price)}</AdminTd>
               <AdminTd>{row.instructor_name ?? "—"}</AdminTd>
+              <AdminTd>{formatRevenue(row.currency, row.revenue, row.purchases_count)}</AdminTd>
               <AdminTd>{row.status}</AdminTd>
               <AdminTd>{formatDate(row.created_at)}</AdminTd>
               <AdminTd>

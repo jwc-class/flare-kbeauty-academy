@@ -28,6 +28,8 @@ export type Course = {
   instructor_name: string | null;
   status: string;
   paypal_link: string | null;
+  purchases_count?: number;
+  revenue?: number;
   created_at: string;
   updated_at: string;
 };
