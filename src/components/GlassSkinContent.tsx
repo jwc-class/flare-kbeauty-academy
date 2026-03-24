@@ -35,6 +35,7 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
   const [modalOpen, setModalOpen] = useState(false);
 
   const lp = landingPage;
+  const isSkincareLP = lp?.slug === "k-glass-skincare";
 
   const splitHeroHeadline = (raw: string): { title: string; highlight: string | null } => {
     const normalized = raw.replace(/\r\n/g, "\n").trim();
@@ -68,7 +69,15 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
   let heroSubline2: string;
   let ctaText: string;
 
-  if (useCodeHeroCopy) {
+  if (isSkincareLP) {
+    heroTitle = "Korean Glass Skin Routine";
+    heroTitleHighlight = "for a Younger-Looking Face";
+    heroSubtitle =
+      "A practical skincare routine to help your skin look clearer, smoother, and naturally plumper.";
+    heroSubline2 =
+      "No complicated 10-step chaos. Learn the order, hydration method, and barrier-focused habits that make skin look fresh and youthful.";
+    ctaText = "Get the Free Skincare Guide →";
+  } else if (useCodeHeroCopy) {
     const split = splitHeroHeadline(FALLBACK.headline);
     heroTitle = split.title;
     heroTitleHighlight = split.highlight;
@@ -83,9 +92,90 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
     heroSubline2 = FALLBACK.subline2;
     ctaText = lp?.cta_text?.trim() || FALLBACK.cta;
   }
-  const badge = FALLBACK.badge;
-  const tags = FALLBACK.tags;
+  const badge = isSkincareLP ? "Free Skincare Guide · Instant Access" : FALLBACK.badge;
+  const tags = isSkincareLP
+    ? ["Glass Skin Routine", "Barrier Care", "Hydration Order", "Youthful Glow"]
+    : FALLBACK.tags;
   const disclaimer = FALLBACK.disclaimer;
+  const heroImageSrc =
+    lp?.slug === "k-glass-skincare"
+      ? "/images/k-glass-skincare-thumbnail.png"
+      : "/images/glass-skin-before-after.png";
+  const heroImageAlt =
+    lp?.slug === "k-glass-skincare"
+      ? "K-glass skincare landing hero thumbnail"
+      : "Before and after: natural skin compared to a dewy glass-skin makeup look";
+  const problemTitle = isSkincareLP
+    ? "Why Your Skin Still Looks Tired"
+    : "Why is something missing, even after using K-beauty products and following tutorials?";
+  const problemLead = isSkincareLP
+    ? "Great skin is not about buying more products."
+    : "The best makeup isn&apos;t about using famous or expensive cosmetics.";
+  const problemBullets = isSkincareLP
+    ? [
+        "Wrong order can block absorption and waste expensive skincare.",
+        "Over-exfoliation can damage your barrier and dull your glow.",
+        "Inconsistent hydration habits make skin look flat and tired.",
+      ]
+    : [
+        "Not even makeup with high-end brushes.",
+        "Not a vanity full of cosmetics, either.",
+        "It starts with knowing your own face.",
+      ];
+  const problemOutro = isSkincareLP
+    ? "When you match product order, hydration timing, and barrier care, your skin can look smoother, bouncier, and more youthful."
+    : "Knowing your facial structure and skin type allows you to apply makeup that maximizes your strengths and compensates for weaknesses.";
+  const problemCta = isSkincareLP ? "Get the Free Skincare Diagnosis" : "Get the Free Diagnosis";
+  const guideTitle = isSkincareLP ? "Contents of the Free Glass Skin Guide" : "Contents of the Free Guide";
+  const guideSubtitle = isSkincareLP
+    ? "A clear, beginner-friendly skincare system focused on youthful glass skin."
+    : "No fluff. The same system Korean beauty experts and influencers actually use—step by step.";
+  const guideBullets = isSkincareLP
+    ? [
+        "The exact AM/PM skincare order for youthful-looking glass skin",
+        "How to choose hydrating layers without clogging pores",
+        "Barrier-repair habits that reduce dullness and rough texture",
+        "Weekly routine structure for consistent visible improvement",
+        "Common mistakes that make skin look older and how to fix them",
+      ]
+    : [
+        "The Korean layering method (and why order matters more than products)",
+        "The exact 7-step order Korean experts use",
+        "Key ingredients that build glass skin (and what to avoid)",
+        "The hydration technique that creates the glow",
+        "The biggest mistakes foreigners make—and how to fix them",
+      ];
+  const guideCta = isSkincareLP ? "Download Your Free Skincare Guide" : "Download Your Free Guide";
+  const authorityTitle = isSkincareLP ? "Real Korean Skincare, Not Guesswork" : "Real Korean Beauty, Not Guesswork";
+  const authorityP1 = isSkincareLP
+    ? "This guide is based on practical Korean skincare principles used to maintain clear, hydrated, youthful-looking skin."
+    : "This guide is based on the real routines used by Korean beauty pros and influencers—the same philosophy that made K-beauty famous worldwide.";
+  const authorityP2 = isSkincareLP
+    ? "Stop chasing random viral tips. Follow one proven routine that supports long-term skin health and natural glow."
+    : "Stop copying random TikTok steps. Get the system that actually creates glass skin.";
+  const authorityCta = isSkincareLP ? "Get the Free Skincare Blueprint" : "Get the Free Blueprint";
+  const outcomesTitle = isSkincareLP ? "Imagine Your Skin in 2–4 Weeks" : "Imagine Your Skin in 2–4 Weeks";
+  const outcomesSubtitle = isSkincareLP
+    ? "Not more products. Just the right skincare order and consistency."
+    : "Not more products. Just the right routine. Here&apos;s what changes when you follow the Korean system.";
+  const outcomes = isSkincareLP
+    ? [
+        { title: "Smoother skin texture", desc: "Better hydration balance improves softness and skin bounce." },
+        { title: "Brighter, clearer tone", desc: "Barrier-first care helps reduce dullness and unevenness." },
+        { title: "Healthy youthful glow", desc: "A consistent routine creates natural glass-like radiance." },
+      ]
+    : [
+        { title: "Clearer, calmer skin", desc: "Right order and ingredients reduce irritation and breakouts." },
+        { title: "Stronger skin barrier", desc: "Hydration and layering protect and repair your barrier." },
+        { title: "Natural glass-like glow", desc: "The dewy look comes from method, not magic." },
+      ];
+  const finalTitle = isSkincareLP
+    ? "One Free Guide. Your Glass Skin Skincare System."
+    : "One Free Guide. The Korean Glass Skin System.";
+  const finalSubtitle = isSkincareLP
+    ? "Enter your email and get the skincare blueprint instantly. No payment, no commitment."
+    : "Enter your email and get the blueprint instantly. No payment, no commitment—just the exact steps that work.";
+  const finalCta = isSkincareLP ? "Send Me the Free Skincare Guide" : "Send Me the Free Guide";
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
@@ -95,8 +185,8 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
           <div className="mx-auto max-w-[900px] text-center">
             <div className="relative mb-10 w-full overflow-hidden rounded-2xl border border-[var(--border-subtle)] shadow-soft sm:mb-12">
               <Image
-                src="/images/glass-skin-before-after.png"
-                alt="Before and after: natural skin compared to a dewy glass-skin makeup look"
+                src={heroImageSrc}
+                alt={heroImageAlt}
                 width={1600}
                 height={900}
                 className="h-auto w-full object-cover"
@@ -162,17 +252,13 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
                   className="font-serif-heading font-semibold leading-[1.15] tracking-[0.02em] text-[var(--foreground)]"
                   style={{ fontSize: "clamp(1.65rem, 3.8vw, 2.65rem)" }}
                 >
-                  Why is something missing, even after using K-beauty products and following tutorials?
+                  {problemTitle}
                 </h2>
                 <p className="mt-8 text-body-lg leading-relaxed text-[var(--foreground-soft)]">
-                  The best makeup isn&apos;t about using famous or expensive cosmetics.
+                  {problemLead}
                 </p>
                 <ul className="mt-6 space-y-3.5 text-body-lg leading-relaxed text-[var(--foreground-soft)]">
-                  {[
-                    "Not even makeup with high-end brushes.",
-                    "Not a vanity full of cosmetics, either.",
-                    "It starts with knowing your own face.",
-                  ].map((line) => (
+                  {problemBullets.map((line) => (
                     <li key={line} className="flex gap-3">
                       <span
                         className="mt-2.5 h-2 w-2 shrink-0 rounded-full bg-[#0d9488]"
@@ -183,12 +269,11 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
                   ))}
                 </ul>
                 <p className="mt-8 text-body-lg leading-relaxed text-[var(--foreground-soft)]">
-                  Knowing your facial structure and skin type allows you to apply makeup that maximizes your
-                  strengths and compensates for weaknesses.
+                  {problemOutro}
                 </p>
                 <div className="mt-10">
                   <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
-                    Get the Free Diagnosis
+                    {problemCta}
                   </button>
                 </div>
               </div>
@@ -212,10 +297,10 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
         <section className="overflow-hidden bg-gradient-to-br from-white via-[var(--surface-blush)] to-[color-mix(in_srgb,var(--brand-soft-2)_35%,white)] py-20 px-4 md:py-24 sm:px-8">
           <div className="mx-auto max-w-[1100px]">
             <h2 className="text-center font-sans text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tight text-[var(--foreground)]">
-              Contents of the Free Guide
+              {guideTitle}
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-center text-body-lg leading-relaxed text-[var(--muted)]">
-              No fluff. The same system Korean beauty experts and influencers actually use—step by step.
+              {guideSubtitle}
             </p>
 
             <div className="mt-10 grid items-center gap-8 lg:mt-12 lg:grid-cols-2 lg:gap-10">
@@ -227,8 +312,8 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
                 >
                   <div className="rotate-[2deg] drop-shadow-[0_28px_60px_rgba(60,40,50,0.18)] transition-transform duration-300 hover:rotate-[1deg]">
                     <Image
-                      src="/images/glass-skin-guide-book-cover.png"
-                      alt="The Ultimate K-Beauty Makeup Guide — Free Starter Pack, 3D book mockup"
+                      src={isSkincareLP ? "/images/k-glass-skincare-thumbnail.png" : "/images/glass-skin-guide-book-cover.png"}
+                      alt={isSkincareLP ? "K-glass skincare guide cover" : "The Ultimate K-Beauty Makeup Guide — Free Starter Pack, 3D book mockup"}
                       width={640}
                       height={800}
                       className="h-auto w-full rounded-lg object-contain"
@@ -240,13 +325,7 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
 
               <div className="mx-auto w-full max-w-xl lg:mx-0 lg:max-w-none">
                 <ul className="list-outside list-disc space-y-4 pl-5 text-left text-body leading-[1.75] text-[var(--foreground-soft)] marker:text-[var(--foreground)] sm:space-y-5 sm:pl-6 sm:text-[1.05rem]">
-                  {[
-                    "The Korean layering method (and why order matters more than products)",
-                    "The exact 7-step order Korean experts use",
-                    "Key ingredients that build glass skin (and what to avoid)",
-                    "The hydration technique that creates the glow",
-                    "The biggest mistakes foreigners make—and how to fix them",
-                  ].map((item) => (
+                  {guideBullets.map((item) => (
                     <li key={item} className="pl-1">
                       {item}
                     </li>
@@ -254,7 +333,7 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
                 </ul>
                 <div className="mt-8 sm:mt-10">
                   <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
-                    Download Your Free Guide
+                    {guideCta}
                   </button>
                 </div>
               </div>
@@ -268,17 +347,17 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
             <div className="grid items-center gap-16 lg:grid-cols-2 lg:gap-28">
               <div className="order-2 lg:order-1">
                 <h2 className="text-section-title text-[var(--foreground)]">
-                  Real Korean Beauty, Not Guesswork
+                  {authorityTitle}
                 </h2>
                 <p className="mt-8 text-body-lg leading-relaxed text-[var(--foreground-soft)] sm:mt-10">
-                  This guide is based on the real routines used by Korean beauty pros and influencers—the same philosophy that made K-beauty famous worldwide.
+                  {authorityP1}
                 </p>
                 <p className="mt-6 text-body leading-relaxed text-[var(--foreground-soft)]">
-                  Stop copying random TikTok steps. Get the system that actually creates glass skin.
+                  {authorityP2}
                 </p>
                 <div className="mt-10">
                   <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
-                    Get the Free Blueprint
+                    {authorityCta}
                   </button>
                 </div>
               </div>
@@ -299,18 +378,14 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
           <div className="mx-auto max-w-[1200px]">
             <div className="mx-auto mb-24 max-w-3xl text-center">
               <h2 className="text-section-title text-[var(--foreground)]">
-                Imagine Your Skin in 2–4 Weeks
+                {outcomesTitle}
               </h2>
               <p className="mt-8 text-body-lg text-[var(--muted)]">
-                Not more products. Just the right routine. Here&apos;s what changes when you follow the Korean system.
+                {outcomesSubtitle}
               </p>
             </div>
             <div className="grid gap-10 sm:grid-cols-3">
-              {[
-                { title: "Clearer, calmer skin", desc: "Right order and ingredients reduce irritation and breakouts." },
-                { title: "Stronger skin barrier", desc: "Hydration and layering protect and repair your barrier." },
-                { title: "Natural glass-like glow", desc: "The dewy look comes from method, not magic." },
-              ].map((item) => (
+              {outcomes.map((item) => (
                 <div
                   key={item.title}
                   className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--background)] p-8 text-center transition-all duration-300 ease-in-out shadow-soft-sm hover:border-[var(--border-hover)] hover:shadow-soft"
@@ -327,14 +402,14 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
         <section className="bg-[image:var(--gradient-flare-subtle)] py-28 px-4 md:py-36 sm:px-8">
           <div className="mx-auto max-w-[720px] text-center">
             <h2 className="text-section-title text-[var(--foreground)]">
-              One Free Guide. The Korean Glass Skin System.
+              {finalTitle}
             </h2>
             <p className="mx-auto mt-8 max-w-xl text-body-lg text-[var(--muted)] sm:mt-10">
-              Enter your email and get the blueprint instantly. No payment, no commitment—just the exact steps that work.
+              {finalSubtitle}
             </p>
             <div className="mt-14">
               <button type="button" onClick={() => setModalOpen(true)} className={ctaButtonClass}>
-                Send Me the Free Guide
+                {finalCta}
               </button>
             </div>
             <p className="mt-5 text-body text-[var(--muted)]">
@@ -347,7 +422,7 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
       <LeadCaptureModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        source="glass-skin"
+        source={isSkincareLP ? "k-glass-skincare" : "glass-skin"}
         successRedirect="/thank-you"
         landing_page_id={lp?.id ?? undefined}
       />
