@@ -136,6 +136,24 @@ export async function getPublishedLeadMagnetById(
 }
 
 /**
+ * Fetch a published lead magnet by slug.
+ * Returns null if not found or not published.
+ */
+export async function getPublishedLeadMagnetBySlug(
+  slug: string
+): Promise<PublicLeadMagnet | null> {
+  const { data, error } = await supabase
+    .from("lead_magnets")
+    .select("id, title, slug, subtitle, description, thumbnail_url, file_url, delivery_type, status")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return data as PublicLeadMagnet;
+}
+
+/**
  * Fetch one published course by slug (e.g. for thank-you page CTA).
  * Returns null if not found.
  */

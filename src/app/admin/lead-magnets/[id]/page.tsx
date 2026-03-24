@@ -26,6 +26,7 @@ export default function AdminLeadMagnetEditPage() {
     delivery_type: "",
     status: "draft",
   });
+  const publicHref = form.slug.trim() ? `/lead-magnets/${encodeURIComponent(form.slug.trim())}` : null;
 
   const fetchOne = useCallback(async () => {
     if (!id) return;
@@ -140,6 +141,25 @@ export default function AdminLeadMagnetEditPage() {
         description={form.title || "리드 매그넷 수정"}
         action={
           <div className="flex items-center gap-2">
+            {publicHref ? (
+              <Link
+                href={publicHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-[10px] border border-zinc-300 px-4 py-2 text-body text-[var(--foreground)] hover:bg-zinc-50"
+              >
+                OPEN ↗
+              </Link>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="rounded-[10px] border border-zinc-200 px-4 py-2 text-body text-zinc-400"
+                title="슬러그를 입력하면 활성화됩니다."
+              >
+                OPEN ↗
+              </button>
+            )}
             <Link
               href="/admin/lead-magnets"
               className="rounded-[10px] border border-zinc-300 px-4 py-2 text-body text-[var(--foreground)] hover:bg-zinc-50"

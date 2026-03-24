@@ -51,6 +51,25 @@ export default function AdminLeadMagnetsPage() {
     }
   };
 
+  const handleDuplicate = async (id: string) => {
+    if (!confirm("이 리드 매그넷을 복제하시겠습니까?")) return;
+    try {
+      const headers = await getAdminHeaders();
+      const res = await fetch(`/api/admin/lead-magnets/${id}/duplicate`, {
+        method: "POST",
+        headers,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(typeof data?.error === "string" ? data.error : "복제 실패");
+        return;
+      }
+      fetchList();
+    } catch {
+      setError("복제 실패");
+    }
+  };
+
   return (
     <>
       <AdminPageHeader
@@ -73,11 +92,12 @@ export default function AdminLeadMagnetsPage() {
           <AdminTh>슬러그</AdminTh>
           <AdminTh>상태</AdminTh>
           <AdminTh>등록일</AdminTh>
+          <AdminTh>액션</AdminTh>
         </AdminTableHead>
         <AdminTableBody>
           {!loading && list.length === 0 && (
             <AdminTr>
-              <AdminTd colSpan={4} className="p-8 text-center text-[var(--muted)]">No lead magnets yet. Use &quot;추가&quot; to create one.</AdminTd>
+              <AdminTd colSpan={5} className="p-8 text-center text-[var(--muted)]">No lead magnets yet. Use &quot;추가&quot; to create one.</AdminTd>
             </AdminTr>
           )}
           {list.map((row) => (
@@ -90,6 +110,25 @@ export default function AdminLeadMagnetsPage() {
               <AdminTd>{row.slug}</AdminTd>
               <AdminTd>{row.status}</AdminTd>
               <AdminTd>{formatDate(row.created_at)}</AdminTd>
+              <AdminTd>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/lead-magnets/${row.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-[8px] border border-zinc-300 px-2.5 py-1 text-sm text-[var(--foreground)] hover:bg-zinc-50"
+                  >
+                    OPEN ↗
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => handleDuplicate(row.id)}
+                    className="rounded-[8px] border border-zinc-300 px-2.5 py-1 text-sm text-[var(--foreground)] hover:bg-zinc-50"
+                  >
+                    복제
+                  </button>
+                </div>
+              </AdminTd>
             </AdminTr>
           ))}
         </AdminTableBody>
