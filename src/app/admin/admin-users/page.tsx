@@ -19,6 +19,7 @@ export default function AdminAdminUsersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [forbidden, setForbidden] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [grantEmail, setGrantEmail] = useState("");
   const [grantRole, setGrantRole] = useState<"admin" | "super_admin">("admin");
   const [granting, setGranting] = useState(false);
@@ -55,6 +56,20 @@ export default function AdminAdminUsersPage() {
     fetchList();
   }, [fetchList]);
 
+  useEffect(() => {
+    const fetchRole = async () => {
+      try {
+        const headers = await getAdminHeaders();
+        const res = await fetch("/api/auth/admin-status", { headers });
+        const data = await res.json().catch(() => ({}));
+        setIsSuperAdmin(data?.role === "super_admin");
+      } catch {
+        setIsSuperAdmin(false);
+      }
+    };
+    fetchRole();
+  }, []);
+
   const handleGrant = async (e: React.FormEvent) => {
     e.preventDefault();
     const email = grantEmail.trim().toLowerCase();
@@ -84,6 +99,7 @@ export default function AdminAdminUsersPage() {
   };
 
   const handleStatusChange = async (id: string, status: "active" | "revoked") => {
+    if (!isSuperAdmin) return;
     setUpdatingId(id);
     try {
       const headers = await getAdminHeaders();
@@ -106,6 +122,7 @@ export default function AdminAdminUsersPage() {
   };
 
   const handleRoleChange = async (id: string, role: "admin" | "super_admin") => {
+    if (!isSuperAdmin) return;
     setUpdatingId(id);
     try {
       const headers = await getAdminHeaders();
@@ -223,12 +240,12 @@ export default function AdminAdminUsersPage() {
             <AdminTh>Status</AdminTh>
             <AdminTh>Granted by</AdminTh>
             <AdminTh>Created</AdminTh>
-            <AdminTh>Actions</AdminTh>
+            {isSuperAdmin && <AdminTh>Actions</AdminTh>}
           </AdminTableHead>
           <AdminTableBody>
             {!loading && list.length === 0 && (
               <AdminTr>
-                <AdminTd colSpan={7} className="p-8 text-center text-[var(--muted)]">
+                <AdminTd colSpan={isSuperAdmin ? 7 : 6} className="p-8 text-center text-[var(--muted)]">
                   No admin users yet. Grant access above.
                 </AdminTd>
               </AdminTr>
@@ -257,48 +274,50 @@ export default function AdminAdminUsersPage() {
                   {row.granted_by_name || row.granted_by_email || "—"}
                 </AdminTd>
                 <AdminTd className="text-zinc-600 text-sm">{formatDate(row.created_at)}</AdminTd>
-                <AdminTd>
-                  <div className="flex flex-wrap items-center gap-2">
-                    {row.status === "active" ? (
-                      <button
-                        type="button"
-                        onClick={() => window.confirm("Revoke admin access for this user?") && handleStatusChange(row.id, "revoked")}
-                        disabled={updatingId === row.id}
-                        className="rounded px-2 py-1 text-sm text-amber-700 hover:bg-amber-50 disabled:opacity-50"
-                      >
-                        Revoke
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => handleStatusChange(row.id, "active")}
-                        disabled={updatingId === row.id}
-                        className="rounded px-2 py-1 text-sm text-green-700 hover:bg-green-50 disabled:opacity-50"
-                      >
-                        Reactivate
-                      </button>
-                    )}
-                    {row.role === "admin" ? (
-                      <button
-                        type="button"
-                        onClick={() => window.confirm("Promote to Super Admin?") && handleRoleChange(row.id, "super_admin")}
-                        disabled={updatingId === row.id}
-                        className="rounded px-2 py-1 text-sm text-zinc-700 hover:bg-zinc-100 disabled:opacity-50"
-                      >
-                        Set Super Admin
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => window.confirm("Demote to Admin? You cannot demote yourself if you are the only super admin.") && handleRoleChange(row.id, "admin")}
-                        disabled={updatingId === row.id}
-                        className="rounded px-2 py-1 text-sm text-zinc-600 hover:bg-zinc-100 disabled:opacity-50"
-                      >
-                        Set Admin
-                      </button>
-                    )}
-                  </div>
-                </AdminTd>
+                {isSuperAdmin && (
+                  <AdminTd>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {row.status === "active" ? (
+                        <button
+                          type="button"
+                          onClick={() => window.confirm("Revoke admin access for this user?") && handleStatusChange(row.id, "revoked")}
+                          disabled={updatingId === row.id}
+                          className="rounded px-2 py-1 text-sm text-amber-700 hover:bg-amber-50 disabled:opacity-50"
+                        >
+                          Revoke
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleStatusChange(row.id, "active")}
+                          disabled={updatingId === row.id}
+                          className="rounded px-2 py-1 text-sm text-green-700 hover:bg-green-50 disabled:opacity-50"
+                        >
+                          Reactivate
+                        </button>
+                      )}
+                      {row.role === "admin" ? (
+                        <button
+                          type="button"
+                          onClick={() => window.confirm("Promote to Super Admin?") && handleRoleChange(row.id, "super_admin")}
+                          disabled={updatingId === row.id}
+                          className="rounded px-2 py-1 text-sm text-zinc-700 hover:bg-zinc-100 disabled:opacity-50"
+                        >
+                          Set Super Admin
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => window.confirm("Demote to Admin? You cannot demote yourself if you are the only super admin.") && handleRoleChange(row.id, "admin")}
+                          disabled={updatingId === row.id}
+                          className="rounded px-2 py-1 text-sm text-zinc-600 hover:bg-zinc-100 disabled:opacity-50"
+                        >
+                          Set Admin
+                        </button>
+                      )}
+                    </div>
+                  </AdminTd>
+                )}
               </AdminTr>
             ))}
           </AdminTableBody>

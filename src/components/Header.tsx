@@ -3,11 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { getSession, signInWithGoogle, signOut } from "@/lib/auth";
 import type { AuthUser } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
 export default function Header() {
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -43,11 +45,12 @@ export default function Header() {
     { href: "#testimonials", label: "Reviews" },
     { href: "#about", label: "About" },
   ];
+  const keepTopSpacer = pathname?.startsWith("/courses") ?? false;
 
   return (
     <>
       {/* Global top breathing room: 1.5x navbar height */}
-      <div aria-hidden className="h-[126px]" />
+      {keepTopSpacer ? <div aria-hidden className="h-[126px]" /> : null}
       <div className="fixed left-1/2 top-5 z-[9999] w-[calc(100%-40px)] max-w-[1200px] -translate-x-1/2 px-4 sm:px-0">
         <header
           className="flex min-h-[56px] items-center justify-between gap-4 rounded-2xl border border-[var(--border-subtle)] px-6 py-3.5 shadow-soft-sm"

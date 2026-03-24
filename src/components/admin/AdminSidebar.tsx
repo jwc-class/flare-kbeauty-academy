@@ -7,7 +7,7 @@ import { getSession } from "@/lib/auth";
 
 const dbLinks = [
   { label: "Members", href: "/admin/members" },
-  { label: "Leads", href: "/admin/contacts" },
+  { label: "Leads", href: "/admin/leads" },
 ];
 
 const pageLinks = [

@@ -104,11 +104,11 @@ export default function AdminDashboardPage() {
       <section className="mb-8">
         <h2 className="text-card-title text-[var(--foreground)] mb-4">핵심 지표</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-          <Link href="/admin/contacts" className="rounded-[10px] border border-zinc-200 bg-white p-4 hover:border-zinc-300 transition-colors">
-            <p className="text-sm text-[var(--muted)] mb-1">Contacts</p>
+          <Link href="/admin/leads" className="rounded-[10px] border border-zinc-200 bg-white p-4 hover:border-zinc-300 transition-colors">
+            <p className="text-sm text-[var(--muted)] mb-1">Leads</p>
             <p className="text-xl font-semibold text-[var(--foreground)]">{kpis.total_contacts}</p>
           </Link>
-          <Link href="/admin/contacts" className="rounded-[10px] border border-zinc-200 bg-white p-4 hover:border-zinc-300 transition-colors">
+          <Link href="/admin/leads" className="rounded-[10px] border border-zinc-200 bg-white p-4 hover:border-zinc-300 transition-colors">
             <p className="text-sm text-[var(--muted)] mb-1">Lead submissions</p>
             <p className="text-xl font-semibold text-[var(--foreground)]">{kpis.total_lead_submissions}</p>
           </Link>
@@ -241,7 +241,7 @@ export default function AdminDashboardPage() {
             </ul>
           )}
           <div className="p-3 border-t border-zinc-100">
-            <Link href="/admin/contacts" className="text-body text-[var(--flare-support-1)] hover:underline">전체 연락처 →</Link>
+            <Link href="/admin/leads" className="text-body text-[var(--flare-support-1)] hover:underline">전체 리드 →</Link>
           </div>
         </div>
         <div className="rounded-[10px] border border-zinc-200 bg-white overflow-hidden">
@@ -270,7 +270,7 @@ export default function AdminDashboardPage() {
       </section>
 
       <p className="mt-8 text-body text-[var(--muted)]">
-        리드·연락처는 <Link href="/admin/contacts" className="text-[var(--flare-support-1)] hover:underline">Contacts</Link>에서 확인할 수 있습니다.
+        리드는 <Link href="/admin/leads" className="text-[var(--flare-support-1)] hover:underline">Leads</Link>에서 확인할 수 있습니다.
       </p>
     </>
   );

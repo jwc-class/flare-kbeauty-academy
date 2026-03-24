@@ -10,6 +10,7 @@ import {
   AdminTableBody,
   AdminTr,
   AdminTd,
+  DeleteConfirmModal,
 } from "@/components/admin";
 import Image from "next/image";
 
@@ -31,6 +32,9 @@ export default function AdminMembersPage() {
   const [list, setList] = useState<MemberRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<MemberRow | null>(null);
 
   const fetchList = useCallback(async () => {
     setLoading(true);
@@ -56,11 +60,51 @@ export default function AdminMembersPage() {
     fetchList();
   }, [fetchList]);
 
+  useEffect(() => {
+    const fetchRole = async () => {
+      try {
+        const headers = await getAdminHeaders();
+        const res = await fetch("/api/auth/admin-status", { headers });
+        const data = await res.json().catch(() => ({}));
+        setIsSuperAdmin(data?.role === "super_admin");
+      } catch {
+        setIsSuperAdmin(false);
+      }
+    };
+    fetchRole();
+  }, []);
+
   const formatDate = (s: string) => {
     try {
       return new Date(s).toLocaleString("ko-KR");
     } catch {
       return s;
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!isSuperAdmin) return;
+    if (!pendingDelete) return;
+    const row = pendingDelete;
+    setDeletingId(row.id);
+    setError(null);
+    try {
+      const headers = await getAdminHeaders();
+      const res = await fetch(`/api/admin/members/${row.id}`, {
+        method: "DELETE",
+        headers,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(typeof data?.error === "string" ? data.error : "삭제에 실패했습니다.");
+        return;
+      }
+      setList((prev) => prev.filter((item) => item.id !== row.id));
+      setPendingDelete(null);
+    } catch {
+      setError("삭제에 실패했습니다.");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -91,11 +135,12 @@ export default function AdminMembersPage() {
           <AdminTh>Contact</AdminTh>
           <AdminTh>Purchases</AdminTh>
           <AdminTh>Joined</AdminTh>
+          {isSuperAdmin && <AdminTh>액션</AdminTh>}
         </AdminTableHead>
         <AdminTableBody>
           {!loading && list.length === 0 && (
             <AdminTr>
-              <AdminTd colSpan={8} className="p-8 text-center text-[var(--muted)]">
+              <AdminTd colSpan={isSuperAdmin ? 9 : 8} className="p-8 text-center text-[var(--muted)]">
                 멤버가 없습니다. Google 로그인으로 가입한 사용자가 여기에 표시됩니다.
               </AdminTd>
             </AdminTr>
@@ -145,10 +190,29 @@ export default function AdminMembersPage() {
               <AdminTd className="text-zinc-600 text-sm">
                 {formatDate(row.created_at)}
               </AdminTd>
+              {isSuperAdmin && (
+                <AdminTd>
+                  <button
+                    type="button"
+                    onClick={() => setPendingDelete(row)}
+                    disabled={deletingId === row.id}
+                    className="rounded-[10px] border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
+                  >
+                    {deletingId === row.id ? "삭제중..." : "삭제"}
+                  </button>
+                </AdminTd>
+              )}
             </AdminTr>
           ))}
         </AdminTableBody>
       </AdminTable>
+      <DeleteConfirmModal
+        open={isSuperAdmin && !!pendingDelete}
+        targetLabel={pendingDelete?.email ?? pendingDelete?.full_name ?? pendingDelete?.id ?? "-"}
+        loading={!!pendingDelete && deletingId === pendingDelete.id}
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={handleDelete}
+      />
     </>
   );
 }
