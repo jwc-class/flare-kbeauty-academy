@@ -14,7 +14,7 @@ const pillars = [
 
 export default function ProgramCards() {
   return (
-    <section id="features" className="py-28 md:py-36 px-4 sm:px-8 bg-[#fffbf7]">
+    <section id="features" className="bg-[var(--background-pastel-peach)] px-4 py-28 md:py-36 sm:px-8">
       <div className="max-w-[1200px] mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-24">
           <h2 className="text-section-title text-[var(--foreground)]">
@@ -26,7 +26,7 @@ export default function ProgramCards() {
             <Link
               key={program.title}
               href={program.href}
-              className="group block p-10 rounded-2xl bg-[#fcfbfa] border border-[#f0ebe8] hover:border-[#e8d4dc]/70 transition-all duration-300 ease-in-out shadow-soft-sm hover:shadow-soft hover:-translate-y-0.5"
+              className="group block rounded-2xl border border-[var(--border-subtle)] bg-[var(--background)] p-10 shadow-soft-sm transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-[var(--border-hover)] hover:shadow-soft"
             >
               <div className="flex items-start gap-6">
                 <span className="text-4xl">{program.icon}</span>
@@ -55,7 +55,7 @@ export default function ProgramCards() {
           {pillars.map((item) => (
             <div
               key={item.title}
-              className="p-9 rounded-2xl bg-[#faf7fc]/80 text-center border border-[#f0ebe8] shadow-soft-sm"
+              className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--background-pastel-lavender)]/90 p-9 text-center shadow-soft-sm"
             >
               <span className="text-4xl block mb-5">{item.icon}</span>
               <h4 className="text-card-title text-[var(--foreground)]">{item.title}</h4>

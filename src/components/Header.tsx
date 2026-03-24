@@ -47,7 +47,7 @@ export default function Header() {
   return (
     <div className="fixed left-1/2 top-5 z-[9999] w-[calc(100%-40px)] max-w-[1200px] -translate-x-1/2 px-4 sm:px-0">
       <header
-        className="flex min-h-[56px] items-center justify-between gap-4 rounded-2xl px-6 py-3.5 shadow-soft-sm border border-[#f0ebe8]/90"
+        className="flex min-h-[56px] items-center justify-between gap-4 rounded-2xl border border-[var(--border-subtle)] px-6 py-3.5 shadow-soft-sm"
         style={{
           background: "rgba(252, 251, 250, 0.88)",
           backdropFilter: "blur(14px)",
@@ -87,7 +87,7 @@ export default function Header() {
                   <button
                     type="button"
                     onClick={() => setAccountOpen((o) => !o)}
-                    className="flex items-center gap-2 rounded-2xl border border-[#ebe4e0] bg-white/60 px-4 py-2.5 text-body text-[var(--foreground)] hover:bg-[#fef8fa] transition-all duration-300 ease-in-out"
+                    className="flex items-center gap-2 rounded-2xl border border-[var(--border-subtle)] bg-white/60 px-4 py-2.5 text-body text-[var(--foreground)] transition-all duration-300 ease-in-out hover:bg-[var(--surface-hover)]"
                     aria-expanded={accountOpen}
                     aria-haspopup="true"
                   >
@@ -102,15 +102,15 @@ export default function Header() {
                     <>
                       <div className="fixed inset-0 z-10" aria-hidden onClick={() => setAccountOpen(false)} />
                       <div
-                        className="absolute right-0 top-full z-20 mt-1 min-w-[180px] rounded-2xl border border-[#ebe4e0] bg-[#fcfbfa] py-2 shadow-soft"
+                        className="absolute right-0 top-full z-20 mt-1 min-w-[180px] rounded-2xl border border-[var(--border-subtle)] bg-[var(--background)] py-2 shadow-soft"
                         role="menu"
                       >
-                        <div className="border-b border-[#f0ebe8] px-4 py-2">
+                        <div className="border-b border-[var(--border-subtle)] px-4 py-2">
                           <p className="truncate text-sm text-[var(--muted)]">{user.email}</p>
                         </div>
                         <Link
                           href="/account"
-                          className="block px-4 py-2 text-body text-[var(--foreground)] hover:bg-[#fef8fa] transition-colors duration-300"
+                          className="block px-4 py-2 text-body text-[var(--foreground)] transition-colors duration-300 hover:bg-[var(--surface-hover)]"
                           role="menuitem"
                           onClick={() => setAccountOpen(false)}
                         >
@@ -119,7 +119,7 @@ export default function Header() {
                         <button
                           type="button"
                           onClick={handleSignOut}
-                          className="w-full px-4 py-2 text-left text-body text-[var(--foreground)] hover:bg-[#fef8fa] transition-colors duration-300"
+                          className="w-full px-4 py-2 text-left text-body text-[var(--foreground)] transition-colors duration-300 hover:bg-[var(--surface-hover)]"
                           role="menuitem"
                         >
                           Sign out
@@ -132,7 +132,7 @@ export default function Header() {
                 <button
                   type="button"
                   onClick={handleGoogleSignIn}
-                  className="flex items-center gap-2 rounded-2xl border border-[#e8e0dc] bg-white/90 px-4 py-2.5 font-medium text-body text-[var(--foreground)] transition-all duration-300 ease-in-out hover:bg-[#fef8fa] hover:border-[#e0d5cf]"
+                  className="flex items-center gap-2 rounded-2xl border border-[var(--border-subtle)] bg-white/90 px-4 py-2.5 font-medium text-body text-[var(--foreground)] transition-all duration-300 ease-in-out hover:border-[var(--border-hover)] hover:bg-[var(--surface-hover)]"
                 >
                   <svg className="h-5 w-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -170,7 +170,7 @@ export default function Header() {
 
       {mobileMenuOpen && (
         <div
-          className="mt-2 rounded-2xl border border-[#f0ebe8]/90 px-6 py-4 shadow-soft-sm md:hidden"
+          className="mt-2 rounded-2xl border border-[var(--border-subtle)] px-6 py-4 shadow-soft-sm md:hidden"
           style={{
             background: "rgba(252, 251, 250, 0.92)",
             backdropFilter: "blur(14px)",
@@ -204,7 +204,7 @@ export default function Header() {
                   <button
                     type="button"
                     onClick={() => { setMobileMenuOpen(false); handleGoogleSignIn(); }}
-                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#e8e0dc] bg-white px-6 py-3 font-medium text-body text-[var(--foreground)] transition-all duration-300 hover:bg-[#fef8fa]"
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-[var(--border-subtle)] bg-white px-6 py-3 font-medium text-body text-[var(--foreground)] transition-all duration-300 hover:bg-[var(--surface-hover)]"
                   >
                     <svg className="h-5 w-5" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />

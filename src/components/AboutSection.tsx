@@ -30,7 +30,7 @@ export default function AboutSection() {
           </div>
           <div className="relative">
             <div
-              className="aspect-[4/3] rounded-2xl flex items-center justify-center bg-[image:var(--gradient-flare-subtle)] border border-[#f0ebe8] shadow-soft"
+              className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[image:var(--gradient-flare-subtle)] shadow-soft"
               aria-hidden
             >
               <span className="text-8xl">🌸</span>

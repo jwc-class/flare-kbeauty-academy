@@ -9,32 +9,61 @@
   src: url("/fonts/Inter.woff2") format("woff2");
 }
 
-/* K-Beauty: soft ivory, pastels, rose-gold CTAs — editorial serif + clean sans */
+/* K-Beauty: neutral base + restrained brand accents (see tokens below) */
 :root {
   --font-inter: "Inter", system-ui, sans-serif;
   --font-serif-heading: var(--font-playfair), "Georgia", "Times New Roman", serif;
+
+  /* Brand palette (canonical) — use sparingly; most UI stays neutral */
+  --brand-primary-1: #ffeaca;
+  --brand-primary-2: #ffb1a6;
+  --brand-primary-3: #fb8ba9;
+  --brand-primary-4: #f084eb;
+  --brand-soft-1: #fff5e5;
+  --brand-soft-2: #ffddd8;
+  --brand-soft-3: #ffc3d3;
+  --brand-soft-4: #ffc2fc;
+
+  /* Surfaces — warm off-whites; color is a whisper, not a wash */
   --background: #fcfbfa;
   --background-alt: #f9f7f4;
-  --background-pastel-pink: #fef8fa;
-  --background-pastel-lavender: #faf7fc;
-  --background-pastel-peach: #fffbf7;
+  --background-pastel-pink: color-mix(in srgb, var(--brand-soft-1) 38%, white);
+  --background-pastel-lavender: color-mix(in srgb, var(--brand-soft-4) 11%, white);
+  --background-pastel-peach: color-mix(in srgb, var(--brand-soft-1) 48%, white);
+
   --foreground: #3d3d3d;
   --foreground-soft: #4a4a4a;
-  /* Rose gold / soft coral CTA */
-  --cta-rose: #c9a088;
-  --cta-rose-deep: #b89078;
-  --cta-rose-light: #d4b5a5;
-  --gradient-cta: linear-gradient(135deg, #d4a5a5 0%, #c9a088 45%, #c4a4c4 100%);
-  --gradient-cta-subtle: linear-gradient(180deg, rgba(212, 165, 165, 0.12) 0%, rgba(196, 164, 196, 0.08) 100%);
-  /* Legacy names — map to soft palette so existing components inherit */
-  --flare-red: #c9a088;
-  --flare-yellow: #f5e6dc;
-  --flare-support-1: #c9a088;
-  --flare-support-2: #d4a5a5;
-  --flare-support-3: #d4c4d8;
+  --muted: #767676;
+
+  /* Primary CTA: one main gradient (pink → orchid), white label */
+  --gradient-cta: linear-gradient(135deg, var(--brand-primary-3) 0%, var(--brand-primary-4) 100%);
+  --gradient-cta-subtle: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--brand-soft-1) 70%, transparent) 0%,
+    color-mix(in srgb, var(--brand-soft-3) 38%, transparent) 100%
+  );
+
+  /* Links, hovers, small emphasis — deeper rose for AA on light backgrounds */
+  --cta-rose: var(--brand-primary-3);
+  --cta-rose-deep: color-mix(in srgb, var(--brand-primary-3) 72%, #2c1a22 28%);
+  --cta-rose-light: var(--brand-primary-2);
+
+  /* Legacy / shared accent names — keep components stable */
+  --flare-red: var(--brand-primary-3);
+  --flare-yellow: var(--brand-soft-1);
+  --flare-support-1: color-mix(in srgb, var(--brand-primary-3) 78%, #1f1418 22%);
+  --flare-support-2: color-mix(in srgb, var(--brand-soft-3) 82%, var(--brand-primary-3) 18%);
+  --flare-support-3: var(--brand-soft-4);
   --gradient-flare: var(--gradient-cta);
   --gradient-flare-subtle: var(--gradient-cta-subtle);
-  --muted: #767676;
+
+  /* Hairlines & chips — tinted neutrals, not loud color blocks */
+  --border-subtle: color-mix(in srgb, var(--brand-soft-2) 20%, #e9e4e0);
+  --border-muted: color-mix(in srgb, var(--brand-soft-3) 22%, #ded8d4);
+  --border-hover: color-mix(in srgb, var(--brand-soft-3) 32%, #d4ccc8);
+  --surface-hover: color-mix(in srgb, var(--brand-soft-1) 52%, white);
+  --surface-blush: color-mix(in srgb, var(--brand-soft-2) 28%, white);
+  --ring-featured: color-mix(in srgb, var(--brand-primary-2) 55%, transparent);
 }
 
 @theme inline {
@@ -119,20 +148,24 @@ body {
   font-size: 1rem;
   line-height: 1.65;
   color: #fff;
-  box-shadow: 0 8px 32px rgba(61, 61, 61, 0.05);
+  text-shadow: 0 1px 1px rgba(45, 20, 40, 0.12);
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--brand-primary-4) 22%, transparent);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
 }
 .btn-cta:hover {
   transform: scale(1.02);
-  opacity: 0.95;
+  filter: brightness(0.97);
 }
 .btn-cta:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+  filter: none;
+  text-shadow: none;
 }
 .btn-cta:disabled:hover {
   opacity: 0.6;
   transform: none;
+  filter: none;
 }

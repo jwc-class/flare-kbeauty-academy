@@ -9,7 +9,7 @@ export default function ProblemSection() {
   ];
 
   return (
-    <section id="problem" className="py-28 md:py-36 px-4 sm:px-8 bg-[#fefcfb]">
+    <section id="problem" className="bg-[var(--background-alt)] px-4 py-28 md:py-36 sm:px-8">
       <div className="max-w-[1200px] mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-24">
           <h2 className="text-section-title text-[var(--foreground)]">
@@ -23,7 +23,7 @@ export default function ProblemSection() {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="p-10 rounded-2xl bg-[var(--background-pastel-pink)]/40 border border-[#f2e8e4] hover:border-[#e8d4dc]/60 transition-all duration-300 ease-in-out shadow-soft-sm hover:shadow-soft"
+              className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--background-pastel-pink)]/45 p-10 shadow-soft-sm transition-all duration-300 ease-in-out hover:border-[var(--border-hover)] hover:shadow-soft"
             >
               <div className="text-3xl mb-5">{feature.icon}</div>
               <h3 className="text-card-title text-[var(--foreground)]">{feature.title}</h3>

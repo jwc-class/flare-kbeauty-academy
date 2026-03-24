@@ -68,8 +68,8 @@ export default function CoursesSection() {
           {courses.map((course) => (
             <div
               key={course.id}
-              className={`relative rounded-2xl bg-[#fcfbfa] p-10 border transition-all duration-300 ease-in-out shadow-soft hover:shadow-soft-sm hover:-translate-y-0.5 ${
-                course.featured ? "ring-2 ring-[#d4b5a5]/80 lg:-translate-y-1" : "border-[#f0ebe8]"
+              className={`relative rounded-2xl border bg-[var(--background)] p-10 shadow-soft transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-soft-sm ${
+                course.featured ? "ring-2 ring-[var(--ring-featured)] lg:-translate-y-1" : "border-[var(--border-subtle)]"
               }`}
             >
               {course.featured && (

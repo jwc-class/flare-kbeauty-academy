@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function ApplySection() {
   return (
-    <section id="apply" className="py-28 md:py-36 px-4 sm:px-8 bg-[#fefcfb]">
+    <section id="apply" className="bg-[var(--background-alt)] px-4 py-28 md:py-36 sm:px-8">
       <div className="max-w-[560px] mx-auto">
         <div className="text-center mb-20">
           <h2 className="text-section-title text-[var(--foreground)]">

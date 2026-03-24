@@ -24,7 +24,7 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section id="testimonials" className="py-28 md:py-36 px-4 sm:px-8 bg-[#fefcfb]">
+    <section id="testimonials" className="bg-[var(--background-alt)] px-4 py-28 md:py-36 sm:px-8">
       <div className="max-w-[1200px] mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-24">
           <h2 className="text-section-title text-[var(--foreground)]">
@@ -38,10 +38,10 @@ export default function Testimonials() {
           {testimonials.map((t) => (
             <div
               key={t.name}
-              className="p-10 rounded-2xl bg-[#fcfbfa] border border-[#f0ebe8] shadow-soft-sm transition-all duration-300 hover:shadow-soft"
+              className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--background)] p-10 shadow-soft-sm transition-all duration-300 hover:shadow-soft"
             >
               <div className="flex items-center gap-4 mb-8">
-                <div className="w-14 h-14 rounded-2xl bg-[#fef8fa] border border-[#f0ebe8] flex items-center justify-center text-2xl">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-blush)] text-2xl">
                   {t.avatar}
                 </div>
                 <div>

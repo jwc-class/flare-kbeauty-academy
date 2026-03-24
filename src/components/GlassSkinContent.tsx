@@ -69,7 +69,7 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
       <main>
         <section className="relative bg-[image:var(--gradient-flare-subtle)] px-4 pb-32 pt-40 sm:px-8 sm:pb-36 sm:pt-44">
           <div className="mx-auto max-w-[900px] text-center">
-            <div className="relative mb-10 w-full overflow-hidden rounded-2xl border border-[#f0ebe8] shadow-soft sm:mb-12">
+            <div className="relative mb-10 w-full overflow-hidden rounded-2xl border border-[var(--border-subtle)] shadow-soft sm:mb-12">
               <Image
                 src="/images/glass-skin-before-after.png"
                 alt="Before and after: natural skin compared to a dewy glass-skin makeup look"
@@ -115,7 +115,7 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
               {tags.map((t) => (
                 <span
                   key={t}
-                  className="rounded-full border border-[#f0ebe8]/90 bg-[var(--background-pastel-pink)]/50 px-3 py-1.5 text-body text-[var(--foreground-soft)] shadow-soft-sm"
+                  className="rounded-full border border-[var(--border-subtle)] bg-[var(--background-pastel-pink)]/65 px-3 py-1.5 text-body text-[var(--foreground-soft)] shadow-soft-sm"
                 >
                   {t}
                 </span>
@@ -127,7 +127,7 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
 
         {/* Section 2 — Why something still feels missing (two-column + facial mapping visual) */}
         <section
-          className="bg-[#fefcfb] py-28 px-4 md:py-36 sm:px-8"
+          className="bg-[var(--background-alt)] py-28 px-4 md:py-36 sm:px-8"
           aria-labelledby="glass-skin-why-missing-heading"
         >
           <div className="mx-auto max-w-[1200px]">
@@ -169,7 +169,7 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
                 </div>
               </div>
               <div className="relative mx-auto w-full max-w-lg lg:max-w-none">
-                <div className="overflow-hidden rounded-2xl border border-[#ebe6e1] bg-[#faf8f6] shadow-lg shadow-zinc-900/10 ring-1 ring-black/5">
+                <div className="overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--background)] shadow-lg shadow-zinc-900/10 ring-1 ring-black/5">
                   <Image
                     src="/images/glass-skin-facial-mapping.png"
                     alt="Close-up portrait with white-line facial mapping overlay: frontal process, orbit, nasion, zygomatic arch, maxilla, and mandible angle"
@@ -185,7 +185,7 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
         </section>
 
         {/* Section 3 — Contents of the Free Guide (book mockup + list) */}
-        <section className="overflow-hidden bg-gradient-to-br from-white via-[#fff9fb] to-[#fce8f0]/45 py-20 px-4 md:py-24 sm:px-8">
+        <section className="overflow-hidden bg-gradient-to-br from-white via-[var(--surface-blush)] to-[color-mix(in_srgb,var(--brand-soft-2)_35%,white)] py-20 px-4 md:py-24 sm:px-8">
           <div className="mx-auto max-w-[1100px]">
             <h2 className="text-center font-sans text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tight text-[var(--foreground)]">
               Contents of the Free Guide
@@ -239,7 +239,7 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
         </section>
 
         {/* Section 4 — Authority */}
-        <section className="bg-[#fffbf7] py-28 px-4 md:py-36 sm:px-8">
+        <section className="bg-[var(--background-pastel-peach)] py-28 px-4 md:py-36 sm:px-8">
           <div className="mx-auto max-w-[1200px]">
             <div className="grid items-center gap-16 lg:grid-cols-2 lg:gap-28">
               <div className="order-2 lg:order-1">
@@ -260,7 +260,7 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
               </div>
               <div className="relative order-1 lg:order-2">
                 <div
-                  className="flex aspect-[4/3] min-h-[200px] items-center justify-center rounded-2xl border border-[#f0ebe8] bg-[image:var(--gradient-flare-subtle)] shadow-soft sm:min-h-0"
+                  className="flex aspect-[4/3] min-h-[200px] items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[image:var(--gradient-flare-subtle)] shadow-soft sm:min-h-0"
                   aria-hidden
                 >
                   <span className="text-6xl sm:text-8xl" role="img" aria-label="Cherry blossom">🌸</span>
@@ -289,7 +289,7 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-2xl border border-[#f2e8e4] bg-[#fcfbfa] p-8 text-center transition-all duration-300 ease-in-out shadow-soft-sm hover:border-[#e8d4dc]/60 hover:shadow-soft"
+                  className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--background)] p-8 text-center transition-all duration-300 ease-in-out shadow-soft-sm hover:border-[var(--border-hover)] hover:shadow-soft"
                 >
                   <h3 className="text-card-title text-[var(--foreground)]">{item.title}</h3>
                   <p className="mt-4 text-body text-[var(--foreground-soft)]">{item.desc}</p>
