@@ -98,11 +98,15 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
     : FALLBACK.tags;
   const disclaimer = FALLBACK.disclaimer;
   const heroImageSrc =
-    lp?.slug === "k-glass-skincare"
+    lp?.thumbnail_url?.trim()
+      ? lp.thumbnail_url.trim()
+      : lp?.slug === "k-glass-skincare"
       ? "/images/k-glass-skincare-thumbnail.png"
       : "/images/glass-skin-before-after.png";
   const heroImageAlt =
-    lp?.slug === "k-glass-skincare"
+    lp?.thumbnail_url?.trim()
+      ? `${lp?.title || "Landing"} thumbnail`
+      : lp?.slug === "k-glass-skincare"
       ? "K-glass skincare landing hero thumbnail"
       : "Before and after: natural skin compared to a dewy glass-skin makeup look";
   const problemTitle = isSkincareLP
@@ -192,6 +196,7 @@ export default function GlassSkinContent({ landingPage, useCodeHeroCopy = false 
                 className="h-auto w-full object-cover"
                 priority
                 sizes="(max-width: 900px) 100vw, 900px"
+                unoptimized={heroImageSrc.startsWith("http")}
               />
             </div>
             <p className="text-[var(--muted)] font-semibold uppercase tracking-[0.06em] text-[15px]">

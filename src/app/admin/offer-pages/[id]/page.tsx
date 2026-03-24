@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { getAdminHeaders } from "@/lib/admin-auth";
 import type { Course } from "@/types/admin";
-import { AdminPageHeader, AdminFormSection, AdminFormActions } from "@/components/admin";
+import { AdminPageHeader, AdminFormSection, AdminFormActions, AdminThumbnailField } from "@/components/admin";
 
 const inputCls = "w-full rounded-[8px] border border-zinc-300 px-3 py-2 text-body focus:outline-none focus:ring-2 focus:ring-[var(--flare-support-2)]";
 
@@ -21,6 +21,7 @@ export default function AdminOfferPageEditPage() {
   const [form, setForm] = useState({
     title: "",
     slug: "",
+    thumbnail_url: "",
     headline: "",
     subheadline: "",
     body: "",
@@ -53,6 +54,7 @@ export default function AdminOfferPageEditPage() {
       setForm({
         title: data.title ?? "",
         slug: data.slug ?? "",
+        thumbnail_url: data.thumbnail_url ?? "",
         headline: data.headline ?? "",
         subheadline: data.subheadline ?? "",
         body: data.body ?? "",
@@ -203,6 +205,14 @@ export default function AdminOfferPageEditPage() {
             <div>
               <label className="block text-body font-medium text-[var(--foreground)] mb-1">슬러그 *</label>
               <input className={inputCls} value={form.slug} onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))} required />
+            </div>
+            <div>
+              <AdminThumbnailField
+                label="썸네일"
+                value={form.thumbnail_url}
+                entity="offer-page"
+                onChange={(url) => setForm((f) => ({ ...f, thumbnail_url: url }))}
+              />
             </div>
             <div>
               <label className="block text-body font-medium text-[var(--foreground)] mb-1">헤드라인</label>

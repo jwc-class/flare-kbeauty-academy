@@ -10,3 +10,4 @@ export {
 } from "./AdminTable";
 export { AdminFormSection, AdminFormActions } from "./AdminFormSection";
 export { DeleteConfirmModal } from "./DeleteConfirmModal";
+export { AdminThumbnailField } from "./AdminThumbnailField";

@@ -55,6 +55,7 @@ export async function PATCH(req: Request, { params }: Params) {
     const payload: Record<string, unknown> = {};
     if (body.title !== undefined) payload.title = body.title ?? "";
     if (body.slug !== undefined) payload.slug = body.slug ?? "";
+    if (body.thumbnail_url !== undefined) payload.thumbnail_url = body.thumbnail_url ?? null;
     if (body.headline !== undefined) payload.headline = body.headline ?? null;
     if (body.subheadline !== undefined) payload.subheadline = body.subheadline ?? null;
     if (body.body !== undefined) payload.body = body.body ?? null;

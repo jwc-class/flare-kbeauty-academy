@@ -46,6 +46,7 @@ export async function POST(req: Request, { params }: Params) {
       .insert({
         title: `${source.title} (Copy)`,
         slug,
+        thumbnail_url: source.thumbnail_url ?? null,
         hero_title: source.hero_title ?? null,
         hero_subtitle: source.hero_subtitle ?? null,
         cta_text: source.cta_text ?? null,

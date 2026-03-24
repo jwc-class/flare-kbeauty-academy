@@ -38,6 +38,7 @@ export type LandingPage = {
   id: string;
   title: string;
   slug: string;
+  thumbnail_url: string | null;
   hero_title: string | null;
   hero_subtitle: string | null;
   cta_text: string | null;
@@ -53,6 +54,7 @@ export type OfferPage = {
   id: string;
   title: string;
   slug: string;
+  thumbnail_url: string | null;
   headline: string | null;
   subheadline: string | null;
   body: string | null;

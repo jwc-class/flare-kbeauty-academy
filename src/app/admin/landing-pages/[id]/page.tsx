@@ -6,7 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { getAdminHeaders } from "@/lib/admin-auth";
 import type { Course } from "@/types/admin";
 import type { OfferPage } from "@/types/admin";
-import { AdminPageHeader, AdminFormSection, AdminFormActions } from "@/components/admin";
+import { AdminPageHeader, AdminFormSection, AdminFormActions, AdminThumbnailField } from "@/components/admin";
 
 const inputCls = "w-full rounded-[8px] border border-zinc-300 px-3 py-2 text-body focus:outline-none focus:ring-2 focus:ring-[var(--flare-support-2)]";
 
@@ -23,6 +23,7 @@ export default function AdminLandingPageEditPage() {
   const [form, setForm] = useState({
     title: "",
     slug: "",
+    thumbnail_url: "",
     hero_title: "",
     hero_subtitle: "",
     cta_text: "",
@@ -57,6 +58,7 @@ export default function AdminLandingPageEditPage() {
       setForm({
         title: data.title ?? "",
         slug: data.slug ?? "",
+        thumbnail_url: data.thumbnail_url ?? "",
         hero_title: data.hero_title ?? "",
         hero_subtitle: data.hero_subtitle ?? "",
         cta_text: data.cta_text ?? "",
@@ -207,6 +209,14 @@ export default function AdminLandingPageEditPage() {
             <div>
               <label className="block text-body font-medium text-[var(--foreground)] mb-1">슬러그 *</label>
               <input className={inputCls} value={form.slug} onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))} required />
+            </div>
+            <div>
+              <AdminThumbnailField
+                label="썸네일"
+                value={form.thumbnail_url}
+                entity="landing-page"
+                onChange={(url) => setForm((f) => ({ ...f, thumbnail_url: url }))}
+              />
             </div>
             <div>
               <label className="block text-body font-medium text-[var(--foreground)] mb-1">히어로 제목</label>

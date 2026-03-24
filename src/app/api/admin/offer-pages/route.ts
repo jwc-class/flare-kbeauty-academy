@@ -42,6 +42,7 @@ export async function POST(req: Request) {
       .insert({
         title: body.title ?? "",
         slug: body.slug ?? "",
+        thumbnail_url: body.thumbnail_url ?? null,
         headline: body.headline ?? null,
         subheadline: body.subheadline ?? null,
         body: body.body ?? null,

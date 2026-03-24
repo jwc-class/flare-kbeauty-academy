@@ -41,6 +41,7 @@ export async function POST(req: Request) {
     const { data, error } = await supabaseAdmin.from("landing_pages").insert({
       title: body.title ?? "",
       slug: body.slug ?? "",
+      thumbnail_url: body.thumbnail_url ?? null,
       hero_title: body.hero_title ?? null,
       hero_subtitle: body.hero_subtitle ?? null,
       cta_text: body.cta_text ?? null,

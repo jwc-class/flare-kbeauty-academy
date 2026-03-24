@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
@@ -48,6 +49,7 @@ export default async function OfferPageBySlug({ params }: Props) {
   const body =
     offer.body?.trim() ||
     "The free guide gives you the blueprint. The full masterclass shows you exactly how Korean beauty experts apply the routine step by step-on video.";
+  const heroImage = offer.thumbnail_url || course?.thumbnail_url || null;
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
@@ -56,6 +58,20 @@ export default async function OfferPageBySlug({ params }: Props) {
         {/* SECTION 1 — Hero */}
         <section className="relative px-4 pb-[120px] pt-[160px] sm:px-6">
           <div className="mx-auto max-w-[900px] text-center">
+            {heroImage && (
+              <div className="relative mb-10 w-full overflow-hidden rounded-2xl border border-[var(--border-subtle)] shadow-soft sm:mb-12">
+                <Image
+                  src={heroImage}
+                  alt={`${offer.title || "Offer"} thumbnail`}
+                  width={1600}
+                  height={900}
+                  className="h-auto w-full object-cover"
+                  priority
+                  sizes="(max-width: 900px) 100vw, 900px"
+                  unoptimized={heroImage.startsWith("http")}
+                />
+              </div>
+            )}
             <div className="inline-flex h-16 w-16 items-center justify-center rounded-[10px] bg-[var(--flare-support-3)]/20 text-4xl mb-8">
               ✓
             </div>

@@ -10,6 +10,7 @@ export type PublicLandingPage = {
   id: string;
   title: string;
   slug: string;
+  thumbnail_url: string | null;
   hero_title: string | null;
   hero_subtitle: string | null;
   cta_text: string | null;
@@ -39,6 +40,7 @@ export type PublicOfferPage = {
   id: string;
   title: string;
   slug: string;
+  thumbnail_url: string | null;
   headline: string | null;
   subheadline: string | null;
   body: string | null;
@@ -59,10 +61,10 @@ export async function getPublishedLandingPageBySlug(
     .from("landing_pages")
     .select(
       `
-      id, title, slug, hero_title, hero_subtitle, cta_text,
+      id, title, slug, thumbnail_url, hero_title, hero_subtitle, cta_text,
       primary_course_id, offer_page_id, channel, status,
       courses(id, title, slug, thumbnail_url, price, currency, short_description, sales_page_content, instructor_name, status, paypal_link),
-      offer_pages(id, title, slug, headline, subheadline, body, cta_text, course_id, status)
+      offer_pages(id, title, slug, thumbnail_url, headline, subheadline, body, cta_text, course_id, status)
     `
     )
     .eq("slug", slug)
@@ -121,7 +123,7 @@ export async function getPublishedOfferPageBySlug(
     .from("offer_pages")
     .select(
       `
-      id, title, slug, headline, subheadline, body, cta_text, course_id, status,
+      id, title, slug, thumbnail_url, headline, subheadline, body, cta_text, course_id, status,
       courses(id, title, slug, thumbnail_url, price, currency, short_description, sales_page_content, instructor_name, status, paypal_link)
     `
     )

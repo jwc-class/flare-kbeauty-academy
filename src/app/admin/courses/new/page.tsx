@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getAdminHeaders } from "@/lib/admin-auth";
-import { AdminPageHeader, AdminFormSection, AdminFormActions } from "@/components/admin";
+import { AdminPageHeader, AdminFormSection, AdminFormActions, AdminThumbnailField } from "@/components/admin";
 
 const inputCls = "w-full rounded-[8px] border border-zinc-300 px-3 py-2 text-body focus:outline-none focus:ring-2 focus:ring-[var(--flare-support-2)]";
 
@@ -91,8 +91,12 @@ export default function AdminCourseNewPage() {
               <input className={inputCls} value={form.slug} onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))} required />
             </div>
             <div>
-              <label className="block text-body font-medium text-[var(--foreground)] mb-1">썸네일 URL</label>
-              <input className={inputCls} value={form.thumbnail_url} onChange={(e) => setForm((f) => ({ ...f, thumbnail_url: e.target.value }))} />
+              <AdminThumbnailField
+                label="썸네일"
+                value={form.thumbnail_url}
+                entity="course"
+                onChange={(url) => setForm((f) => ({ ...f, thumbnail_url: url }))}
+              />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
