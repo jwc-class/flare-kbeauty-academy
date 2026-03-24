@@ -45,15 +45,18 @@ export default function Header() {
   ];
 
   return (
-    <div className="fixed left-1/2 top-5 z-[9999] w-[calc(100%-40px)] max-w-[1200px] -translate-x-1/2 px-4 sm:px-0">
-      <header
-        className="flex min-h-[56px] items-center justify-between gap-4 rounded-2xl border border-[var(--border-subtle)] px-6 py-3.5 shadow-soft-sm"
-        style={{
-          background: "rgba(252, 251, 250, 0.88)",
-          backdropFilter: "blur(14px)",
-          WebkitBackdropFilter: "blur(14px)",
-        }}
-      >
+    <>
+      {/* Global top breathing room: 1.5x navbar height */}
+      <div aria-hidden className="h-[126px]" />
+      <div className="fixed left-1/2 top-5 z-[9999] w-[calc(100%-40px)] max-w-[1200px] -translate-x-1/2 px-4 sm:px-0">
+        <header
+          className="flex min-h-[56px] items-center justify-between gap-4 rounded-2xl border border-[var(--border-subtle)] px-6 py-3.5 shadow-soft-sm"
+          style={{
+            background: "rgba(252, 251, 250, 0.88)",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
+          }}
+        >
         <div className="flex items-center gap-6 lg:gap-8">
           <Link href="/" className="flex shrink-0 items-center" aria-label="K Beauty Academy 홈">
             <Image
@@ -166,17 +169,17 @@ export default function Header() {
             )}
           </svg>
         </button>
-      </header>
+        </header>
 
-      {mobileMenuOpen && (
-        <div
-          className="mt-2 rounded-2xl border border-[var(--border-subtle)] px-6 py-4 shadow-soft-sm md:hidden"
-          style={{
-            background: "rgba(252, 251, 250, 0.92)",
-            backdropFilter: "blur(14px)",
-            WebkitBackdropFilter: "blur(14px)",
-          }}
-        >
+        {mobileMenuOpen && (
+          <div
+            className="mt-2 rounded-2xl border border-[var(--border-subtle)] px-6 py-4 shadow-soft-sm md:hidden"
+            style={{
+              background: "rgba(252, 251, 250, 0.92)",
+              backdropFilter: "blur(14px)",
+              WebkitBackdropFilter: "blur(14px)",
+            }}
+          >
           <div className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <Link
@@ -225,8 +228,9 @@ export default function Header() {
               Get the Free Guide
             </Link>
           </div>
-        </div>
-      )}
-    </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
