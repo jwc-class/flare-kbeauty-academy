@@ -27,8 +27,7 @@ type Funnel = {
 
 type LandingPerf = { id: string; title: string; slug: string; channel: string; lead_submissions_count: number };
 type CoursePerf = { id: string; title: string; slug: string; price: number; currency: string; purchases_count: number; revenue: number };
-type LeadMagnetPerf = { id: string; title: string; slug: string; lead_submissions_count: number };
-type RecentLead = { id: string; contact_display: string; landing_page_title: string; lead_magnet_title: string; submitted_at: string };
+type RecentLead = { id: string; contact_display: string; landing_page_title: string; submitted_at: string };
 type RecentPurchase = { id: string; contact_display: string; course_title: string; amount: number; currency: string; purchased_at: string };
 
 type Dashboard = {
@@ -37,7 +36,6 @@ type Dashboard = {
   funnel: Funnel;
   landing_performance: LandingPerf[];
   course_performance: CoursePerf[];
-  lead_magnet_performance: LeadMagnetPerf[];
   recent_lead_submissions: RecentLead[];
   recent_purchases: RecentPurchase[];
 };
@@ -93,13 +91,13 @@ export default function AdminDashboardPage() {
 
   if (!data) return null;
 
-  const { kpis, time, funnel, landing_performance, course_performance, lead_magnet_performance, recent_lead_submissions, recent_purchases } = data;
+  const { kpis, time, funnel, landing_performance, course_performance, recent_lead_submissions, recent_purchases } = data;
 
   return (
     <>
       <h1 className="text-section-title text-[var(--foreground)] mb-2">Funnel & Revenue Dashboard</h1>
       <p className="text-body text-[var(--muted)] mb-6">
-        리드·매출·퍼널 지표와 랜딩/코스/리드매그넷 성과를 한눈에 확인하세요.
+        리드·매출·퍼널 지표와 랜딩/코스 성과를 한눈에 확인하세요.
       </p>
 
       {/* KPI Cards */}
@@ -223,39 +221,6 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* Lead magnet performance */}
-      <section className="mb-8">
-        <h2 className="text-card-title text-[var(--foreground)] mb-4">리드 매그넷 성과</h2>
-        <div className="overflow-x-auto rounded-[10px] border border-zinc-200 bg-white">
-          {lead_magnet_performance.length === 0 ? (
-            <p className="p-6 text-body text-[var(--muted)]">리드 매그넷이 없습니다.</p>
-          ) : (
-            <table className="w-full text-left text-body">
-              <thead>
-                <tr className="border-b border-zinc-200 bg-zinc-50">
-                  <th className="p-3 font-semibold text-[var(--foreground)]">제목</th>
-                  <th className="p-3 font-semibold text-[var(--foreground)]">슬러그</th>
-                  <th className="p-3 font-semibold text-[var(--foreground)]">리드 제출 수</th>
-                </tr>
-              </thead>
-              <tbody>
-                {lead_magnet_performance.map((lm) => (
-                  <tr key={lm.id} className="border-b border-zinc-100">
-                    <td className="p-3">
-                      <Link href={`/admin/lead-magnets/${lm.id}`} className="text-zinc-700 hover:text-[var(--flare-support-1)] hover:underline">
-                        {lm.title}
-                      </Link>
-                    </td>
-                    <td className="p-3 text-zinc-600">{lm.slug}</td>
-                    <td className="p-3 font-medium text-[var(--foreground)]">{lm.lead_submissions_count}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-      </section>
-
       {/* Recent activity */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="rounded-[10px] border border-zinc-200 bg-white overflow-hidden">
@@ -268,7 +233,7 @@ export default function AdminDashboardPage() {
                 <li key={r.id} className="p-3 text-body text-zinc-700">
                   <span className="font-medium text-[var(--foreground)]">{r.contact_display}</span>
                   {" · "}
-                  {r.landing_page_title !== "—" ? r.landing_page_title : r.lead_magnet_title}
+                  {r.landing_page_title}
                   {" · "}
                   <span className="text-[var(--muted)] text-sm">{formatDate(r.submitted_at)}</span>
                 </li>

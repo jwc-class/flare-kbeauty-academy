@@ -15,12 +15,11 @@ export async function GET(req: Request) {
   }
 
   try {
-    const [contacts, leadSubmissions, purchases, courses, leadMagnets, landingPages] = await Promise.all([
+    const [contacts, leadSubmissions, purchases, courses, landingPages] = await Promise.all([
       supabaseAdmin.from("contacts").select("id", { count: "exact", head: true }),
       supabaseAdmin.from("lead_submissions").select("id", { count: "exact", head: true }),
       supabaseAdmin.from("purchases").select("id", { count: "exact", head: true }),
       supabaseAdmin.from("courses").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("lead_magnets").select("id", { count: "exact", head: true }),
       supabaseAdmin.from("landing_pages").select("id", { count: "exact", head: true }),
     ]);
 
@@ -29,7 +28,6 @@ export async function GET(req: Request) {
       lead_submissions: leadSubmissions.count ?? 0,
       purchases: purchases.count ?? 0,
       courses: courses.count ?? 0,
-      lead_magnets: leadMagnets.count ?? 0,
       landing_pages: landingPages.count ?? 0,
     });
   } catch (e) {

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { getAdminHeaders } from "@/lib/admin-auth";
-import type { LeadMagnet } from "@/types/admin";
 import type { Course } from "@/types/admin";
 import type { OfferPage } from "@/types/admin";
 import { AdminPageHeader, AdminFormSection, AdminFormActions } from "@/components/admin";
@@ -16,7 +15,6 @@ export default function AdminLandingPageEditPage() {
   const params = useParams();
   const id = params?.id as string | undefined;
   const [loading, setLoading] = useState(!!id);
-  const [leadMagnets, setLeadMagnets] = useState<LeadMagnet[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [offerPages, setOfferPages] = useState<OfferPage[]>([]);
   const [saving, setSaving] = useState(false);
@@ -28,7 +26,6 @@ export default function AdminLandingPageEditPage() {
     hero_title: "",
     hero_subtitle: "",
     cta_text: "",
-    lead_magnet_id: "",
     primary_course_id: "",
     offer_page_id: "",
     channel: "",
@@ -43,9 +40,8 @@ export default function AdminLandingPageEditPage() {
     setNotFound(false);
     try {
       const headers = await getAdminHeaders();
-      const [resPage, resLM, resC, resO] = await Promise.all([
+      const [resPage, resC, resO] = await Promise.all([
         fetch(`/api/admin/landing-pages/${id}`, { headers }),
-        fetch("/api/admin/lead-magnets", { headers }),
         fetch("/api/admin/courses", { headers }),
         fetch("/api/admin/offer-pages", { headers }),
       ]);
@@ -64,16 +60,13 @@ export default function AdminLandingPageEditPage() {
         hero_title: data.hero_title ?? "",
         hero_subtitle: data.hero_subtitle ?? "",
         cta_text: data.cta_text ?? "",
-        lead_magnet_id: data.lead_magnet_id ?? "",
         primary_course_id: data.primary_course_id ?? "",
         offer_page_id: data.offer_page_id ?? "",
         channel: data.channel ?? "",
         status: data.status ?? "draft",
       });
-      const lm = await resLM.json().catch(() => []);
       const c = await resC.json().catch(() => []);
       const o = await resO.json().catch(() => []);
-      setLeadMagnets(Array.isArray(lm) ? lm : []);
       setCourses(Array.isArray(c) ? c : []);
       setOfferPages(Array.isArray(o) ? o : []);
     } catch {
@@ -99,7 +92,6 @@ export default function AdminLandingPageEditPage() {
         headers,
         body: JSON.stringify({
           ...form,
-          lead_magnet_id: form.lead_magnet_id || null,
           primary_course_id: form.primary_course_id || null,
           offer_page_id: form.offer_page_id || null,
         }),
@@ -227,15 +219,6 @@ export default function AdminLandingPageEditPage() {
             <div>
               <label className="block text-body font-medium text-[var(--foreground)] mb-1">CTA 문구</label>
               <input className={inputCls} value={form.cta_text} onChange={(e) => setForm((f) => ({ ...f, cta_text: e.target.value }))} />
-            </div>
-            <div>
-              <label className="block text-body font-medium text-[var(--foreground)] mb-1">연결 리드 매그넷</label>
-              <select className={inputCls} value={form.lead_magnet_id} onChange={(e) => setForm((f) => ({ ...f, lead_magnet_id: e.target.value }))}>
-                <option value="">— 선택 안 함 —</option>
-                {leadMagnets.map((lm) => (
-                  <option key={lm.id} value={lm.id}>{lm.title} ({lm.slug})</option>
-                ))}
-              </select>
             </div>
             <div>
               <label className="block text-body font-medium text-[var(--foreground)] mb-1">연결 주요 강의</label>

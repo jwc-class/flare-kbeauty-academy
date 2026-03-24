@@ -26,10 +26,6 @@ function normalizeLeadPayload(body: Record<string, unknown>) {
     typeof body.landing_page_id === "string" && body.landing_page_id.trim()
       ? body.landing_page_id.trim()
       : null;
-  const lead_magnet_id =
-    typeof body.lead_magnet_id === "string" && body.lead_magnet_id.trim()
-      ? body.lead_magnet_id.trim()
-      : null;
   const utm_source = typeof body.utm_source === "string" ? body.utm_source.trim() || null : null;
   const utm_medium = typeof body.utm_medium === "string" ? body.utm_medium.trim() || null : null;
   const utm_campaign = typeof body.utm_campaign === "string" ? body.utm_campaign.trim() || null : null;
@@ -44,7 +40,6 @@ function normalizeLeadPayload(body: Record<string, unknown>) {
     marketing_consent,
     source,
     landing_page_id,
-    lead_magnet_id,
     utm_source,
     utm_medium,
     utm_campaign,
@@ -129,7 +124,6 @@ export async function POST(req: Request) {
       .insert({
         contact_id: contactId,
         landing_page_id: payload.landing_page_id || null,
-        lead_magnet_id: payload.lead_magnet_id || null,
         utm_source: payload.utm_source,
         utm_medium: payload.utm_medium,
         utm_campaign: payload.utm_campaign,

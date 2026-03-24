@@ -20,7 +20,6 @@ export async function GET(req: Request, { params }: Params) {
       .from("landing_pages")
       .select(`
         *,
-        lead_magnets(id, title, slug),
         courses(id, title, slug),
         offer_pages(id, title, slug)
       `)
@@ -60,7 +59,6 @@ export async function PATCH(req: Request, { params }: Params) {
     if (body.hero_title !== undefined) payload.hero_title = body.hero_title ?? null;
     if (body.hero_subtitle !== undefined) payload.hero_subtitle = body.hero_subtitle ?? null;
     if (body.cta_text !== undefined) payload.cta_text = body.cta_text ?? null;
-    if (body.lead_magnet_id !== undefined) payload.lead_magnet_id = body.lead_magnet_id || null;
     if (body.primary_course_id !== undefined) payload.primary_course_id = body.primary_course_id || null;
     if (body.offer_page_id !== undefined) payload.offer_page_id = body.offer_page_id || null;
     if (body.channel !== undefined) payload.channel = body.channel ?? null;

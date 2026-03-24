@@ -49,7 +49,6 @@ export async function POST(req: Request, { params }: Params) {
         hero_title: source.hero_title ?? null,
         hero_subtitle: source.hero_subtitle ?? null,
         cta_text: source.cta_text ?? null,
-        lead_magnet_id: source.lead_magnet_id ?? null,
         primary_course_id: source.primary_course_id ?? null,
         offer_page_id: source.offer_page_id ?? null,
         channel: source.channel ?? null,

@@ -14,7 +14,6 @@ export async function GET(req: Request) {
       .from("landing_pages")
       .select(`
         *,
-        lead_magnets(id, title, slug),
         courses(id, title, slug),
         offer_pages(id, title, slug)
       `)
@@ -45,7 +44,6 @@ export async function POST(req: Request) {
       hero_title: body.hero_title ?? null,
       hero_subtitle: body.hero_subtitle ?? null,
       cta_text: body.cta_text ?? null,
-      lead_magnet_id: body.lead_magnet_id || null,
       primary_course_id: body.primary_course_id || null,
       offer_page_id: body.offer_page_id || null,
       channel: body.channel ?? null,

@@ -13,26 +13,12 @@ export type PublicLandingPage = {
   hero_title: string | null;
   hero_subtitle: string | null;
   cta_text: string | null;
-  lead_magnet_id: string | null;
   primary_course_id: string | null;
   offer_page_id: string | null;
   channel: string | null;
   status: string;
-  lead_magnet?: PublicLeadMagnet | null;
   primary_course?: PublicCourse | null;
   offer_page?: PublicOfferPage | null;
-};
-
-export type PublicLeadMagnet = {
-  id: string;
-  title: string;
-  slug: string;
-  subtitle: string | null;
-  description: string | null;
-  thumbnail_url: string | null;
-  file_url: string | null;
-  delivery_type: string | null;
-  status: string;
 };
 
 export type PublicCourse = {
@@ -63,7 +49,7 @@ export type PublicOfferPage = {
 };
 
 /**
- * Fetch a published landing page by slug with related lead_magnet and course.
+ * Fetch a published landing page by slug with related course/offer page.
  * Returns null if not found or not published.
  */
 export async function getPublishedLandingPageBySlug(
@@ -74,8 +60,7 @@ export async function getPublishedLandingPageBySlug(
     .select(
       `
       id, title, slug, hero_title, hero_subtitle, cta_text,
-      lead_magnet_id, primary_course_id, offer_page_id, channel, status,
-      lead_magnets(id, title, slug, subtitle, description, thumbnail_url, file_url, delivery_type, status),
+      primary_course_id, offer_page_id, channel, status,
       courses(id, title, slug, thumbnail_url, price, currency, short_description, sales_page_content, instructor_name, status, paypal_link),
       offer_pages(id, title, slug, headline, subheadline, body, cta_text, course_id, status)
     `
@@ -86,12 +71,10 @@ export async function getPublishedLandingPageBySlug(
 
   if (error || !data) return null;
   const row = data as Record<string, unknown>;
-  const lead_magnet = (Array.isArray(row.lead_magnets) ? row.lead_magnets[0] : row.lead_magnets) as PublicLeadMagnet | undefined;
   const primary_course = (Array.isArray(row.courses) ? row.courses[0] : row.courses) as PublicCourse | undefined;
   const offer_page = (Array.isArray(row.offer_pages) ? row.offer_pages[0] : row.offer_pages) as PublicOfferPage | undefined;
   return {
     ...row,
-    lead_magnet: lead_magnet ?? null,
     primary_course: primary_course ?? null,
     offer_page: offer_page ?? null,
   } as PublicLandingPage;
@@ -115,42 +98,6 @@ export async function getPublishedCourseBySlug(
 
   if (error || !data) return null;
   return data as PublicCourse;
-}
-
-/**
- * Fetch a published lead magnet by id.
- * Returns null if not found or not published.
- */
-export async function getPublishedLeadMagnetById(
-  id: string
-): Promise<PublicLeadMagnet | null> {
-  const { data, error } = await supabase
-    .from("lead_magnets")
-    .select("id, title, slug, subtitle, description, thumbnail_url, file_url, delivery_type, status")
-    .eq("id", id)
-    .eq("status", "published")
-    .maybeSingle();
-
-  if (error || !data) return null;
-  return data as PublicLeadMagnet;
-}
-
-/**
- * Fetch a published lead magnet by slug.
- * Returns null if not found or not published.
- */
-export async function getPublishedLeadMagnetBySlug(
-  slug: string
-): Promise<PublicLeadMagnet | null> {
-  const { data, error } = await supabase
-    .from("lead_magnets")
-    .select("id, title, slug, subtitle, description, thumbnail_url, file_url, delivery_type, status")
-    .eq("slug", slug)
-    .eq("status", "published")
-    .maybeSingle();
-
-  if (error || !data) return null;
-  return data as PublicLeadMagnet;
 }
 
 /**

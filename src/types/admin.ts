@@ -1,5 +1,5 @@
 /**
- * Admin foundation – data types for contacts, lead magnets, courses, landing pages, lead submissions, purchases.
+ * Admin foundation – data types for contacts, courses, landing pages, offer pages, submissions, purchases.
  * Prompt 2: extend with validation schemas, API DTOs, or form state types as needed.
  */
 
@@ -12,20 +12,6 @@ export type Contact = {
   phone_number: string | null;
   marketing_consent: boolean;
   source: string | null;
-  created_at: string;
-  updated_at: string;
-};
-
-export type LeadMagnet = {
-  id: string;
-  title: string;
-  slug: string;
-  subtitle: string | null;
-  description: string | null;
-  thumbnail_url: string | null;
-  file_url: string | null;
-  delivery_type: string | null;
-  status: string;
   created_at: string;
   updated_at: string;
 };
@@ -53,7 +39,6 @@ export type LandingPage = {
   hero_title: string | null;
   hero_subtitle: string | null;
   cta_text: string | null;
-  lead_magnet_id: string | null;
   primary_course_id: string | null;
   offer_page_id: string | null;
   channel: string | null;
@@ -80,7 +65,6 @@ export type LeadSubmission = {
   id: string;
   contact_id: string;
   landing_page_id: string | null;
-  lead_magnet_id: string | null;
   submitted_at: string;
   utm_source: string | null;
   utm_medium: string | null;
@@ -102,7 +86,6 @@ export type Purchase = {
 
 /** Optional relations for list views (Prompt 2: expand with joins) */
 export type LandingPageWithRelations = LandingPage & {
-  lead_magnet?: LeadMagnet | null;
   primary_course?: Course | null;
   offer_page?: OfferPage | null;
 };

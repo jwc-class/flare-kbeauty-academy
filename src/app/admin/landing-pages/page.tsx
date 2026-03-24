@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { getAdminHeaders } from "@/lib/admin-auth";
 import type { Course } from "@/types/admin";
-import type { LeadMagnet } from "@/types/admin";
 import Link from "next/link";
 import {
   AdminPageHeader,
@@ -24,14 +23,12 @@ type LandingPageRow = {
   hero_title: string | null;
   hero_subtitle: string | null;
   cta_text: string | null;
-  lead_magnet_id: string | null;
   primary_course_id: string | null;
   offer_page_id: string | null;
   channel: string | null;
   status: string;
   created_at: string;
   updated_at: string;
-  lead_magnets?: RelationRow | RelationRow[] | null;
   courses?: RelationRow | RelationRow[] | null;
   offer_pages?: RelationRow | RelationRow[] | null;
 };
@@ -44,7 +41,6 @@ function getRelationTitle(rel: RelationRow | RelationRow[] | null | undefined): 
 
 export default function AdminLandingPagesPage() {
   const [list, setList] = useState<LandingPageRow[]>([]);
-  const [leadMagnets, setLeadMagnets] = useState<LeadMagnet[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,9 +50,8 @@ export default function AdminLandingPagesPage() {
     setError(null);
     try {
       const headers = await getAdminHeaders();
-      const [resLP, resLM, resC] = await Promise.all([
+      const [resLP, resC] = await Promise.all([
         fetch("/api/admin/landing-pages", { headers }),
-        fetch("/api/admin/lead-magnets", { headers }),
         fetch("/api/admin/courses", { headers }),
       ]);
       if (resLP.status === 401) return;
@@ -66,8 +61,6 @@ export default function AdminLandingPagesPage() {
         return;
       }
       setList(Array.isArray(data) ? data : []);
-      const lm = await resLM.json().catch(() => []);
-      setLeadMagnets(Array.isArray(lm) ? lm : []);
       const c = await resC.json().catch(() => []);
       setCourses(Array.isArray(c) ? c : []);
     } catch {
@@ -129,7 +122,6 @@ export default function AdminLandingPagesPage() {
           <AdminTh>제목</AdminTh>
           <AdminTh>슬러그</AdminTh>
           <AdminTh>채널</AdminTh>
-          <AdminTh>리드 매그넷</AdminTh>
           <AdminTh>주요 강의</AdminTh>
           <AdminTh>오퍼 페이지</AdminTh>
           <AdminTh>상태</AdminTh>
@@ -139,7 +131,7 @@ export default function AdminLandingPagesPage() {
         <AdminTableBody>
           {!loading && list.length === 0 && (
             <AdminTr>
-              <AdminTd colSpan={9} className="p-8 text-center text-[var(--muted)]">No landing pages yet. Use &quot;추가&quot; to create one.</AdminTd>
+              <AdminTd colSpan={8} className="p-8 text-center text-[var(--muted)]">No landing pages yet. Use &quot;추가&quot; to create one.</AdminTd>
             </AdminTr>
           )}
           {list.map((row) => (
@@ -151,7 +143,6 @@ export default function AdminLandingPagesPage() {
               </AdminTd>
               <AdminTd>{row.slug}</AdminTd>
               <AdminTd>{row.channel ?? "—"}</AdminTd>
-              <AdminTd>{getRelationTitle(row.lead_magnets)}</AdminTd>
               <AdminTd>{getRelationTitle(row.courses)}</AdminTd>
               <AdminTd>{getRelationTitle(row.offer_pages)}</AdminTd>
               <AdminTd>{row.status}</AdminTd>
