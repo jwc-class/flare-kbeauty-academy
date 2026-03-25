@@ -76,6 +76,21 @@ export type LeadSubmission = {
   referrer: string | null;
 };
 
+/** Admin Leads 페이지: 제출 1건 = 1행 (표시용 단순 컬럼) */
+export type AdminLeadListRow = {
+  id: string;
+  origin: "submission" | "legacy";
+  submitted_at: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string;
+  phone_country_code: string | null;
+  phone_number: string | null;
+  marketing_consent: boolean;
+  source: string | null;
+  contact_created_at: string | null;
+};
+
 export type Purchase = {
   id: string;
   contact_id: string;

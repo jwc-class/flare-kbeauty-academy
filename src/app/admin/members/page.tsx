@@ -11,7 +11,9 @@ import {
   AdminTr,
   AdminTd,
   DeleteConfirmModal,
+  MemberLeadsModal,
 } from "@/components/admin";
+import type { MemberLeadsPayload } from "@/components/admin/MemberLeadsModal";
 import Image from "next/image";
 
 type MemberRow = {
@@ -35,6 +37,10 @@ export default function AdminMembersPage() {
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<MemberRow | null>(null);
+  const [leadsModalOpen, setLeadsModalOpen] = useState(false);
+  const [leadsLoading, setLeadsLoading] = useState(false);
+  const [leadsError, setLeadsError] = useState<string | null>(null);
+  const [leadsData, setLeadsData] = useState<MemberLeadsPayload | null>(null);
 
   const fetchList = useCallback(async () => {
     setLoading(true);
@@ -80,6 +86,34 @@ export default function AdminMembersPage() {
     } catch {
       return s;
     }
+  };
+
+  const openLeadsModal = async (row: MemberRow) => {
+    if (!row.email?.trim()) return;
+    setLeadsModalOpen(true);
+    setLeadsLoading(true);
+    setLeadsError(null);
+    setLeadsData(null);
+    try {
+      const headers = await getAdminHeaders();
+      const res = await fetch(`/api/admin/members/${row.id}/leads`, { headers });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setLeadsError(typeof json?.error === "string" ? json.error : "정보를 불러오지 못했습니다.");
+        return;
+      }
+      setLeadsData(json as MemberLeadsPayload);
+    } catch {
+      setLeadsError("정보를 불러오지 못했습니다.");
+    } finally {
+      setLeadsLoading(false);
+    }
+  };
+
+  const closeLeadsModal = () => {
+    setLeadsModalOpen(false);
+    setLeadsData(null);
+    setLeadsError(null);
   };
 
   const handleDelete = async () => {
@@ -178,8 +212,14 @@ export default function AdminMembersPage() {
                 </span>
               </AdminTd>
               <AdminTd>
-                {row.has_contact ? (
-                  <span className="text-green-700">Linked</span>
+                {row.email?.trim() ? (
+                  <button
+                    type="button"
+                    onClick={() => openLeadsModal(row)}
+                    className="font-medium text-green-700 underline decoration-green-700/40 underline-offset-2 hover:text-green-800 hover:decoration-green-800"
+                  >
+                    {row.has_contact ? "Linked" : "Leads"}
+                  </button>
                 ) : (
                   <span className="text-[var(--muted)]">—</span>
                 )}
@@ -212,6 +252,13 @@ export default function AdminMembersPage() {
         loading={!!pendingDelete && deletingId === pendingDelete.id}
         onCancel={() => setPendingDelete(null)}
         onConfirm={handleDelete}
+      />
+      <MemberLeadsModal
+        open={leadsModalOpen}
+        loading={leadsLoading}
+        error={leadsError}
+        data={leadsData}
+        onClose={closeLeadsModal}
       />
     </>
   );

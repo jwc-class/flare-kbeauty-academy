@@ -11,6 +11,7 @@ const dbLinks = [
 ];
 
 const pageLinks = [
+  { label: "Overview", href: "/admin/pages/overview" },
   { label: "#1 Landing Pages", href: "/admin/landing-pages" },
   { label: "#2 Offer Pages", href: "/admin/offer-pages" },
   { label: "#3 Courses", href: "/admin/courses" },

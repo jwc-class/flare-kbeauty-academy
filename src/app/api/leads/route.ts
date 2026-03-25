@@ -67,7 +67,6 @@ export async function POST(req: Request) {
 
     const payload = normalizeLeadPayload(body);
 
-    // Minimal validation: email required
     if (!payload.email) {
       return NextResponse.json(
         { error: "Email is required" },
@@ -75,60 +74,64 @@ export async function POST(req: Request) {
       );
     }
 
-    // STEP 3: Find or create contact by email
-    const { data: existingContact } = await supabaseAdmin
+    // 매 제출마다 새 contacts 행 (이메일이 같아도 전화·이름 등은 제출 시점 스냅샷으로 독립)
+    const emailCanonical = payload.email.trim().toLowerCase();
+    const { data: newContact, error: contactError } = await supabaseAdmin
       .from("contacts")
+      .insert({
+        first_name: payload.first_name,
+        last_name: payload.last_name,
+        email: emailCanonical,
+        phone_country_code: payload.phone_country_code,
+        phone_number: payload.phone_number,
+        marketing_consent: payload.marketing_consent,
+        source: payload.source,
+      })
       .select("id")
-      .eq("email", payload.email)
-      .limit(1)
       .maybeSingle();
 
-    let contactId: string;
-
-    if (existingContact?.id) {
-      contactId = existingContact.id;
-      // Optional: future admin audit – log that we reused a contact
-    } else {
-      const { data: newContact, error: contactError } = await supabaseAdmin
-        .from("contacts")
-        .insert({
-          first_name: payload.first_name,
-          last_name: payload.last_name,
-          email: payload.email,
-          phone_country_code: payload.phone_country_code,
-          phone_number: payload.phone_number,
-          marketing_consent: payload.marketing_consent,
-          source: payload.source,
-        })
-        .select("id")
-        .single();
-
-      if (contactError) {
-        return NextResponse.json(
-          { error: contactError.message || "Failed to create contact" },
-          { status: 500 }
-        );
-      }
-      if (!newContact?.id) {
-        return NextResponse.json(
-          { error: "Failed to create contact" },
-          { status: 500 }
-        );
-      }
-      contactId = newContact.id;
+    if (contactError) {
+      return NextResponse.json(
+        { error: contactError.message || "Failed to create contact" },
+        { status: 500 }
+      );
+    }
+    if (!newContact?.id) {
+      return NextResponse.json(
+        { error: "Failed to create contact" },
+        { status: 500 }
+      );
     }
 
-    // STEP 4: Always create a new lead_submissions row (one submission per event)
-    const { error: submissionError } = await supabaseAdmin
+    const submissionRow = {
+      contact_id: newContact.id,
+      landing_page_id: payload.landing_page_id || null,
+      utm_source: payload.utm_source,
+      utm_medium: payload.utm_medium,
+      utm_campaign: payload.utm_campaign,
+      referrer: payload.referrer,
+    };
+
+    let { error: submissionError, data: insertedSub } = await supabaseAdmin
       .from("lead_submissions")
-      .insert({
-        contact_id: contactId,
-        landing_page_id: payload.landing_page_id || null,
-        utm_source: payload.utm_source,
-        utm_medium: payload.utm_medium,
-        utm_campaign: payload.utm_campaign,
-        referrer: payload.referrer,
-      });
+      .insert(submissionRow)
+      .select("id")
+      .maybeSingle();
+
+    if (submissionError) {
+      const fkFail =
+        submissionError.code === "23503" ||
+        /foreign key|violates foreign key/i.test(submissionError.message || "");
+      if (fkFail && submissionRow.landing_page_id) {
+        const retry = await supabaseAdmin
+          .from("lead_submissions")
+          .insert({ ...submissionRow, landing_page_id: null })
+          .select("id")
+          .maybeSingle();
+        submissionError = retry.error;
+        insertedSub = retry.data;
+      }
+    }
 
     if (submissionError) {
       return NextResponse.json(
@@ -136,9 +139,13 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     }
+    if (!insertedSub?.id) {
+      return NextResponse.json(
+        { error: "Failed to record submission" },
+        { status: 500 }
+      );
+    }
 
-    // STEP 5: Redirect hint for post-submit flow.
-    // Landing page -> linked offer page (/offers/[slug]) -> fallback /thank-you.
     let redirect_to = "/thank-you";
     if (payload.landing_page_id) {
       const { data: lp } = await supabaseAdmin

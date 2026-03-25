@@ -11,3 +11,4 @@ export {
 export { AdminFormSection, AdminFormActions } from "./AdminFormSection";
 export { DeleteConfirmModal } from "./DeleteConfirmModal";
 export { AdminThumbnailField } from "./AdminThumbnailField";
+export { MemberLeadsModal } from "./MemberLeadsModal";

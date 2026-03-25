@@ -30,7 +30,7 @@ export async function GET(req: Request) {
         .from("contacts")
         .select("id, first_name, last_name, email, phone_country_code, phone_number, marketing_consent, source, created_at, updated_at")
         .order("created_at", { ascending: false })
-        .limit(500),
+        .limit(1000),
       supabaseAdmin
         .from("leads")
         .select("id, email, first_name, country_code, phone_number, marketing_consent, source, created_at")
