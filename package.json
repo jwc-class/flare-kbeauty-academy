@@ -6,7 +6,8 @@
     "dev": "node scripts/run-dev.js",
     "build": "node scripts/run-build.js",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:apply-enrollments": "node scripts/apply-enrollments-schema.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.99.1",
@@ -19,8 +20,10 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.3.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "pg": "^8.20.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

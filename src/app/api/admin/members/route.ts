@@ -24,7 +24,44 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Admin not configured" }, { status: 503 });
   }
 
+  const url = new URL(req.url);
+  const q = url.searchParams.get("q")?.trim() ?? "";
+
   try {
+    if (q.length > 0) {
+      const safe = q.slice(0, 100).replace(/[^a-zA-Z0-9@._+\- ]/g, "");
+      if (!safe) {
+        return NextResponse.json([]);
+      }
+      const pattern = `%${safe}%`;
+      const { data: rows, error: searchErr } = await supabase
+        .from("profiles")
+        .select("id, auth_user_id, email, full_name, avatar_url, provider, status, created_at, updated_at")
+        .or(`email.ilike.${pattern},full_name.ilike.${pattern}`)
+        .order("created_at", { ascending: false })
+        .limit(40);
+
+      if (searchErr) {
+        return NextResponse.json({ error: searchErr.message }, { status: 500 });
+      }
+
+      const hits: MemberListItem[] = (rows ?? []).map((p) => ({
+        id: p.id,
+        auth_user_id: p.auth_user_id,
+        email: p.email ?? null,
+        full_name: p.full_name ?? null,
+        avatar_url: p.avatar_url ?? null,
+        provider: p.provider ?? null,
+        status: p.status ?? "active",
+        created_at: p.created_at,
+        updated_at: p.updated_at,
+        has_contact: false,
+        purchase_count: 0,
+      }));
+
+      return NextResponse.json(hits);
+    }
+
     const { data: profiles, error: profilesError } = await supabase
       .from("profiles")
       .select("id, auth_user_id, email, full_name, avatar_url, provider, status, created_at, updated_at")

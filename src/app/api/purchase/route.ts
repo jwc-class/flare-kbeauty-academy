@@ -1,37 +1,17 @@
-import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+﻿import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { getPayPalOrderDetails } from "@/lib/paypal";
+import { getUserFromBearer } from "@/lib/auth-server";
+import { getProfileByAuthUserId, upsertProfileFromAuthUser } from "@/lib/profiles";
+import { grantEnrollmentForPurchase } from "@/lib/enrollments";
 
 const DEFAULT_COURSE_SLUG = "glass-skin-masterclass";
-
-/**
- * Resolve logged-in user email from Bearer token when present.
- * Purchase is then linked to this identity (contact by email) instead of only PayPal payer.
- */
-async function getAuthenticatedEmail(req: Request): Promise<string | null> {
-  const authHeader = req.headers.get("authorization");
-  const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7).trim() : null;
-  if (!token) return null;
-
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY;
-  if (!url || !anonKey) return null;
-
-  const supabase = createClient(url, anonKey, {
-    global: { headers: { Authorization: `Bearer ${token}` } },
-  });
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if (error || !user?.email) return null;
-  return user.email;
-}
 
 /**
  * POST /api/purchase
  * Records a completed purchase after PayPal capture.
  * Body: { external_order_id (required), course_id?, course_slug? }
- * If Authorization: Bearer <token> is present, the purchase is linked to that user (contact by their email).
- * Otherwise uses PayPal payer email for contact. Idempotent by external_order_id.
+ * If Authorization: Bearer <token> is present, purchase is linked to user profile and enrollment is granted.
  */
 export async function POST(req: Request) {
   const supabaseAdmin = getSupabaseAdmin();
@@ -58,25 +38,61 @@ export async function POST(req: Request) {
         : DEFAULT_COURSE_SLUG;
 
     if (!external_order_id) {
-      return NextResponse.json(
-        { error: "external_order_id is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "external_order_id is required" }, { status: 400 });
     }
 
-    // Idempotent: avoid duplicate purchase for same order
+    const authUser = await getUserFromBearer(req);
+    let profileId: string | null = null;
+    if (authUser) {
+      await upsertProfileFromAuthUser({
+        id: authUser.id,
+        email: authUser.email ?? null,
+        user_metadata: authUser.user_metadata,
+        app_metadata: authUser.app_metadata,
+      });
+      const profile = await getProfileByAuthUserId(authUser.id);
+      profileId = profile?.id ?? null;
+    }
+
+    // Idempotent path: if purchase already exists, ensure enrollment is also present/recovered.
     const { data: existing } = await supabaseAdmin
       .from("purchases")
-      .select("id")
+      .select("id, course_id, profile_id")
       .eq("external_order_id", external_order_id)
       .limit(1)
       .maybeSingle();
 
-    if (existing) {
-      return NextResponse.json({ success: true, message: "Purchase already recorded" });
+    if (existing?.id) {
+      if (profileId) {
+        if (!existing.profile_id) {
+          await supabaseAdmin
+            .from("purchases")
+            .update({ profile_id: profileId })
+            .eq("id", existing.id);
+        }
+
+        const enr = await grantEnrollmentForPurchase(
+          supabaseAdmin,
+          profileId,
+          existing.course_id,
+          existing.id
+        );
+        if (!enr.ok) {
+          return NextResponse.json(
+            { error: `Purchase exists but enrollment recovery failed: ${enr.message}` },
+            { status: 500 }
+          );
+        }
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: profileId
+          ? "Purchase already recorded; enrollment ensured"
+          : "Purchase already recorded",
+      });
     }
 
-    // Resolve course_id
     let resolvedCourseId = course_id;
     if (!resolvedCourseId) {
       const { data: course } = await supabaseAdmin
@@ -86,15 +102,11 @@ export async function POST(req: Request) {
         .limit(1)
         .maybeSingle();
       if (!course?.id) {
-        return NextResponse.json(
-          { error: `Course not found: ${course_slug}` },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: `Course not found: ${course_slug}` }, { status: 400 });
       }
       resolvedCourseId = course.id;
     }
 
-    // Get payer email and amount from PayPal
     const orderDetails = await getPayPalOrderDetails(external_order_id);
     const payerEmail = orderDetails.payerEmail;
     if (!payerEmail) {
@@ -106,18 +118,12 @@ export async function POST(req: Request) {
 
     const amount = parseFloat(orderDetails.amount);
     if (Number.isNaN(amount) || amount < 0) {
-      return NextResponse.json(
-        { error: "Invalid amount from order" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid amount from order" }, { status: 400 });
     }
     const currency = orderDetails.currency || "USD";
 
-    // Prefer logged-in member email so purchase is linked to their account
-    const authenticatedEmail = await getAuthenticatedEmail(req);
-    const contactEmail = (authenticatedEmail?.trim() || payerEmail).toLowerCase();
+    const contactEmail = (authUser?.email?.trim() || payerEmail).toLowerCase();
 
-    // Find or create contact by email
     const { data: existingContact } = await supabaseAdmin
       .from("contacts")
       .select("id")
@@ -145,24 +151,25 @@ export async function POST(req: Request) {
 
       if (insertErr || !newContact?.id) {
         console.error("[purchase] contact insert failed", insertErr);
-        return NextResponse.json(
-          { error: "Failed to create contact" },
-          { status: 500 }
-        );
+        return NextResponse.json({ error: "Failed to create contact" }, { status: 500 });
       }
       contactId = newContact.id;
     }
 
-    // Insert purchase
-    const { error: purchaseErr } = await supabaseAdmin.from("purchases").insert({
-      contact_id: contactId,
-      course_id: resolvedCourseId,
-      amount,
-      currency,
-      payment_provider: "paypal",
-      payment_status: "completed",
-      external_order_id,
-    });
+    const { data: newPurchase, error: purchaseErr } = await supabaseAdmin
+      .from("purchases")
+      .insert({
+        contact_id: contactId,
+        course_id: resolvedCourseId,
+        amount,
+        currency,
+        payment_provider: "paypal",
+        payment_status: "completed",
+        external_order_id,
+        profile_id: profileId,
+      })
+      .select("id")
+      .single();
 
     if (purchaseErr) {
       if (purchaseErr.code === "23505") {
@@ -173,6 +180,21 @@ export async function POST(req: Request) {
         { error: purchaseErr.message || "Failed to record purchase" },
         { status: 500 }
       );
+    }
+
+    if (profileId && newPurchase?.id) {
+      const enr = await grantEnrollmentForPurchase(
+        supabaseAdmin,
+        profileId,
+        resolvedCourseId,
+        newPurchase.id
+      );
+      if (!enr.ok) {
+        return NextResponse.json(
+          { error: `Purchase recorded but enrollment failed: ${enr.message}` },
+          { status: 500 }
+        );
+      }
     }
 
     return NextResponse.json({ success: true });

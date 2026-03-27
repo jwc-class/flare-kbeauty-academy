@@ -1,0 +1,1 @@
+-- Enrollments and lessons (run in Supabase SQL Editor)

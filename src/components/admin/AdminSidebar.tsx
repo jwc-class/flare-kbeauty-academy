@@ -10,6 +10,11 @@ const dbLinks = [
   { label: "Leads", href: "/admin/leads" },
 ];
 
+const enrollmentLinks = [
+  { label: "Enrollment List", href: "/admin/enrollments" },
+  { label: "Grant access", href: "/admin/grant-access" },
+];
+
 const pageLinks = [
   { label: "Overview", href: "/admin/pages/overview" },
   { label: "#1 Landing Pages", href: "/admin/landing-pages" },
@@ -21,6 +26,7 @@ export function AdminSidebar() {
   const pathname = usePathname();
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [dbOpen, setDbOpen] = useState(true);
+  const [enrollmentOpen, setEnrollmentOpen] = useState(true);
   const [pagesOpen, setPagesOpen] = useState(true);
 
   const isLinkActive = useCallback(
@@ -48,6 +54,7 @@ export function AdminSidebar() {
 
   useEffect(() => {
     if (dbLinks.some((item) => isLinkActive(item.href))) setDbOpen(true);
+    if (enrollmentLinks.some((item) => isLinkActive(item.href))) setEnrollmentOpen(true);
     if (pageLinks.some((item) => isLinkActive(item.href))) setPagesOpen(true);
   }, [isLinkActive]);
 
@@ -69,6 +76,33 @@ export function AdminSidebar() {
             >
               Dashboard
             </Link>
+          </li>
+
+          <li>
+            <button
+              type="button"
+              onClick={() => setEnrollmentOpen((v) => !v)}
+              className="flex w-full items-center justify-between rounded-[8px] px-3 py-2 text-left text-body text-[var(--foreground)] hover:bg-zinc-100"
+            >
+              <span>Enrollment</span>
+              <span className="text-xs text-zinc-500">{enrollmentOpen ? "▾" : "▸"}</span>
+            </button>
+            {enrollmentOpen && (
+              <ul className="mt-1 space-y-0.5 pl-2">
+                {enrollmentLinks.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`block rounded-[8px] px-3 py-1.5 text-body text-[var(--foreground)] ${
+                        isLinkActive(item.href) ? "bg-[var(--gradient-flare-subtle)] font-medium" : "hover:bg-zinc-100"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
 
           <li>
